@@ -7,7 +7,6 @@ import {
   DropdownMenuLabel
 } from "@/components/ui/dropdown-menu"
 
-
 import {
   Card,
   CardContent,
@@ -21,6 +20,8 @@ import { Bell, ChevronDown } from "lucide-react"
 import React from "react"
 import GraphMain from "@/components/GrafMain"
 import { Input } from "@/components/ui/input"
+import { CardRecentAv } from "@/components/CardRecentAv"
+import { eventsRecents } from "@/database/eventsRecents"
 
 export default function PageDashboard() {
   return (
@@ -49,20 +50,35 @@ export default function PageDashboard() {
 
         </header>
 
-        <main className="w-full h-[80vh] bg-white overflow-y-auto rounded-xl">
+        <main className="pb-10 w-full h-[90vh] custom-scrollbar overflow-y-auto rounded-xl">
+          <section className="p-2 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Relatorio</CardTitle>
+                <CardDescription>Formularios Respondidos</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <GraphMain />
+              </CardContent>
+              <CardFooter>
+                <p className="text-sm italic text-gray-600">relatorios / mês</p>
+              </CardFooter>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Relatorio</CardTitle>
-              <CardDescription>Formularios Respondidos</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <GraphMain />
-            </CardContent>
-            <CardFooter>
-              <p className="text-sm italic text-gray-600">relatorios / mês</p>
-            </CardFooter>
-          </Card>
+            <Card className="w-[80%] max-md:w-full h-full max-lg:m-auto">
+              <CardHeader>
+                <CardTitle className="text-lg">Recentes</CardTitle>
+                <CardDescription>Avaliações criadas recentemente</CardDescription>
+              </CardHeader>
+              <CardContent className="custom-scrollbar h-96 overflow-y-auto overflow-x-hidden">
+                {eventsRecents.map((r) =>
+                (
+                  <CardRecentAv name={r.name} description={r.description} date={r.date} />
+                ))
+                }
+              </CardContent>
+            </Card>
+          </section>
         </main>
       </section>
     </>
