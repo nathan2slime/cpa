@@ -4,8 +4,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuLabel,
+} from '@/components/ui/dropdown-menu';
 
 import {
   Card,
@@ -14,20 +14,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { Bell, ChevronDown } from "lucide-react"
-import React from "react"
-import GraphMain from "@/components/GrafMain"
-import { Input } from "@/components/ui/input"
-import { CardRecentAv } from "@/components/CardRecentAv"
-import { eventsRecents } from "@/database/eventsRecents"
+} from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Bell, ChevronDown } from 'lucide-react';
+import React from 'react';
+import GraphMain from '@/components/GrafMain';
+import { Input } from '@/components/ui/input';
+import { CardRecentAv } from '@/components/CardRecentAv';
+import { eventsRecents } from '@/database/eventsRecents';
+import { WrapperEvent } from '@/components/CreateEventWrapper';
 
 export default function PageDashboard() {
   return (
     <>
       <section className="w-full">
-
         <header className="flex justify-end items-center gap-4 h-[60px] w-full p-4">
           <Input type="text" placeholder="Pesquisar" className="w-min" />
 
@@ -47,11 +47,10 @@ export default function PageDashboard() {
               <DropdownMenuItem>Sair</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
         </header>
 
-        <main className="pb-10 w-full h-[90vh] custom-scrollbar overflow-y-auto rounded-xl">
-          <section className="p-2 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
+        <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
+          <section className="w-full  m-auto mb-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>Relatorio</CardTitle>
@@ -65,23 +64,30 @@ export default function PageDashboard() {
               </CardFooter>
             </Card>
 
-            <Card className="w-[80%] max-md:w-full h-full max-lg:m-auto">
+            <Card className="w-[400px] max-lg:w-full h-full">
               <CardHeader>
                 <CardTitle className="text-lg">Recentes</CardTitle>
-                <CardDescription>Avaliações criadas recentemente</CardDescription>
+                <CardDescription>
+                  Avaliações criadas recentemente
+                </CardDescription>
               </CardHeader>
               <CardContent className="custom-scrollbar h-96 overflow-y-auto overflow-x-hidden">
-                {eventsRecents.map((r) =>
-                (
-                  <CardRecentAv name={r.name} description={r.description} date={r.date} />
-                ))
-                }
+                {eventsRecents.map((r, index) => (
+                  <div key={index}>
+                    <CardRecentAv
+                      id={index}
+                      name={r.name}
+                      description={r.description}
+                      date={r.date}
+                    />
+                  </div>
+                ))}
               </CardContent>
             </Card>
           </section>
+          <WrapperEvent />
         </main>
       </section>
     </>
-  )
-
+  );
 }
