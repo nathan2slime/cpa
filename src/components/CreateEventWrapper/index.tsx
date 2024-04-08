@@ -9,36 +9,21 @@ import {
 import { Label } from '../ui/label';
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import { Plus } from 'lucide-react';
 import Link from 'next/link';
-
-const courses = [
-  'Bacharelado em Administração',
-  'Bacharelado em Arquitetura e Urbanismo',
-  'Bacharelado em Biomedicina',
-  'Bacharelado em Direito',
-  'Bacharelado em Educação Física',
-  'Bacharelado em Enfermagem',
-  'Bacharelado em Engenharia Civil',
-  'Bacharelado em Engenharia Elétrica',
-  'Bacharelado em Farmácia',
-  'Bacharelado em Fisioterapia',
-  'Bacharelado em Nutrição',
-  'Bacharelado em Odontologia',
-  'Bacharelado em Psicologia',
-  'Bacharelado em Serviço Social',
-  'Bacharelado em Terapia Ocupacional',
-  'Licenciatura em Pedagogia',
-  'Superior de Tecnologia em Análise e Desenvolvimento de Sistemas',
-  'Superior de Tecnologia em Design de Moda',
-  'Superior de Tecnologia em Estética e Cosmética',
-  'Superior de Tecnologia em Radiologia',
-];
+import { courses } from '@/database/courses';
+import { Modal } from '../Modal';
 
 export const WrapperEvent = () => {
   const [responsavelEvent, setResponsavelEvent] = useState('');
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [typeForm, setTypeForm] = useState('');
+
+
+  const resetField = () => {
+    setResponsavelEvent('')
+    setCoursesSelected([])
+    setTypeForm('')
+  }
 
   return (
     <section className="bg-white w-max max-md:w-full rounded-lg min-h-96 p-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
@@ -106,7 +91,6 @@ export const WrapperEvent = () => {
                       )
                     }
                   >
-                    {/* pegar uma lixeira de lucida */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -135,13 +119,13 @@ export const WrapperEvent = () => {
             <SelectValue placeholder="Formulario" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="avaliacao-institucional-2024.1">
+            <SelectItem value="Avaliação Institucional 2024.1">
               Avaliação Institucional 2024.1
             </SelectItem>
-            <SelectItem value="avaliacao-institucional-2023.2">
+            <SelectItem value="Avaliação Institucional 2023.2">
               Avaliação Institucional 2023.2
             </SelectItem>
-            <SelectItem value="avaliação-institucional-pascoa-2024.1">
+            <SelectItem value="Avaliação Institucional Pascoa 2024.1">
               Avaliação Institucional Pascoa 2024.1
             </SelectItem>
           </SelectContent>
@@ -174,14 +158,7 @@ export const WrapperEvent = () => {
             Escolha um formulario
           </Button>
         ) : (
-          <Link href={`/form/${typeForm}`}>
-            <Button
-              className="bg-green-400 hover:bg-green-500 hover:text-white transition-all delay-100"
-              variant="secondary"
-            >
-              Confirmar
-            </Button>
-          </Link>
+          <Modal title={typeForm} />
         )}
       </div>
     </section>
