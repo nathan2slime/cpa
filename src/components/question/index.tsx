@@ -15,7 +15,7 @@ export const Question = ({
 }: QuestionTypeProps) => {
   const answers: Record<string, ReactNode> = {
     choose: (
-      <AnswgiterRadio onChange={onChange} position={position} data={options} />
+      <AnswerRadio onChange={onChange} position={position} data={options} />
     ),
   };
 
