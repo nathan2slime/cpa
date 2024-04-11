@@ -11,10 +11,12 @@ import { QuestionTypeProps } from './model';
 export const Question = ({
   data: { type, question, options },
   position,
-    onChange,
+  onChange,
 }: QuestionTypeProps) => {
   const answers: Record<string, ReactNode> = {
-    choose: <AnswerRadio onChange={onChange} position={position} data={options} />,
+    choose: (
+      <AnswgiterRadio onChange={onChange} position={position} data={options} />
+    ),
   };
 
   return (
