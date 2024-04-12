@@ -14,7 +14,7 @@ export const AnswerRadio = ({ data, position, onChange }: AnswerRadioProps) => {
         const key = position.toString() + '-' + index.toString();
 
         return (
-          <div key={Math.random()} className="flex items-center space-x-2">
+          <div key={key}  className="flex items-center space-x-2">
             <RadioGroupItem id={key} value={key} />
             <Label
               htmlFor={key}

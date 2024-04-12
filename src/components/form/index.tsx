@@ -14,7 +14,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 
 import { database } from '@/database';
 
@@ -26,8 +26,6 @@ export const Form = ({ id }: FormProps) => {
 
   const {
     formState: { isValid },
-    setValue,
-    reset,
     watch,
     control,
   } = useForm({
@@ -35,7 +33,7 @@ export const Form = ({ id }: FormProps) => {
     resolver: zodResolver(payload.schema),
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {  append, remove } = useFieldArray({
     name: 'data',
     control,
   });
@@ -61,20 +59,17 @@ export const Form = ({ id }: FormProps) => {
   };
 
   return (
-    <div className="w-full h-full bg-[#fffbf7] p-8">
-      <div className="max-w-4xl w-full mx-auto flex items-end flex-col">
-        <div className="w-full mb-5 bg-white border border-zinc-400 rounded-lg flex items-center justify-between gap-2 py-7 px-7">
-          <h1 className="text-2xl font-bold tracking-wide text-zinc-900">
-            {payload.title}
-          </h1>
-
-
+    <div className="w-full h-full bg-[#fffbf7] p-4 md:p-8">
+      <div className="max-w-4xl w-full flex-col mx-auto flex items-end">
+        <div className="flex items-center flex-wrap mb-4 gap-6 md:flex-row justify-end md:justify-start w-full">
           <DropdownMenu dir="rtl" modal>
             <DropdownMenuTrigger>
-              <Avatar className="w-[50px] cursor-pointer h-[50px]">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+              <div className="w-full h-[70px] bg-white border border-zinc-400 rounded-lg flex items-center justify-between p-2">
+                <Avatar className="md:w-[50px] cursor-pointer h-[52px] w-[52px] md:h-[50px]">
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>Jhonathan</DropdownMenuLabel>
@@ -84,10 +79,16 @@ export const Form = ({ id }: FormProps) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          <div className="h-[70px] w-full md:w-fit bg-white border border-zinc-400 rounded-lg flex items-center justify-center md:justify-start gap-2 p-4 md:p-8">
+            <h1 className="text-xl md:text-2xl font-bold tracking-wide text-zinc-900">
+              {payload.title}
+            </h1>
+          </div>
         </div>
 
         {payload.data.map((question, index) => (
           <Question
+            key={'question_' + index}
             data={question}
             position={index}
             onChange={onChangeQuestion}
