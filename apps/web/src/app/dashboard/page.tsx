@@ -21,8 +21,9 @@ import React from 'react';
 import GraphMain from '@/components/GrafMain';
 import { Input } from '@/components/ui/input';
 import { CardRecentAv } from '@/components/CardRecentAv';
-import { eventsRecents } from '@/database/eventsRecents';
 import { WrapperEvent } from '@/components/CreateEventWrapper';
+
+import { eventsRecents } from '@/database/eventsRecents';
 
 export default function PageDashboard() {
   return (
@@ -33,7 +34,7 @@ export default function PageDashboard() {
 
           <Bell size={14} />
           <DropdownMenu dir="rtl" modal>
-            <DropdownMenuTrigger className="flex items-center">
+            <DropdownMenuTrigger  className="flex items-center">
               <Avatar className="w-[30px] h-[30px] cursor-pointer">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
