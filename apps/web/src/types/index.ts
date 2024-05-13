@@ -1,6 +1,5 @@
-import {ReactNode} from "react";
+import { ReactNode } from 'react';
 
 export type AppChildren = {
-    children: ReactNode;
-
-}
+  children: ReactNode;
+};

@@ -1,4 +1,4 @@
-import { TCourses } from "@/types/courseType";
+import { TCourses } from '@/types/courseType';
 
 export const courses: Array<TCourses> = [
   'Bacharelado em Administração',
@@ -22,5 +22,3 @@ export const courses: Array<TCourses> = [
   'Superior de Tecnologia em Estética e Cosmética',
   'Superior de Tecnologia em Radiologia',
 ];
-
-

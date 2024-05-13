@@ -1,4 +1,4 @@
-import {QuestionType} from "@/types/question";
+import { QuestionType } from '@/types/question';
 
 export const anual_avaliation: QuestionType[] = [
   {

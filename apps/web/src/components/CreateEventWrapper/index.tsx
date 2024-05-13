@@ -18,12 +18,11 @@ export const WrapperEvent = () => {
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [typeForm, setTypeForm] = useState('');
 
-
   const resetField = () => {
-    setResponsavelEvent('')
-    setCoursesSelected([])
-    setTypeForm('')
-  }
+    setResponsavelEvent('');
+    setCoursesSelected([]);
+    setTypeForm('');
+  };
 
   return (
     <section className="bg-white w-max max-md:w-full rounded-lg min-h-96 p-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">

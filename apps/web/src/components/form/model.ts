@@ -1,4 +1,3 @@
 export type FormProps = {
-    id: string;
-
-}
+  id: string;
+};

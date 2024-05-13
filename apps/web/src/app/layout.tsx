@@ -14,14 +14,13 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: Readonly<AppChildren>) => {
   return (
     <html lang="pt-br">
-      <body className={cn('min-h-screen w-full bg-gray-200 flex',
-        GeistSans.className)}>
-
-
-        <div className='px-4 w-full'>
-          {children}
-
-        </div>
+      <body
+        className={cn(
+          'min-h-screen w-full bg-gray-200 flex',
+          GeistSans.className,
+        )}
+      >
+        <div className="px-4 w-full">{children}</div>
       </body>
     </html>
   );

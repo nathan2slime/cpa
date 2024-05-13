@@ -34,7 +34,7 @@ export default function PageDashboard() {
 
           <Bell size={14} />
           <DropdownMenu dir="rtl" modal>
-            <DropdownMenuTrigger  className="flex items-center">
+            <DropdownMenuTrigger className="flex items-center">
               <Avatar className="w-[30px] h-[30px] cursor-pointer">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>

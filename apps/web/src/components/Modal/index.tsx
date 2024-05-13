@@ -1,6 +1,6 @@
-import { Copy } from "lucide-react"
+import { Copy } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -10,12 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Link from 'next/link';
 
-type TModal = { title?: string, onClick?: () => void, }
+type TModal = { title?: string; onClick?: () => void };
 
 export function Modal({ title = 'Compartilhar', onClick }: TModal) {
   return (
@@ -31,9 +31,7 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {title}
-          </DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
             Todos poderão acessar através deste link.
           </DialogDescription>
@@ -61,14 +59,13 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
             </Button>
           </DialogClose>
 
-          <Link href='/form/avaliacao'>
+          <Link href="/form/avaliacao">
             <Button type="button" variant="secondary" className="w-min">
               Visualizar
             </Button>
           </Link>
-
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

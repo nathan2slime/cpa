@@ -2,15 +2,12 @@ import { LogOut, ScrollText } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-
 export const Sidebar = () => {
-
   return (
     <>
-      <div className='max-md:w-[100px] max-md:overflow-hidden px-2 relative z-40 w-80 h-screen transition-transform -translate-x-2 md:translate-x-0'>
-        <Link href='/'>
-          <h1 className='h-[60px] text-2xl p-4 font-semibold'>UniFacema</h1>
-
+      <div className="max-md:w-[100px] max-md:overflow-hidden px-2 relative z-40 w-80 h-screen transition-transform -translate-x-2 md:translate-x-0">
+        <Link href="/">
+          <h1 className="h-[60px] text-2xl p-4 font-semibold">UniFacema</h1>
         </Link>
         <aside
           id="sidebar"
@@ -46,11 +43,13 @@ export const Sidebar = () => {
                   <span className="ms-3 max-md:hidden">Relatorio</span>
                 </a>
               </li>
-
             </ul>
             <ul className="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
               <li>
-                <a href="#" className="flex items-center max-md:justify-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group">
+                <a
+                  href="#"
+                  className="flex items-center max-md:justify-center p-2 text-gray-900 transition duration-75 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
+                >
                   <LogOut size={18} />
                   <span className="ms-3 max-md:hidden">Sair</span>
                 </a>
@@ -59,8 +58,6 @@ export const Sidebar = () => {
           </div>
         </aside>
       </div>
-
     </>
   );
-}
-
+};

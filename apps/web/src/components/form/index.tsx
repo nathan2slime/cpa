@@ -33,7 +33,7 @@ export const Form = ({ id }: FormProps) => {
     resolver: zodResolver(payload.schema),
   });
 
-  const {  append, remove } = useFieldArray({
+  const { append, remove } = useFieldArray({
     name: 'data',
     control,
   });

@@ -12,6 +12,7 @@
     "test:cov": "jest --coverage",
     "migrate:dev": "prisma migrate dev --name $name --create-only",
     "migrate:deploy": "prisma migrate deploy",
+    "generate": "prisma generate",
     "migrate:reset": "prisma migrate reset",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config tests/jest-e2e.json"
