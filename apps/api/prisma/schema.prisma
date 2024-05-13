@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum CourseType {
+  TECH
+}
+
+enum QuestionType {
+  TEXT
+  CHOOSE
+}
+
+enum Permission {
+  CREATE_FORM
+  EDIT_FORM
+  CREATE_ACTIVITY
+  EDIT_ACTIVITY
+}
+
+enum TokenType {
+  AUTH
+}
+
+model Token {
+  id     String    @id @default(uuid())
+  type   TokenType
+  value  String
+  user   User?     @relation(fields: [userId], references: [id])
+  userId String?
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String
+  permissions Permission[]
+  User        User?        @relation(fields: [userId], references: [id])
+  userId      String?
+}
+
+model User {
+  id       String   @id @default(uuid())
+  password String
+  name     String?
+  surname  String?
+  login    String?  @unique
+  tokens   Token[]
+  roles    Role[]
+  answers  Answer[]
+}
+
+model Course {
+  id             String           @id @default(uuid())
+  type           CourseType
+  name           String
+  courseActivity CourseActivity[]
+}
+
+model Activity {
+  id    String @id @default(uuid())
+  title String
+
+  forms          Form[]
+  courseActivity CourseActivity[]
+}
+
+model CourseActivity {
+  id String @id @default(uuid())
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String
+}
+
+model Form {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  activity    Activity @relation(fields: [activityId], references: [id])
+  activityId  String
+
+  startDate DateTime?
+  endDate   DateTime?
+  open      Boolean
+
+  question Question[]
+  answers  Answer[]
+
+  createdAt DateTime @default(now())
+}
+
+model QuestionOption {
+  id String @id @default(uuid())
+
+  title          String
+  weight         Int
+  question       Question?        @relation(fields: [questionId], references: [id])
+  questionId     String?
+  questionAnswer QuestionAnswer[]
+}
+
+model Question {
+  id    String @id @default(uuid())
+  title String
+
+  options QuestionOption[]
+
+  form           Form?            @relation(fields: [formId], references: [id])
+  formId         String?
+  questionAnswer QuestionAnswer[]
+}
+
+model Answer {
+  id String @id @default(uuid())
+
+  user User @relation(fields: [userId], references: [id])
+  form Form @relation(fields: [formId], references: [id])
+
+  formId         String
+  userId         String
+  questionAnswer QuestionAnswer[]
+
+  createdAt DateTime @default(now())
+}
+
+model QuestionAnswer {
+  id String @id @default(uuid())
+
+  value String?
+
+  option   QuestionOption? @relation(fields: [questionOptionId], references: [id])
+  question Question        @relation(fields: [questionId], references: [id])
+  answer   Answer          @relation(fields: [answerId], references: [id])
+
+  questionOptionId String?
+  questionId       String
+  answerId         String
+}
