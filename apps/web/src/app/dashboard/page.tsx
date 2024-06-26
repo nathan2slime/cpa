@@ -29,26 +29,7 @@ export default function PageDashboard() {
   return (
     <>
       <section className="w-full">
-        <header className="flex justify-end items-center gap-4 h-[60px] w-full p-4">
-          <Input type="text" placeholder="Pesquisar" className="w-min" />
 
-          <Bell size={14} />
-          <DropdownMenu dir="rtl" modal>
-            <DropdownMenuTrigger className="flex items-center">
-              <Avatar className="w-[30px] h-[30px] cursor-pointer">
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <ChevronDown size={18} />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Jhonathan</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Minha conta</DropdownMenuItem>
-              <DropdownMenuItem>Sair</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </header>
 
         <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
           <section className="w-full  m-auto mb-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
