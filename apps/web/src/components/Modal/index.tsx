@@ -59,7 +59,7 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
             </Button>
           </DialogClose>
 
-          <Link href="/form/avaliacao">
+          <Link href="/form/avaliacao" target='_blankk' >
             <Button type="button" variant="secondary" className="w-min">
               Visualizar
             </Button>
