@@ -60,5 +60,8 @@
     "type": "git",
     "url": "https://github.com/nathan2slime/dengue_app.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "firebase": "^10.12.2"
+  }
 }

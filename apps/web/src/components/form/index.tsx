@@ -2,8 +2,6 @@
 
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
-
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
 import { Question } from '@/components/question';
@@ -17,9 +15,21 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { database } from '@/database';
-
 import { FormProps } from './model';
 import { AvatarFallback } from '@radix-ui/react-avatar';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/services/firebaseConfig';
+
+
+// enviar para o banco de dados
+const handleFormSubmit = async (data: Record<string, any>) => {
+  const response = await addDoc(collection(db, 'answers'), {
+    ...data,
+  });
+
+  console.log('Document written with ID: ', response.id);
+};
+
 
 export const Form = ({ id }: FormProps) => {
   const payload = database[id];
@@ -40,9 +50,9 @@ export const Form = ({ id }: FormProps) => {
 
   const form = watch();
 
-  useEffect(() => {
-    console.log(form);
-  }, [form]);
+  //useEffect(() => {
+  //  console.log(form);
+  //}, [form]);
 
   const onChangeQuestion = (e: string) => {
     const [question, answer] = e.split('-').map((e) => parseInt(e));
@@ -100,6 +110,8 @@ export const Form = ({ id }: FormProps) => {
           size="lg"
           disabled={!isValid}
           color="primary"
+
+          onClick={() => handleFormSubmit(form)}
         >
           Enviar
         </Button>
