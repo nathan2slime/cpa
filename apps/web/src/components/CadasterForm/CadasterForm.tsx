@@ -1,5 +1,3 @@
-// src/app/components/CadasterForm.tsx
-
 "use client";
 
 import { useState } from 'react';
@@ -9,26 +7,39 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { dataCampus } from '@/database/campus';
+import { useToast } from '@/components/ui/use-toast';
 
 const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
+  const { toast } = useToast();
   const [nome, setNome] = useState('');
   const [cpf, setCpf] = useState('');
   const [campus, setCampus] = useState('');
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('CPF:', cpf);
-    console.log('Nome:', nome);
-    console.log('Campus:', campus);
+
+    if (cpf.trim() === '' || nome.trim() === '' || campus.trim() === '') {
+      toast({
+        title: "Preencha todos os campos para continuar.",
+        description: "Forneca as informações solicitadas para continuar.",
+      })
+      return;
+    }
     onSubmitSuccess(); // Chama a função de callback ao enviar o formulário com sucesso
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Card className="w-[350px] shadow-lg">
+      <Card className="w-[350px] shadow-lg" style={
+        {
+          clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 44px), calc(100% - 44px) 100%, 0 100%)',
+        }
+      }>
         <CardHeader>
-          <CardTitle>Unifacema - Login</CardTitle>
-          <CardDescription>Preencha os campos abaixo para responder a avaliação.</CardDescription>
+          <CardTitle>Avaliação Institucional</CardTitle>
+          <CardDescription>
+            Bem-vindo! Para continuar, preencha os campos abaixo.
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent>
@@ -39,7 +50,7 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
                   id="cpf"
                   value={cpf}
                   onChange={(e) => setCpf(e.target.value)}
-                  placeholder="apenas números"
+                  placeholder="Nenhum caractere especial"
                   required
                 />
               </div>
@@ -49,7 +60,8 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
                   id="nome"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  placeholder="apenas números"
+                  type='password'
+                  placeholder="Somente números"
                   required
                 />
               </div>
@@ -75,8 +87,7 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
           </CardContent>
           <CardFooter className="flex justify-end">
             <Button type="submit" variant="ghost"
-              className="bg-green-600 hover:bg-green-400"
-
+              className="bg-[#1e3a8a] hover:bg-green-400 text-white"
               disabled={!nome || !cpf || !campus}
             >Continuar</Button>
           </CardFooter>
@@ -89,6 +100,3 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
 export default CadasterForm;
 
 // TODO: Implementar a lógica de envio do formulário
-// TODO: Validação dos campos
-// TODO: Usar react-hook-form para gerenciar o estado do formulário e a validacao (opcional)
-// TODO: Adicionar feedback visual ao enviar o formulário

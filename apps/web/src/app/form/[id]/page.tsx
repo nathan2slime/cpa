@@ -1,9 +1,9 @@
 "use client"
 
-import { Form } from '@/components/form';
-import CadasterForm  from "@/components/CadasterForm/CadasterForm";
+//import { Form } from '@/components/form';
+import CadasterForm from "@/components/CadasterForm/CadasterForm";
 import Questionaire from "@/components/Questionare/Questioanre";
-import {useState} from "react";
+import { useState } from "react";
 
 const FormPage = () => {
 
@@ -16,8 +16,8 @@ const FormPage = () => {
   return (
     <div>
       {/*<Form id="anual_avaliation" />*/}
-        {!showQuestionnaire && <CadasterForm onSubmitSuccess={handleFormSubmitSuccess} />}
-        {showQuestionnaire && <Questionaire />}
+      {!showQuestionnaire && <CadasterForm onSubmitSuccess={handleFormSubmitSuccess} />}
+      {showQuestionnaire && <Questionaire />}
     </div>
   );
 };

@@ -1,97 +1,108 @@
 "use client";
 
-import React, { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { courses } from "@/database/courses";
-import MyBarChart from '@/components/BarChat/BarChat';
+import { MyBarChart } from '@/components/BarChat/BarChat';
 import SelectTipo from "@/components/Select/Select";
 import MyPieChart from '@/components/PieChart/PieChart';
-import { anual_avaliation } from '@/database/anual_avaliation';
-import { QuestionType } from '@/types/question';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/services/firebaseConfig';
 
-type Option = {
-  name: string;
-  qtd: number;
-};
 
-type ChartData = {
-  question: string;
-  options: Option[];
-};
+// quantas vezes cada opção foi escolhida
+function contarTodasRespostas(data: Array<Record<number, string>>): Record<number, Record<string, number>> {
+  const resultado: Record<number, Record<string, number>> = {};
+
+  data.forEach(entry => {
+    for (const [questao, resposta] of Object.entries(entry)) {
+      const qNumber = parseInt(questao);
+      if (!resultado[qNumber]) {
+        resultado[qNumber] = {};
+      }
+      if (!resultado[qNumber][resposta]) {
+        resultado[qNumber][resposta] = 0;
+      }
+      resultado[qNumber][resposta]++;
+    }
+  });
+
+  return resultado;
+}
+
 
 export default function PageReport() {
   const [responsavelEvent, setResponsavelEvent] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('coluna');
+  const [graphType, setGraphType] = useState('coluna');
+  const [answers, setAnswers] = useState<Record<number, string>>([]);
 
-  const transformData = (questions: QuestionType[]): ChartData[] => {
-    // Placeholder function to generate random data for the example
-    const generateRandomData = (options: string[]): Option[] => {
-      return options.map(option => ({ name: option, qtd: Math.floor(Math.random() * 10) + 1 }));
-    };
+  const fetchData = async () => {
+    const data: Array<Object> = [];
 
-    return questions.map(question => ({
-      question: question.question,
-      options: generateRandomData(question.options),
-    }));
+    const querySnapshot = await getDocs(collection(db, "answers"));
+    querySnapshot.forEach((doc) => {
+
+      data.push(doc.data());
+
+    });
+    const newData = contarTodasRespostas(data as Array<Record<number, string>>);
+    setAnswers(newData);
   };
 
-  const data = transformData(anual_avaliation);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const chartData = Object.keys(answers).map(questao => {
+    return {
+      name: `Questão ${questao}`,
+      ...answers[parseInt(questao)]
+    };
+  });
+
 
   return (
-    <section className="w-full">
-      <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-        <section className="w-full m-auto mb-4 gap-4 transition-all lg:grid-cols-2">
-          <Card>
-            <div className="flex">
-              <SelectTipo value={selectedCategory} onValueChange={setSelectedCategory} initialValue={selectedCategory} className="ml-auto pt-5 pr-5" />
-            </div>
-            <CardHeader>
-              <CardTitle className="flex justify-center">Relatório</CardTitle>
-            </CardHeader>
-            <Select
-              value={responsavelEvent}
-              onValueChange={(value) => setResponsavelEvent(value)}
-            >
-              <SelectTrigger id="course" className="flex w-2/6 m-auto justify-center border-solid border-2 bg-gray-200 rounded-2xl">
-                <SelectValue placeholder="Escolha um curso" />
-              </SelectTrigger>
-              <SelectContent>
-                {courses.map((course) => (
-                  <SelectItem key={course} value={course}>
-                    {course}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
+      <section className="w-full m-auto mb-4 gap-4 transition-all lg:grid-cols-2">
+        <h1>teste</h1>
+        <SelectTipo graphType={graphType} setGraphType={setGraphType} />
 
-            {responsavelEvent ? (
-              <CardContent>
-                {data.map((item, index) => (
-                  selectedCategory === 'coluna' ? (
-                    <MyBarChart key={index} data={item} />
-                  ) : (
-                    <MyPieChart key={index} data={item} />
-                  )
-                ))}
-              </CardContent>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-500 mt-20 mb-20">
-                <div className="text-4xl">📘</div>
-                <CardTitle className="flex justify-center text-black text-4xl">Por favor, selecione um curso.</CardTitle>
-              </div>
-            )}
-            <CardFooter>
-            </CardFooter>
-          </Card>
-        </section>
-      </main>
-    </section>
+        <Select
+          value={responsavelEvent}
+          onValueChange={(value) => setResponsavelEvent(value)}
+        >
+          <SelectTrigger id="course" className="flex w-2/6 m-auto justify-center border-solid border-2  rounded-2xl">
+            <SelectValue placeholder="Todos" />
+          </SelectTrigger>
+          <SelectContent>
+            {courses.map((course) => (
+              <SelectItem key={course} value={course}>
+                {course}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+
+        {
+          graphType === 'coluna' ? (
+            chartData.map((data, index) => (
+              <>
+                <h3 key={index}>{data.name}</h3>
+                <MyBarChart index={index} data={data} />
+              </>
+            ))) :
+            (
+              chartData.map((data, index) => (
+                <>
+                  <h3 key={index}>{data.name}</h3>
+                  <MyPieChart data={[data]} />
+                </>
+              ))
+            )
+        }
+
+      </section>
+    </main>
   );
 }
