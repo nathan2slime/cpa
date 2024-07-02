@@ -7,8 +7,7 @@ type TQRCode = {
   text: string
 }
 
-const QRCode = ({ text = 'https://anderson-kauer.vercel.app/' }: TQRCode) => {
-
+export const NewQRCode = ({ text = 'https://anderson-kauer.vercel.app/' }: TQRCode) => {
   useEffect(() => {
     QRCod.toCanvas(document.getElementById('canvas'), text, function(error) {
       if (error) console.error(error)
@@ -20,12 +19,7 @@ const QRCode = ({ text = 'https://anderson-kauer.vercel.app/' }: TQRCode) => {
   });
 
   return (
-    <div className='h-screen m-auto bg-gray-200 grid place-items-center'>
-      <div className='bg-white border-border text-md p-4 rounded-lg shadow-lg'>
-        <h1>Unifacema - Avaliação</h1>
-        <canvas id="canvas" className='m-auto'></canvas>
-      </div>
-    </div>
+    <canvas id="canvas" className='m-auto' />
   )
 }
-export default QRCode
+

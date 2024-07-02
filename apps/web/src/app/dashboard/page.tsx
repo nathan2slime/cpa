@@ -1,13 +1,4 @@
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
-
-import {
   Card,
   CardContent,
   CardDescription,
@@ -15,22 +6,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Bell, ChevronDown } from 'lucide-react';
 import React from 'react';
 import GraphMain from '@/components/GrafMain';
-//import { Input } from '@/components/ui/input';
 import { CardRecentAv } from '@/components/CardRecentAv';
 import { WrapperEvent } from '@/components/CreateEventWrapper';
-
 import { eventsRecents } from '@/database/eventsRecents';
+
 
 export default function PageDashboard() {
   return (
     <>
       <section className="w-full">
-
-
         <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
           <section className="w-full  m-auto mb-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
             <Card>

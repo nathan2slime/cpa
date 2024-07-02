@@ -9,11 +9,11 @@ import {
 import { Label } from '../ui/label';
 import { useState } from 'react';
 import { Button } from '../ui/button';
-import Link from 'next/link';
 import { courses } from '@/database/courses';
 import { Modal } from '../Modal';
 
 export const WrapperEvent = () => {
+
   const [responsavelEvent, setResponsavelEvent] = useState('');
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [typeForm, setTypeForm] = useState('');
@@ -118,14 +118,14 @@ export const WrapperEvent = () => {
             <SelectValue placeholder="Formulario" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Avaliação Institucional 2024.1">
-              Avaliação Institucional 2024.1
+            <SelectItem value="avaliacao-institucional">
+              Avaliação Institucional
             </SelectItem>
-            <SelectItem value="Avaliação Institucional 2023.2">
-              Avaliação Institucional 2023.2
+            <SelectItem value="avaliacao-2">
+              Avaliação 2
             </SelectItem>
-            <SelectItem value="Avaliação Institucional Pascoa 2024.1">
-              Avaliação Institucional Pascoa 2024.1
+            <SelectItem value="avaliacao-3">
+              Avaliação 3
             </SelectItem>
           </SelectContent>
         </Select>
@@ -157,7 +157,7 @@ export const WrapperEvent = () => {
             Escolha um formulario
           </Button>
         ) : (
-          <Modal title={typeForm} />
+          <Modal formId={typeForm} onClose={resetField} />
         )}
       </div>
     </section>

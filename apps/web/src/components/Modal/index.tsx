@@ -1,5 +1,5 @@
+'use client'
 import { Copy } from 'lucide-react';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,14 +15,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 
-type TModal = { title?: string; onClick?: () => void };
+type TModal = { formId?: string; onClose?: () => void };
 
-export function Modal({ title = 'Compartilhar', onClick }: TModal) {
+export function Modal({ formId = '', onClose }: TModal) {
+
+  const host = window.location.origin
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          onClick={onClick}
           variant="outline"
           className="bg-green-400 hover:bg-green-500 hover:text-white transition-all delay-100"
         >
@@ -31,7 +33,7 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>Compartilhar Formulario</DialogTitle>
           <DialogDescription>
             Todos poderão acessar através deste link.
           </DialogDescription>
@@ -43,7 +45,7 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
             </Label>
             <Input
               id="link"
-              defaultValue="https://teste.form/avaliacao"
+              defaultValue={`${host}/qrcode/${formId}`}
               readOnly
             />
           </div>
@@ -54,14 +56,14 @@ export function Modal({ title = 'Compartilhar', onClick }: TModal) {
         </div>
         <DialogFooter className="sm:justify-start gap-2">
           <DialogClose asChild>
-            <Button type="button" variant="secondary" className="w-min">
+            <Button type="button" variant="secondary" onClick={onClose} className="w-min">
               Fechar
             </Button>
           </DialogClose>
 
-          <Link href="/form/avaliacao" target='_blankk' >
+          <Link href={`${host}/qrcode/${formId}`} target='_blank' >
             <Button type="button" variant="secondary" className="w-min">
-              Visualizar
+              QRCode
             </Button>
           </Link>
         </DialogFooter>

@@ -1,8 +1,8 @@
 "use client";
 
-import { ChangeEvent, MouseEventHandler, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { anual_avaliation } from '@/database/anual_avaliation';
-import { QuestionType } from '@/types/question';
+//import { QuestionType } from '@/types/question';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/services/firebaseConfig';
 import { Button } from '../ui/button';
