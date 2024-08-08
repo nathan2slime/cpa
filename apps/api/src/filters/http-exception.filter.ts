@@ -50,7 +50,7 @@ import {
         path: httpAdapter.getRequestUrl(ctx.getRequest()),
       };
   
-      logger.error(message);
+      logger.error(message.toLowerCase());
   
       httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
     }
