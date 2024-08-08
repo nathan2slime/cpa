@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import { hash } from 'bcrypt';
 
 (async () => {
@@ -7,6 +7,7 @@ import { hash } from 'bcrypt';
   const user = await prisma.user.create({
     data: {
       login: process.env.ROOT_LOGIN,
+      roles: [Role.ADMIN],
       password: await hash(process.env.ROOT_PASSWORD || 'root', 10),
     },
   });

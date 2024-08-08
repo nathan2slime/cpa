@@ -21,14 +21,14 @@ import { SignInDto } from '~/auth/auth.dto';
 import { JwtAuthGuard } from '~/auth/auth.guard';
 
 @Controller('auth')
-@ApiTags('Authenticate')
+@ApiTags('Autenticação')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get()
   @UseGuards(JwtAuthGuard)
   @ApiResponse({
     status: 200,
-    description: 'Get the authenticated user',
+    description: 'Retorna sessão atual',
   })
   async auth(@Req() req: Request, @Res() res: Response) {
     return res.status(HttpStatus.OK).json(req.user);
@@ -37,7 +37,7 @@ export class AuthController {
   @Post('signout')
   @ApiResponse({
     status: 200,
-    description: 'Signs out the logged in user',
+    description: 'Expira sessão atual',
   })
   @UseGuards(JwtAuthGuard)
   async signOut(@Req() req: Request, @Res() res: Response) {
@@ -50,7 +50,7 @@ export class AuthController {
   @UseGuards(AuthGuard('refresh'))
   @ApiResponse({
     status: 200,
-    description: 'Update access token by refresh token',
+    description: 'Atualiza accessToken por refreshToken da sessão atual',
   })
   async refresh(@Req() req: Request, @Res() res: Response) {
     const session = req.user as Session;
@@ -62,7 +62,7 @@ export class AuthController {
   }
 
   @Post('signin')
-  @ApiResponse({ status: 200, description: 'Sign in user' })
+  @ApiResponse({ status: 200, description: 'Retorna uma nova sessão' })
   async signIn(@Body() body: SignInDto, @Res() res: Response) {
     const data = await this.authService.signIn(body);
 

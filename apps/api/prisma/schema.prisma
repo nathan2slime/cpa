@@ -22,7 +22,6 @@ enum Role {
   USER
 }
 
-
 model Session {
   id           String  @id @default(uuid())
   refreshToken String?
@@ -30,6 +29,10 @@ model Session {
   isExpired    Boolean @default(false)
   user         User?   @relation(fields: [userId], references: [id])
   userId       String?
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model User {
@@ -37,10 +40,14 @@ model User {
   password String
   name     String?
   surname  String?
-  login    String   @unique
+  login    String    @unique
   sessions Session[]
-  roles    Role[] @default([USER])
+  roles    Role[]    @default([USER])
   answers  Answer[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model Course {
@@ -48,6 +55,10 @@ model Course {
   type           CourseType
   name           String
   courseActivity CourseActivity[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model Activity {
@@ -56,6 +67,10 @@ model Activity {
 
   forms          Form[]
   courseActivity CourseActivity[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model CourseActivity {
@@ -66,6 +81,10 @@ model CourseActivity {
 
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model Form {
@@ -82,7 +101,9 @@ model Form {
   question Question[]
   answers  Answer[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model QuestionOption {
@@ -93,6 +114,10 @@ model QuestionOption {
   question       Question?        @relation(fields: [questionId], references: [id])
   questionId     String?
   questionAnswer QuestionAnswer[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model Question {
@@ -104,6 +129,10 @@ model Question {
   form           Form?            @relation(fields: [formId], references: [id])
   formId         String?
   questionAnswer QuestionAnswer[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model Answer {
@@ -116,7 +145,9 @@ model Answer {
   userId         String
   questionAnswer QuestionAnswer[]
 
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
 
 model QuestionAnswer {
@@ -131,4 +162,8 @@ model QuestionAnswer {
   questionOptionId String?
   questionId       String
   answerId         String
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
 }
