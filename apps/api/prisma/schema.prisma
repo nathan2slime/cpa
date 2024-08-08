@@ -16,41 +16,30 @@ enum QuestionType {
   CHOOSE
 }
 
-enum Permission {
-  CREATE_FORM
-  EDIT_FORM
-  CREATE_ACTIVITY
-  EDIT_ACTIVITY
+enum Role {
+  ADMIN
+  MANAGER
+  USER
 }
 
-enum TokenType {
-  AUTH
-}
 
-model Token {
-  id     String    @id @default(uuid())
-  type   TokenType
-  value  String
-  user   User?     @relation(fields: [userId], references: [id])
-  userId String?
-}
-
-model Role {
-  id          String       @id @default(uuid())
-  name        String
-  permissions Permission[]
-  User        User?        @relation(fields: [userId], references: [id])
-  userId      String?
+model Session {
+  id           String  @id @default(uuid())
+  refreshToken String?
+  accessToken  String?
+  isExpired    Boolean @default(false)
+  user         User?   @relation(fields: [userId], references: [id])
+  userId       String?
 }
 
 model User {
-  id       String   @id @default(uuid())
+  id       String    @id @default(uuid())
   password String
   name     String?
   surname  String?
-  login    String?  @unique
-  tokens   Token[]
-  roles    Role[]
+  login    String   @unique
+  sessions Session[]
+  roles    Role[] @default([USER])
   answers  Answer[]
 }
 

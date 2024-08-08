@@ -28,7 +28,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         },
       });
     } catch (e) {
-      logger.error('Connected in database');
+      logger.error('connection in database');
     }
   }
 }

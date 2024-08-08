@@ -1,33 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { compare, hash } from 'bcrypt';
-import { TokenType } from '@prisma/client';
 
-import { PrismaService } from '~/database/prisma.service';
-import { TokenService } from '~/token/token.service';
-
-import { exclude } from '~/database/utils';
 import { SignInDto } from './auth.dto';
+import { INVALID_CREDENTIALS, USER_NOT_FOUND } from '~/errors';
+import { UserService } from '~/user/user.service';
+import { SessionService } from '~/session/session.service';
+import { Session } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private tokenService: TokenService,
+    private sessionService: SessionService,
+    private userService: UserService,
   ) {}
 
-  async create(payload: SignInDto) {
-    const user = await this.prisma.user.create({
-      data: {
-        email: 'email',
-        password: await hash('password', 10),
-      },
-    });
+  async signIn(data: SignInDto) {
+    const user = await this.userService.getPassword({ login: data.login });
+    if (!user) throw new HttpException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
-    const token = await this.tokenService.create(user.id, TokenType.AUTH);
+    const isValidPassword = await compare(data.password, user.password);
+    if (!isValidPassword)
+      throw new HttpException(INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
 
-    return {
-      user: exclude(user, ['password']),
-      token,
-    };
+    user.password = undefined;
+
+    const session = await this.sessionService.create(user.id);
+
+    return session;
+  }
+
+  async signOut(session: Session) {
+    await this.sessionService.expireSession(session.id);
   }
 }

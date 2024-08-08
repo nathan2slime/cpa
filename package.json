@@ -12,6 +12,7 @@
     "clean": "rm -rf node_modules",
     "start": "dotenv -- turbo run start",
     "dev": "dotenv -- turbo run dev",
+    "seed": "dotenv -- turbo run seed",
     "prod": "dotenv -- turbo run prod",
     "generate": "dotenv -- turbo run generate",
     "prepare": "husky install",

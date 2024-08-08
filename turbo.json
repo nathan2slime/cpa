@@ -1,13 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": ["**/.env.*local"],
-  "globalDotEnv": [".env", ".env.prod"],
+  "globalDependencies": [".env"],
   "pipeline": {
     "build": {
       "cache": false,
       "dependsOn": ["^build"],
       "env": ["NEXT_PUBLIC_*"],
-      "dotEnv": [".env.prod", ".env"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "start": {
@@ -16,19 +14,11 @@
     "seed": {
       "cache": false
     },
-    "test": {
-      "cache": false
-    },
     "prod": {
       "cache": false
     },
-    "test:cov": {
-      "cache": false
-    },
-    "test:e2e": {
-      "cache": false
-    },
     "dev": {
+      "inputs": [".env"],
       "cache": false
     },
     "generate": {
