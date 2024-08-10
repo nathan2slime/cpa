@@ -1,13 +1,17 @@
 import { Sidebar } from '@/components/Sidebar';
 
 import { AppChildren } from '@/types';
+import {Navbar} from "@/components/Navbar";
 
 const LayoutDashboard = ({ children }: Readonly<AppChildren>) => {
   return (
-    <main className="min-h-screen w-full bg-gray-200 flex">
-      <Sidebar />
+    <main className="min-h-screen w-full bg-gray-200 ">
+        <Navbar/>
 
-      <div className="px-4 w-full">{children}</div>
+      <div className=" flex flex-row min-h-screen  px-4 w-full">
+          <Sidebar />
+        {children}
+      </div>
     </main>
   );
 };

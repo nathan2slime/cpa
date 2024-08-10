@@ -5,6 +5,7 @@ import { AppChildren } from '@/types';
 import { cn } from '@/lib/utils';
 
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster'; // usar para avisos na ui do usuario - usar em 1s
 
 export const metadata: Metadata = {
   title: 'Unifacema - Avaliação',
@@ -21,6 +22,7 @@ const RootLayout = ({ children }: Readonly<AppChildren>) => {
         )}
       >
         <div className="px-4 w-full">{children}</div>
+        <Toaster />
       </body>
     </html>
   );

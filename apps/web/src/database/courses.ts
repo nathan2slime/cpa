@@ -1,6 +1,7 @@
 import { TCourses } from '@/types/courseType';
 
 export const courses: Array<TCourses> = [
+  'Todos',
   'Bacharelado em Administração',
   'Bacharelado em Arquitetura e Urbanismo',
   'Bacharelado em Biomedicina',
