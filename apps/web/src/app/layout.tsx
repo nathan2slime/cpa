@@ -1,30 +1,30 @@
 import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
+import { Toaster } from 'react-hot-toast';
 
 import { AppChildren } from '@/types';
-import { cn } from '@/lib/utils';
+import { fonts } from '@/global/fonts';
 
-import './globals.css';
-import { Toaster } from '@/components/ui/toaster'; // usar para avisos na ui do usuario - usar em 1s
+import { RootProvider } from '@/components/providers/root';
+import { AuthProvider } from '@/components/providers/auth';
+import { toaster } from '@/lib/toaster';
+
+import '@/global/styles.scss';
 
 export const metadata: Metadata = {
-  title: 'Unifacema - Avaliação',
-  description: 'Avaliação Institucional',
+  title: 'CPA UniFacema',
 };
 
 const RootLayout = ({ children }: Readonly<AppChildren>) => {
   return (
     <html lang="pt-br">
-      <body
-        className={cn(
-          'min-h-screen w-full bg-gray-200 flex',
-          GeistSans.className,
-        )}
-      >
-        <div className="px-4 w-full">{children}</div>
-        <Toaster />
+      <body className={fonts}>
+        <RootProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </RootProvider>
+        <Toaster {...toaster} />
       </body>
     </html>
   );
 };
+
 export default RootLayout;

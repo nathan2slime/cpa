@@ -18,6 +18,10 @@ import 'reflect-metadata';
 (async () => {
   const app = await NestFactory.create(AppModule, { logger: false });
 
+  app.enableCors({
+    credentials: true,
+    origin: env.NEXT_PUBLIC_WEB_URL,
+  });
   app.use(cookieParser());
   app.useGlobalPipes(
     new ValidationPipe({

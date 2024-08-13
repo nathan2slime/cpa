@@ -17,6 +17,7 @@ const envSchema = {
   SECRET_KEY: z.string().min(4),
   API_PORT: z.string().min(1).default('3000'),
   ACCESS_TOKEN_EXPIRES_IN: z.string().default('3d'),
+  NEXT_PUBLIC_WEB_URL: z.string().url(),
   REFRESH_TOKEN_EXPIRES_IN: z.string().default('30d'),
 };
 
