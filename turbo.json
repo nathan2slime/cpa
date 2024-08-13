@@ -18,7 +18,6 @@
       "cache": false
     },
     "dev": {
-      "inputs": [".env"],
       "cache": false
     },
     "generate": {

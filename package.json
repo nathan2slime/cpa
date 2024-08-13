@@ -20,7 +20,7 @@
     "migrate:dev": "dotenv -- turbo run migrate:dev",
     "migrate:deploy": "dotenv -- turbo run migrate:deploy",
     "migrate:reset": "dotenv -- turbo run migrate:reset",
-    "seed:run": "dotenv -- turbo run seed:run",
+    "seed:run": "dotenv -- turbo run seed",
     "commit": "git-cz"
   },
   "devDependencies": {

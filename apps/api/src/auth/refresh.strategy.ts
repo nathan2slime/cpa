@@ -33,7 +33,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       await this.sessionService.expireSession(payload.sessionId);
     } else {
       const session = await this.sessionService.refresh(payload);
-
+      
       if (session) return session;
     }
 
