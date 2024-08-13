@@ -1,4 +1,5 @@
 export type TCourses =
+  | 'Todos' 
   | 'Bacharelado em Administração'
   | 'Bacharelado em Arquitetura e Urbanismo'
   | 'Bacharelado em Biomedicina'
