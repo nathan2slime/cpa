@@ -36,5 +36,5 @@ export const AuthProvider = ({ children }: AppChildren) => {
     authState.loading = false;
   };
 
-  return <>{loading ? children : <div></div>}</>;
+  return <>{loading ? <div></div> : children}</>;
 };

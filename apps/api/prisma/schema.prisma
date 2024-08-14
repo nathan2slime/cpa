@@ -55,6 +55,7 @@ model Course {
   type           CourseType
   name           String
   courseActivity CourseActivity[]
+  activity       Activity[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -62,15 +63,25 @@ model Course {
 }
 
 model Activity {
-  id    String @id @default(uuid())
-  title String
+  id          String @id @default(uuid())
+  title       String
+  description String
+  responsible String
 
-  forms          Form[]
-  courseActivity CourseActivity[]
+  form      Form      @relation(fields: [formId], references: [id])
+  startDate DateTime?
+  endDate   DateTime?
+  open      Boolean
+
+  course Course @relation(fields: [courseId], references: [id])
+
+  courses CourseActivity[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
+  formId    String
+  courseId  String
 }
 
 model CourseActivity {
@@ -88,22 +99,16 @@ model CourseActivity {
 }
 
 model Form {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
-  description String?
-  activity    Activity @relation(fields: [activityId], references: [id])
-  activityId  String
-
-  startDate DateTime?
-  endDate   DateTime?
-  open      Boolean
 
   question Question[]
   answers  Answer[]
 
-  createdAt DateTime  @default(now())
+  createdAt DateTime   @default(now())
   deletedAt DateTime?
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime?  @updatedAt
+  activity  Activity[]
 }
 
 model QuestionOption {

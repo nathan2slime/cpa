@@ -14,11 +14,11 @@ import { Request, Response } from 'express';
 import { Session } from '@prisma/client';
 import { AuthGuard } from '@nestjs/passport';
 
-import { AuthService } from '~/auth/auth.service';
+import { AuthService } from '~/app/auth/auth.service';
 import { AUTH_COOKIE } from '~/constants';
-import { SignInDto } from '~/auth/auth.dto';
+import { SignInDto } from '~/app/auth/auth.dto';
 
-import { JwtAuthGuard } from '~/auth/auth.guard';
+import { JwtAuthGuard } from '~/app/auth/auth.guard';
 
 @Controller('auth')
 @ApiTags('Autenticação')

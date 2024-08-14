@@ -10,7 +10,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "migrate:dev": "prisma migrate dev --create-only",
+    "migrate:dev": "prisma migrate dev --create-only --name=$name",
     "migrate:deploy": "prisma migrate deploy",
     "seed": "ts-node-dev prisma/seeds/index.ts",
     "generate": "prisma generate",

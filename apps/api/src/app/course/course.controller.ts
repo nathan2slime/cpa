@@ -14,12 +14,12 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { Response } from 'express';
 
-import { Roles } from '~/auth/auth.decorator';
-import { JwtAuthGuard } from '~/auth/auth.guard';
-import { RoleGuard } from '~/auth/role.guard';
+import { Roles } from '~/app/auth/auth.decorator';
+import { JwtAuthGuard } from '~/app/auth/auth.guard';
+import { RoleGuard } from '~/app/auth/role.guard';
 
-import { CourseService } from '~/course/course.service';
-import { CreateCourseDto, UpdateCourseDto } from '~/course/course.dto';
+import { CourseService } from '~/app/course/course.service';
+import { CreateCourseDto, UpdateCourseDto } from '~/app/course/course.dto';
 
 @ApiTags('Curso')
 @Controller('course')

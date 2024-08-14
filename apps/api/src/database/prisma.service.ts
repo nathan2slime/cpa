@@ -19,7 +19,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
               args.where = {
                 ...args.where,
-                deleted_at: null,
+                deletedAt: null,
               };
 
               return query(args);

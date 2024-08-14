@@ -3,22 +3,22 @@ import { CourseType } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateCourseDto {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   @IsNotEmpty()
   name: string;
 
-  @ApiProperty({ enum: CourseType })
+  @ApiProperty({ enum: CourseType, required: true })
   @IsEnum(CourseType)
   @IsNotEmpty()
   type: CourseType;
 }
 
 export class UpdateCourseDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   name: string;
 
-  @ApiProperty({ enum: CourseType })
+  @ApiProperty({ enum: CourseType, required: false })
   @IsOptional()
   @IsEnum(CourseType)
   type: CourseType;
