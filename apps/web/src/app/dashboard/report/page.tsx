@@ -7,7 +7,6 @@ import { MyBarChart } from '@/components/BarChat/BarChat';
 import SelectTipo from "@/components/Select/Select";
 import MyPieChart from '@/components/PieChart/PieChart';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/services/firebaseConfig';
 
 
 // quantas vezes cada opção foi escolhida

@@ -3,8 +3,8 @@ import { compare, hash } from 'bcrypt';
 
 import { SignInDto } from './auth.dto';
 import { INVALID_CREDENTIALS, USER_NOT_FOUND } from '~/errors';
-import { UserService } from '~/user/user.service';
-import { SessionService } from '~/session/session.service';
+import { UserService } from '~/app/user/user.service';
+import { SessionService } from '~/app/session/session.service';
 import { Session } from '@prisma/client';
 
 @Injectable()

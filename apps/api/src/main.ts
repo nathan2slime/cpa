@@ -3,11 +3,11 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 
-import { AppModule } from '~/app.module';
+import { AppModule } from '~/app/app.module';
 import {
   AllExceptionsFilter,
   HttpExceptionFilter,
-} from '~/filters/http-exception.filter';
+} from '~/app/filters/http-exception.filter';
 import { env } from '~/env';
 
 import { logger } from '~/logger';
