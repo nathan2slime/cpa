@@ -34,20 +34,27 @@ export class FormService {
     sortField,
     sortOrder,
   }: PaginationDto) {
-    const where = {
-      title: {
-        contains: query,
-      },
-    };
+    const where = query
+      ? {
+          title: {
+            contains: query,
+          },
+        }
+      : {};
     const total = await this.prisma.form.count({ where });
 
     const data = await this.prisma.form.findMany({
       take: perPage,
-      skip: page == 1 ? perPage : perPage * page - 1,
+      skip: page == 1 ? 0 : perPage * (page - 1),
       where,
-      orderBy: {
-        [sortField]: sortOrder,
-      },
+      orderBy: sortField
+        ? {
+            [sortField]: sortOrder,
+            createdAt: 'asc',
+          }
+        : {
+            createdAt: 'asc',
+          },
     });
 
     const pages = Math.ceil(total / perPage);

@@ -7,4 +7,4 @@ const base = Nunito({
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
-export const fonts = cn(base.className, 'dark');
+export const fonts = cn(base.className, 'light');

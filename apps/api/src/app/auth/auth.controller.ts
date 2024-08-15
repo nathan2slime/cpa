@@ -21,7 +21,7 @@ import { SignInDto } from '~/app/auth/auth.dto';
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
 
 @Controller('auth')
-@ApiTags('Autenticação')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Get()

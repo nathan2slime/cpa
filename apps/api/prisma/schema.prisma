@@ -9,6 +9,8 @@ datasource db {
 
 enum CourseType {
   TECH
+  HUMAN
+  HEALTH
 }
 
 enum QuestionType {
@@ -99,8 +101,8 @@ model CourseActivity {
 }
 
 model Form {
-  id          String  @id @default(uuid())
-  title       String
+  id    String @id @default(uuid())
+  title String
 
   question Question[]
   answers  Answer[]
@@ -128,6 +130,8 @@ model QuestionOption {
 model Question {
   id    String @id @default(uuid())
   title String
+
+  type QuestionType @default(TEXT)
 
   options QuestionOption[]
 

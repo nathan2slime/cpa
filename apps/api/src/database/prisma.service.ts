@@ -7,26 +7,15 @@ import { logger } from '~/logger';
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     try {
-      await this.$connect();
+      this.$use(async (params, next) => {
+        if (!params.args) params.args = {};
 
-      this.$extends({
-        query: {
-          $allModels: {
-            $allOperations(payload) {
-              const { query } = payload;
+        if (params.args.where) params.args.where.deletedAt = null;
 
-              const args = payload.args as Record<string, object>;
-
-              args.where = {
-                ...args.where,
-                deletedAt: null,
-              };
-
-              return query(args);
-            },
-          },
-        },
+        return next(params);
       });
+
+      await this.$connect();
     } catch (e) {
       logger.error('connection in database');
     }

@@ -1,19 +1,17 @@
 import { Sidebar } from '@/components/Sidebar';
 
 import { AppChildren } from '@/types';
-import {Navbar} from "@/components/Navbar";
+import { Navbar } from '@/components/Navbar';
 
-const LayoutDashboard = ({ children }: Readonly<AppChildren>) => {
+export default ({ children }: Readonly<AppChildren>) => {
   return (
-    <main className="min-h-screen w-full bg-gray-200 ">
-        <Navbar/>
+    <main className="w-full h-full p-4">
+      <Navbar />
 
       <div className=" flex flex-row min-h-screen  px-4 w-full">
-          <Sidebar />
+        <Sidebar />
         {children}
       </div>
     </main>
   );
 };
-
-export default LayoutDashboard;
