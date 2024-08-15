@@ -1,3 +1,5 @@
+import React from 'react';
+
 import {
   Card,
   CardContent,
@@ -6,19 +8,20 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import React from 'react';
 import GraphMain from '@/components/GrafMain';
 import { CardRecentAv } from '@/components/CardRecentAv';
 import { WrapperEvent } from '@/components/CreateEventWrapper';
 import { eventsRecents } from '@/database/eventsRecents';
 
-
-export default function PageDashboard() {
+export default () => {
   return (
     <>
       <section className="w-full">
         <main className="pb-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-          <section className="w-full  m-auto mb-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2">
+          <section
+            style={{ clipPath: 'blz' }}
+            className="w-full  m-auto mb-4 grid grid-cols-1 gap-4 transition-all lg:grid-cols-2"
+          >
             <Card>
               <CardHeader>
                 <CardTitle>Relatorio</CardTitle>
@@ -58,4 +61,4 @@ export default function PageDashboard() {
       </section>
     </>
   );
-}
+};
