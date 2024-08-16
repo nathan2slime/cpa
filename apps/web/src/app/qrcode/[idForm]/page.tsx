@@ -13,7 +13,7 @@ const QRCode = () => {
 
   return (
     <div className='h-screen m-auto bg-gray-200 grid place-items-center'>
-      <div className='bg-white border-border text-md p-4 rounded-lg shadow-lg'>
+      <div className='bg-white border-border text-md p-4 rounded-lg shadow-none'>
         <h1>Unifacema - Avaliação</h1>
         <NewQRCode text={`${host}/form/${params.idForm}`} />
       </div>

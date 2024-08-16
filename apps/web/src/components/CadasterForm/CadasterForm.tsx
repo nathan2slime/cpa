@@ -30,7 +30,7 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Card className="w-[350px] shadow-lg" style={
+      <Card className="w-[350px] shadow-none" style={
         {
           clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 44px), calc(100% - 44px) 100%, 0 100%)',
         }

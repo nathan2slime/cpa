@@ -1,16 +1,17 @@
-import { Sidebar } from '@/components/Sidebar';
+import { Sidebar } from '@/components/core/sidebar';
 
 import { AppChildren } from '@/types';
 import { Navbar } from '@/components/Navbar';
 
 export default ({ children }: Readonly<AppChildren>) => {
   return (
-    <main className="w-full h-full p-4">
+    <main className="w-full h-full">
       <Navbar />
 
-      <div className=" flex flex-row min-h-screen  px-4 w-full">
+      <div className="w-full flex pt-[60px] overflow-y-auto items-start h-screen">
         <Sidebar />
-        {children}
+
+        <div className="w-full h-full p-4">{children}</div>
       </div>
     </main>
   );
