@@ -7,8 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -22,26 +20,25 @@ export const Navbar = () => {
   const user = (data && data.user) as UserData;
 
   return (
-    <header className="flex justify-between items-center gap-4 h-[60px] w-full bg-card border border-border rounded-lg p-4">
+    <header className="flex justify-between z-10 fixed items-center gap-4 h-[60px] w-[calc(100%-0px)] bg-card border-b border-border rounded-none p-4">
       <Link href="/dashboard">
-        <img
-          src="/assets/imgs/university.png"
-          className="w-full max-w-[50px]"
-        />
+        <h4 className='font-bold tracking-wide'>UniFacema</h4>
       </Link>
       <span className="flex gap-4">
         <DropdownMenu dir="ltr">
-          <DropdownMenuTrigger className="flex items-center rounded-lg">
+          <DropdownMenuTrigger className="flex items-center py-1 px-2 gap-2 outline-none bg-accent border border-border rounded-lg">
             <Avatar className="w-[30px] h-[30px] cursor-pointer">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>US</AvatarFallback>
             </Avatar>
+
+            <p className="text-accent-foreground text-sm font-normal">
+              {user.login}
+            </p>
+
+            <ChevronDown className="ml-4 w-4 text-accent-foreground" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuLabel className="text-sm font-bold">
-              {user.login}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem>Sair</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,0 +1,38 @@
+'use client';
+
+import React from 'react';
+import { LayoutDashboard, FileType, Star, BookKey } from 'lucide-react';
+
+import { Nav } from '@/components/core/nav';
+
+export const Sidebar = () => {
+  return (
+    <aside className="w-full max-w-[200px] h-[calc(100vh-60px)] px-2 border-r border-border py-2 sticky top-1">
+      <Nav
+        isCollapsed={false}
+        links={[
+          {
+            title: 'Dashboard',
+            icon: LayoutDashboard,
+            path: '/dashboard',
+          },
+          {
+            title: 'Forms',
+            icon: FileType,
+            path: '/forms',
+          },
+          {
+            title: 'Eventos',
+            icon: Star,
+            path: '/events',
+          },
+          {
+            title: 'Relatórios',
+            icon: BookKey,
+            path: '/reports',
+          },
+        ]}
+      />
+    </aside>
+  );
+};
