@@ -9,7 +9,7 @@ import {
 } from '~/app/question/question.dto';
 
 @Injectable()
-export class QuestionService {
+export class ActivityService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create({ form, ...data }: CreateQuestionDto) {
