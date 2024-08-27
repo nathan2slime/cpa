@@ -15,15 +15,19 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Role } from '@prisma/client';
 
-import { CreateQuestionDto, QueryQuestionDto, UpdateQuestionDto } from '~/app/question/question.dto';
+import {
+  CreateQuestionDto,
+  QueryQuestionDto,
+  UpdateQuestionDto,
+} from '~/app/question/question.dto';
 import { QuestionService } from '~/app/question/question.service';
 import { Roles } from '~/app/auth/auth.decorator';
 import { RoleGuard } from '~/app/auth/role.guard';
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
 
-@Controller('question')
-@ApiTags('Question')
-export class QuestionController {
+@Controller('activity')
+@ApiTags('Activity')
+export class ActivityController {
   constructor(private readonly questionService: QuestionService) {}
 
   @Post('create')
