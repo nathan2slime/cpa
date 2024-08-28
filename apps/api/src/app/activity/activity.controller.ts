@@ -15,58 +15,23 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Role } from '@prisma/client';
 
-import {
-  CreateQuestionDto,
-  QueryQuestionDto,
-  UpdateQuestionDto,
-} from '~/app/question/question.dto';
-import { QuestionService } from '~/app/question/question.service';
 import { Roles } from '~/app/auth/auth.decorator';
 import { RoleGuard } from '~/app/auth/role.guard';
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
+import { ActivityService } from '~/app/activity/activity.service';
+import { CreateActivityDto } from '~/app/activity/activity.dto';
 
 @Controller('activity')
 @ApiTags('Activity')
 export class ActivityController {
-  constructor(private readonly questionService: QuestionService) {}
+  constructor(private readonly activityService: ActivityService) {}
 
   @Post('create')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async create(@Res() res: Response, @Body() body: CreateQuestionDto) {
-    const data = await this.questionService.create(body);
+  async create(@Res() res: Response, @Body() body: CreateActivityDto) {
+    const data = await this.activityService.create(body);
 
     return res.status(HttpStatus.CREATED).json(data);
-  }
-
-  @Delete('remove/:id')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.ADMIN])
-  async remove(@Res() res: Response, @Param('id') id: string) {
-    await this.questionService.remove({ id });
-
-    return res.status(HttpStatus.OK).send();
-  }
-
-  @Patch('update/:id')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.ADMIN])
-  async update(
-    @Res() res: Response,
-    @Param('id') id: string,
-    @Body() body: UpdateQuestionDto,
-  ) {
-    const data = await this.questionService.update({ id }, body);
-
-    return res.status(HttpStatus.OK).json(data);
-  }
-
-  @Get('show')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.ADMIN])
-  async show(@Res() res: Response, @Query() query: QueryQuestionDto) {
-    const data = await this.questionService.show(query);
-
-    return res.status(HttpStatus.OK).json(data);
   }
 }

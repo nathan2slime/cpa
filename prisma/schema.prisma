@@ -57,7 +57,6 @@ model Course {
   type           CourseType
   name           String
   courseActivity CourseActivity[]
-  activity       Activity[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -71,20 +70,19 @@ model Activity {
   responsible String
 
   form      Form      @relation(fields: [formId], references: [id])
+  formId    String
+
   startDate DateTime?
   endDate   DateTime?
   open      Boolean
 
-  course Course @relation(fields: [courseId], references: [id])
 
   courses CourseActivity[]
+  answers   Answer[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
-  formId    String
-  courseId  String
-  answers   Answer[]
 }
 
 model CourseActivity {

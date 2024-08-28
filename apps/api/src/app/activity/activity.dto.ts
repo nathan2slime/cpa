@@ -1,30 +1,37 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { QuestionType } from '@prisma/client';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
 
-export class CreateQuestionDto {
-  @ApiProperty()
+export class CreateActivityDto {
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  title: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  description: string;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  responsible: string;
+
+  @ApiProperty({ required: true })
   @IsNotEmpty()
   form: string;
 
-  @ApiProperty({ enum: QuestionType, required: true })
-  @IsEnum(QuestionType)
-  @IsNotEmpty()
-  type: QuestionType;
+  @ApiProperty({ required: false })
+  @IsOptional()
+  startDate: Date;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  title: string;
-}
+  @ApiProperty({ required: false })
+  @IsOptional()
+  endDate: Date;
 
-export class QueryQuestionDto {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   @IsNotEmpty()
-  form: string;
-}
+  courses: string[];
 
-export class UpdateQuestionDto {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   @IsNotEmpty()
-  title: string;
+  open: boolean;
 }
