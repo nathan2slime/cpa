@@ -20,7 +20,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 export const HeaderForm = () => {
-  const [title, setTitle] = useState('Formulário sem nome');
+  const [title, setTitle] = useState('');
   const [favorite, setFavorite] = useState(false);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
