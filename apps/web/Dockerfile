@@ -18,6 +18,7 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/.env.prod ./.env
 COPY --from=builder /app/turbo.json ./turbo.json
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
+COPY --from=builder /app/prisma/ ./prisma/
 RUN yarn install
 
 COPY --from=builder /app/out/full/ .

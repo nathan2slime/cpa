@@ -16,6 +16,7 @@ WORKDIR /app
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/yarn.lock ./yarn.lock
+COPY --from=builder /app/prisma/ ./prisma/
 RUN yarn install
 
 COPY --from=builder /app/out/full/ .
@@ -32,5 +33,5 @@ RUN adduser --system --uid 1001 nodejs
 USER nodejs
 COPY --from=installer --chown=nodejs:nodejs /app .
 
-WORKDIR /app/apps/api
-CMD yarn migrate:deploy && yarn prod
+WORKDIR /app
+CMD yarn migrate:deploy && yarn seed && yarn prod
