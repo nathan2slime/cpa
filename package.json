@@ -13,11 +13,11 @@
     "start": "dotenv -- turbo run start",
     "dev": "dotenv -- turbo run dev",
     "prod": "dotenv -- turbo run prod",
-    "prepare": "husky install",
+    "prepare": "husky install && prisma generate",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
-    "seed": "dotenv -- ts-node-dev prisma/seeds/index.ts",
+    "seed": "dotenv -- ts-node-dev ./prisma/seeds/index.ts",
     "generate": "prisma generate",
     "migrate:reset": "prisma migrate reset",
     "commit": "git-cz"
