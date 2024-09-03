@@ -6,14 +6,17 @@ import { NewFormQuestion } from './components/cardForm';
 import { Input } from '@/components/ui/input';
 import { QuestionType } from '@/types/question';
 import { MenuOptionNewForm } from './components/MenuOptionNewForm';
+import { Button } from '@/components/ui/button';
+import { SquarePlus } from 'lucide-react';
 
 const NewForm: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [title, setTitle] = useState<string>('');
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState<number | null>(null);
 
   const newQuestion: QuestionType = {
     type: 'choose',
-    question: 'Titulo da questão',
+    question: '',
     options: [''],
   };
 
@@ -26,6 +29,26 @@ const NewForm: React.FC = () => {
     if (updatedQuestions[index]) {
       updatedQuestions[index].question = e;
       setQuestions(updatedQuestions);
+    }
+  };
+
+  const removeOption = (questionIndex: number, optionIndex: number) => {
+    const updatedQuestions = [...questions];
+    if (updatedQuestions[questionIndex]) {
+      updatedQuestions[questionIndex].options.splice(optionIndex, 1);
+      setQuestions(updatedQuestions);
+    }
+  }
+
+  const removeQuestion = (index: number) => {
+    const updatedQuestions = [...questions];
+    if (updatedQuestions[index]) {
+      updatedQuestions.splice(index, 1);
+      setQuestions(updatedQuestions);
+    }
+    // Atualiza a questão ativa, caso a removida seja a ativa
+    if (activeQuestionIndex === index) {
+      setActiveQuestionIndex(null);
     }
   };
 
@@ -47,11 +70,12 @@ const NewForm: React.FC = () => {
     setQuestions(updatedQuestions);
   };
 
+  console.log(questions);
   return (
-    <main className="pt-20">
+    <main className="pt-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
       <HeaderForm />
       <MenuOptionNewForm onClick={addQuestion} />
-      <div className="h-max w-full max-w-3xl m-auto my-4 p-6 bg-white rounded-lg flex flex-col gap-2">
+      <div className="h-max w-full max-w-3xl m-auto my-4 p-7 bg-white rounded-lg flex flex-col gap-2">
         <Input
           type="text"
           value={title}
@@ -60,16 +84,35 @@ const NewForm: React.FC = () => {
           placeholder="Titulo do formulário"
         />
       </div>
-
+      {questions.length === 0 && (
+        <div className="h-max w-full max-w-3xl m-auto my-4 p-7 bg-white rounded-lg flex justify-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-2/3"
+            onClick={addQuestion}
+          >
+            <p className="font-bold text-black text-xl flex">Adicionar uma questão</p>
+            <SquarePlus />
+          </Button>
+        </div>
+      )}
       {questions.map((question, index) => (
-        <NewFormQuestion
-          key={index}
-          question={question}
-          index={index}
-          handleQuestionTitleChange={handleQuestionTitleChange}
-          handleOptionChange={handleOptionChange}
-          handleAddOption={handleAddOption}
-        />
+        <div key={index} onClick={() => setActiveQuestionIndex(index)}>
+          <NewFormQuestion
+            question={question}
+            index={index}
+            handleQuestionTitleChange={handleQuestionTitleChange}
+            handleOptionChange={handleOptionChange}
+            handleAddOption={handleAddOption}
+            isLastQuestion={index === questions.length - 1}
+            addQuestion={addQuestion}
+            removeQuestion={() => removeQuestion(index)}
+            removeOption={removeOption}
+            // Passa informações adicionais para saber se é a questão ativa
+            isActive={activeQuestionIndex === index}
+          />
+        </div>
       ))}
     </main>
   );
