@@ -33,7 +33,7 @@ export const Navbar = () => {
             </Avatar>
 
             <p className="text-accent-foreground text-sm font-normal">
-              {user.login}
+              {user?.login}
             </p>
 
             <ChevronDown className="ml-4 w-4 text-accent-foreground" />

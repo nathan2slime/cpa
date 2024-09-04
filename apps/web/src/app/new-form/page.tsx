@@ -75,25 +75,25 @@ const NewForm: React.FC = () => {
     <main className="pt-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
       <HeaderForm />
       <MenuOptionNewForm onClick={addQuestion} />
-      <div className="h-max w-full max-w-3xl m-auto my-4 p-7 bg-white rounded-lg flex flex-col gap-2">
+      <div className="h-max w-full max-w-3xl m-auto p-7 bg-white rounded-lg flex flex-col gap-2">
         <Input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-2xl text-zinc-900"
+          className="w-full text-lg text-zinc-900"
           placeholder="Titulo do formulário"
         />
       </div>
       {questions.length === 0 && (
-        <div className="h-max w-full max-w-3xl m-auto my-4 p-7 bg-white rounded-lg flex justify-center">
+        <div className="h-max w-full max-w-3xl m-auto p-3 bg-white rounded-lg flex justify-center">
           <Button
             variant="ghost"
             size="icon"
-            className="w-2/3"
+            className="w-2/5"
             onClick={addQuestion}
           >
-            <p className="font-bold text-black text-xl flex">Adicionar uma questão</p>
-            <SquarePlus />
+            <p className="font-bold text-black text-lg flex">Adicionar uma questão</p>
+            <SquarePlus className={'ml-2'}/>
           </Button>
         </div>
       )}
