@@ -123,7 +123,7 @@ export const NewFormQuestion: React.FC<Props> = ({
             title="Remover questão"
             onClick={removeQuestion}
           >
-            <Trash2 size={20} />
+            <Trash2 size={20} className={'text-red-500'} />
           </Button>
         </div>
       )}
