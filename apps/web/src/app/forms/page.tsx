@@ -45,7 +45,7 @@ function Forms() {
                 <div>
                   {
                     forms.map(form => (
-                      <div key={form.id} className={'flex justify-between items-center p-4 border-b'}>
+                      <div key={form.id} className={'flex justify-between items-center p-4 border-b last:border-none'}>
                         <div>
                           <p className={'font-semibold'}>{form.name}</p>
                           <p className={'text-sm text-gray-500'}>Tempo de resposta: {form.time}</p>
