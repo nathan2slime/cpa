@@ -15,11 +15,20 @@ import {
   Palette,
   EyeIcon,
   EllipsisIcon,
-  Printer,
+  Printer, ChevronDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useSnapshot } from 'valtio';
+import { authState } from '@/store/auth.state';
+import { UserData } from '@/types/auth.types';
 
 export const HeaderForm = () => {
+
+  const { data } = useSnapshot(authState);
+
+  const user = (data && data.user) as UserData;
+
   const [title, setTitle] = useState('');
   const [favorite, setFavorite] = useState(false);
 
@@ -36,9 +45,11 @@ export const HeaderForm = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 z-50 flex justify-between items-center gap-4 h-[60px] w-full p-4 bg-white border-b border-b-gray-400">
+    <header className="fixed top-0 left-0 z-50 flex justify-between items-center gap-4 h-[60px] w-full p-4 bg-white border-b border-b-gray-200">
       <div className="flex items-center gap-4">
-        <FileText size={45} color="blue" strokeWidth={1} />
+        <Link href="/dashboard">
+          <h4 className='font-bold tracking-wide'>UniFacema</h4>
+        </Link>
         <Input
           type="text"
           value={title}
@@ -100,12 +111,26 @@ export const HeaderForm = () => {
           Enviar
         </Button>
 
-        <div>
-          <Avatar className="w-[30px] h-[30px]">
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </div>
+        <span className="flex gap-4">
+        <DropdownMenu dir="ltr">
+          <DropdownMenuTrigger
+            className="flex items-center py-1 px-2 gap-2 outline-none bg-accent border border-border rounded-lg">
+            <Avatar className="w-[30px] h-[30px] cursor-pointer">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>US</AvatarFallback>
+            </Avatar>
+
+            <p className="text-accent-foreground text-sm font-normal">
+              {user?.login}
+            </p>
+
+            <ChevronDown className="ml-4 w-4 text-accent-foreground" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>Sair</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </span>
       </div>
     </header>
   );

@@ -51,13 +51,13 @@ export const NewFormQuestion: React.FC<Props> = ({
             value={question.question}
             onChange={(e) => handleQuestionTitleChange(e.target.value, index)}
             className="w-min text-lg font-medium text-zinc-900"
-            placeholder="Pergunta"
+            placeholder="Questão"
           />
         </div>
 
         <Separator className="mt-3" />
 
-        <div className="flex ml-[42px] flex-col mt-4">
+        <div className="flex ml-[42px] flex-col mt-4 transition-all">
           {question.options.map((option, optionIndex) => (
             <div key={optionIndex} className="flex flex-row mt-4 space-x-2">
               <input
@@ -72,10 +72,11 @@ export const NewFormQuestion: React.FC<Props> = ({
                 onChange={(e) =>
                   handleOptionChange(e.target.value, index, optionIndex)
                 }
-                className="w-full text-lg font-medium text-zinc-900"
-                placeholder="Opção"
+                className="w-full text-md font-medium text-zinc-900"
+                placeholder={`Alternativa ${optionIndex + 1 }`}
               />
-              {isActive && (  // Renderizar o botão de remover opção apenas se a questão estiver ativa
+              {isActive && (
+                // Renderizar o botão de remover opção apenas se a questão estiver ativa
                 <Button
                   variant="ghost"
                   size="icon"
@@ -122,7 +123,7 @@ export const NewFormQuestion: React.FC<Props> = ({
             title="Remover questão"
             onClick={removeQuestion}
           >
-            <Trash2 size={20} />
+            <Trash2 size={20} className={'text-red-500'} />
           </Button>
         </div>
       )}
