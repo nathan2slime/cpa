@@ -36,7 +36,7 @@ function Forms() {
 
           <p className={'font-semibold mb-3'}>Formulários recentes</p>
 
-          <div className={'border w-full max-h-full rounded-xl p-6'}>
+          <div className='border w-full max-h-full rounded-xl p-6'>
             {
               forms.length === 0 && <p>Sem formulários criados, crie um formulario no botão acima "Criar novo formulário".</p>
             }
