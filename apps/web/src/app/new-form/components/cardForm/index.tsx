@@ -36,7 +36,7 @@ export const NewFormQuestion: React.FC<Props> = ({
                                                  }) => {
   return (
     <div className="flex items-start gap-4 max-w-3xl m-auto">
-      <div className="w-full my-4 p-6 bg-gray-100 rounded-lg">
+      <div className={`w-full my-4 p-6 bg-gray-100 rounded-lg border border-gray-300 ${isActive && 'shadow-lg'}`}>
         <div className="flex gap-3 items-start justify-start">
           <Button
             disabled
@@ -73,7 +73,7 @@ export const NewFormQuestion: React.FC<Props> = ({
                   handleOptionChange(e.target.value, index, optionIndex)
                 }
                 className="w-full text-md font-medium text-zinc-900"
-                placeholder={`Alternativa ${optionIndex + 1 }`}
+                placeholder={`Alternativa ${optionIndex + 1}`}
               />
               {isActive && (
                 // Renderizar o botão de remover opção apenas se a questão estiver ativa
