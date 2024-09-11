@@ -72,8 +72,7 @@ const NewForm: React.FC = () => {
 
   console.log(questions);
   return (
-    <main className="pt-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-      <HeaderForm />
+    <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
       <MenuOptionNewForm onClick={addQuestion} />
       <div className="h-max w-full max-w-3xl m-auto bg-white rounded-lg flex gap-2">
         <Input

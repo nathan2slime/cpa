@@ -73,12 +73,9 @@ export const HeaderForm = () => {
       </div>
 
       <div className="flex items-center gap-4">
+
         <Button variant="ghost" size="icon" onClick={handleOpenModalTheme}>
           <Palette size={20} color="gray" />
-        </Button>
-
-        <Button variant="ghost" size="icon">
-          <EyeIcon size={20} color="gray" />
         </Button>
 
         <div>
@@ -103,13 +100,6 @@ export const HeaderForm = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
-        <Button
-          onClick={handleEnviarClick}
-          className="max-md:hidden bg-green-400 hover:bg-green-500 text-white"
-        >
-          Enviar
-        </Button>
 
         <span className="flex gap-4">
         <DropdownMenu dir="ltr">
