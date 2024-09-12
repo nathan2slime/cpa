@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { QuestionType } from '@/types/question';
 import { MenuOptionNewForm } from './components/MenuOptionNewForm';
 import { Button } from '@/components/ui/button';
-import { SquarePlus } from 'lucide-react';
+import { PlusCircle, SquarePlus } from 'lucide-react';
 
 const NewForm: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -72,18 +72,18 @@ const NewForm: React.FC = () => {
 
   console.log(questions);
   return (
-    <main className="pt-20 md:pr-24 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-      <HeaderForm />
+    <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
       <MenuOptionNewForm onClick={addQuestion} />
-      <div className="h-max w-full max-w-3xl m-auto p-7 bg-white rounded-lg flex flex-col gap-2">
+      <div className="h-max w-full max-w-3xl m-auto bg-white rounded-lg flex gap-2">
         <Input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-lg text-zinc-900"
+          className="w-full text-md text-zinc-900"
           placeholder="Titulo do formulário"
         />
       </div>
+
       {questions.length === 0 && (
         <div className="h-max w-full max-w-3xl m-auto p-3 bg-white rounded-lg flex justify-center">
           <Button
@@ -92,11 +92,12 @@ const NewForm: React.FC = () => {
             className="w-2/5"
             onClick={addQuestion}
           >
-            <p className="font-bold text-black text-lg flex">Adicionar uma questão</p>
-            <SquarePlus className={'ml-2'}/>
+            <p className="font-bold text-lg flex">Adicionar questão</p>
+            <PlusCircle className={'ml-2'} size={20} />
           </Button>
         </div>
       )}
+
       {questions.map((question, index) => (
         <div key={index} onClick={() => setActiveQuestionIndex(index)}>
           <NewFormQuestion
@@ -114,6 +115,15 @@ const NewForm: React.FC = () => {
           />
         </div>
       ))}
+
+      {
+        questions.length > 0 && (
+          <div className={'flex w-full justify-center'}>
+            <Button>Finalizar Formulário</Button>
+          </div>
+        )
+      }
+
     </main>
   );
 };
