@@ -103,7 +103,7 @@ model Form {
   id    String @id @default(uuid())
   title String
 
-  question Question[]
+  questions Question[]
   answers  Answer[]
 
   createdAt DateTime   @default(now())

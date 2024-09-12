@@ -24,6 +24,7 @@
       "cache": false
     },
     "migrate:dev": {
+      "interactive": true,
       "cache": false
     },
     "migrate:deploy": {
