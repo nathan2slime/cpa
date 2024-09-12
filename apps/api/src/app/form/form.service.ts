@@ -13,6 +13,15 @@ export class FormService {
     return this.prisma.form.create({ data });
   }
 
+  async getById(id: string) {
+    return this.prisma.form.findUnique({
+      where: { id },
+      include: {
+        questions: true,
+      },
+    });
+  }
+
   async remove(where: Prisma.FormWhereUniqueInput) {
     return this.prisma.form.update({
       where,
