@@ -58,10 +58,19 @@ export class FormController {
     return res.status(HttpStatus.OK).json(data);
   }
 
+  @Get('show/:id')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.ADMIN])
+  async show(@Res() res: Response, @Param('id') id: string) {
+    const data = await this.formService.getById(id);
+
+    return res.status(HttpStatus.OK).json(data);
+  }
+
   @Get('search')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async show(@Res() res: Response, @Query() query: PaginationDto) {
+  async search(@Res() res: Response, @Query() query: PaginationDto) {
     const data = await this.formService.paginate(query);
 
     return res.status(HttpStatus.OK).json(data);
