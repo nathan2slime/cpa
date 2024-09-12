@@ -5,3 +5,13 @@ export type FormType<T> = {
   data: QuestionType[];
   schema: T;
 };
+
+export type FormReq = {
+  id: string;
+  title: string;
+  createdAt: string;
+  deletedAt: string | null;
+  updatedAt: string
+}
+
+
