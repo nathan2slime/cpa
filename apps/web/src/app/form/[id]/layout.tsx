@@ -1,8 +1,8 @@
 import { Sidebar } from '@/components/core/sidebar';
 
 import { AppChildren } from '@/types'
-import { HeaderForm } from '@/app/new-form/components/HeaderForm';
 import React from 'react';
+import { HeaderForm } from '@/app/form/components/HeaderForm';
 
 export default ({ children }: Readonly<AppChildren>) => {
   return (
