@@ -12,13 +12,17 @@ export class CourseService {
   }
 
   async getAll() {
-    return this.prisma.course.findMany();
+    return this.prisma.course.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   }
 
   async getById(id: string) {
     return this.prisma.course.findUnique({ where: { id } });
   }
-  
+
   async update(id: string, data: UpdateCourseDto) {
     return this.prisma.course.update({
       data,

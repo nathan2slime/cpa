@@ -56,14 +56,14 @@ model Course {
   id             String           @id @default(uuid())
   type           CourseType
   name           String
-  courseActivity CourseActivity[]
+  courseEvent CourseEvent[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
 }
 
-model Activity {
+model Event {
   id          String @id @default(uuid())
   title       String
   description String
@@ -77,7 +77,7 @@ model Activity {
   open      Boolean
 
 
-  courses CourseActivity[]
+  courses CourseEvent[]
   answers   Answer[]
 
   createdAt DateTime  @default(now())
@@ -85,14 +85,14 @@ model Activity {
   updatedAt DateTime? @updatedAt
 }
 
-model CourseActivity {
+model CourseEvent {
   id String @id @default(uuid())
 
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 
-  activity   Activity @relation(fields: [activityId], references: [id])
-  activityId String
+  event   Event @relation(fields: [eventId], references: [id])
+  eventId String
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -109,14 +109,14 @@ model Form {
   createdAt DateTime   @default(now())
   deletedAt DateTime?
   updatedAt DateTime?  @updatedAt
-  activity  Activity[]
+  event  Event[]
 }
 
 model QuestionOption {
   id String @id @default(uuid())
 
   title          String
-  weight         Int
+  // weight         Int
   question       Question?        @relation(fields: [questionId], references: [id])
   questionId     String?
   questionAnswer QuestionAnswer[]
@@ -147,7 +147,7 @@ model Answer {
   id String @id @default(uuid())
 
   user     User     @relation(fields: [userId], references: [id])
-  activity Activity @relation(fields: [activityId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
 
   userId         String
   questionAnswer QuestionAnswer[]
@@ -157,7 +157,7 @@ model Answer {
   updatedAt  DateTime? @updatedAt
   form       Form?     @relation(fields: [formId], references: [id])
   formId     String?
-  activityId String
+  eventId String
 }
 
 model QuestionAnswer {

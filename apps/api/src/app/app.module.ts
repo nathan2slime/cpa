@@ -7,7 +7,7 @@ import { CourseModule } from '~/app/course/course.module';
 import { FormModule } from '~/app/form/form.module';
 import { QuestionModule } from '~/app/question/question.module';
 import { QuestionOptionModule } from '~/app/question_option/question_option.module';
-import { ActivityModule } from '~/app/activity/activity.module';
+import { EventModule } from '~/app/event/event.module';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { ActivityModule } from '~/app/activity/activity.module';
     QuestionOptionModule,
     CourseModule,
     HealthModule,
-    ActivityModule,
+    EventModule,
   ],
   controllers: [],
   providers: [],
