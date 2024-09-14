@@ -75,8 +75,12 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
           {
             options.length > 0 &&
             options.map((option, index) => (
-              <div className={'ml-16'}>
+              <div className={'ml-16 flex gap-1 items-center'} key={index}>
                 <Input className={'bg-white'} value={option.title} onBlur={()=> putOption(option.id)} onChange={(e)=> changeOption(option.id, e.target.value)}/>
+                <Input
+                  className={'w-[35px]'}
+                  value={option.weight}
+                  />
               </div>
             ))
           }

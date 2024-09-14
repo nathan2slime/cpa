@@ -14,10 +14,12 @@ import {
   Dialog, DialogClose,
   DialogContent,
   DialogDescription, DialogFooter,
-  DialogHeader, DialogOverlay,
+  DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
+import { formatDistanceToNow } from 'date-fns';
+import {ptBR} from 'date-fns/locale'
 
 
 function Forms() {
@@ -65,8 +67,10 @@ function Forms() {
   const getForms = async () => {
     try {
       const res = await api.get<FormReq[]>(`/api/form/search?page=${page}&perPage=${perPage}`);
-      setForms(res.data.data);
+      const orderedForms = res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      setForms(orderedForms);
       setTotalForms(res.data.total);
+      console.log(orderedForms);
     } catch (error) {
       console.error('Erro ao buscar formulários:', error);
     }
@@ -104,9 +108,9 @@ function Forms() {
                   {
                     forms.map(form => (
                       <div key={form.id} className={'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl'}>
-                        <div>
+                        <div className={'flex gap-3 items-center'}>
                           <p className={'font-semibold'}>{form.title}</p>
-                          {/*<p className={'text-sm text-gray-500'}>Tempo de resposta: {form.time}</p>*/}
+                          <p className={'text-gray-500 text-sm'}>{formatDistanceToNow(form.updatedAt, {addSuffix: true, locale: ptBR})}</p>
                         </div>
                         <div className={'flex gap-2 items-center'}>
                           <Button variant='outline' onClick={()=> redirectToForm(form.id)}>Editar</Button>
@@ -133,7 +137,6 @@ function Forms() {
                               </DialogFooter>
                             </DialogContent>
                           </Dialog>
-
                         </div>
                       </div>
                     ))
