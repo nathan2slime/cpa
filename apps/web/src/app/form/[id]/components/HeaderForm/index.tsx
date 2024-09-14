@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -22,15 +22,26 @@ import Link from 'next/link';
 import { useSnapshot } from 'valtio';
 import { authState } from '@/store/auth.state';
 import { UserData } from '@/types/auth.types';
+import { api } from '@/api';
 
-export const HeaderForm = () => {
+export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: string}) => {
 
   const { data } = useSnapshot(authState);
 
   const user = (data && data.user) as UserData;
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(titleForm);
   const [favorite, setFavorite] = useState(false);
+
+  const putTitle = async () => {
+    api.patch(`/api/form/update/${idForm}`, {
+      title: title
+    })
+  }
+
+  useEffect(() => {
+    setTitle(titleForm)
+  }, [titleForm]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -50,10 +61,12 @@ export const HeaderForm = () => {
         <Link href="/dashboard">
           <h4 className='font-bold tracking-wide'>UniFacema</h4>
         </Link>
+
         <Input
           type="text"
           value={title}
           onChange={handleTitleChange}
+          onBlur={putTitle}
           className="w-min"
           placeholder="Formulário sem nome"
         />
