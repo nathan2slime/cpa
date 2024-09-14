@@ -4,25 +4,36 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
 import { FormReq } from '@/types/form';
-import { Trash2 } from 'lucide-react';
 
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/components/ui/pagination"
+import {
+  Dialog, DialogClose,
+  DialogContent,
+  DialogDescription, DialogFooter,
+  DialogHeader, DialogOverlay,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
 
 
 function Forms() {
   // Simula os formulários criados
   const [forms, setForms] = useState<FormReq[]>();
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
+  const [isOpenModalDeleteForm, setIsOpenModalDeleteForm] = useState<boolean>(false)
 
   //redireciona para o formulário
   const redirectToForm = (id: string) => {
     location.href = `/form/${id}`
+  }
+
+  const deleteForm = async (id: string) => {
+    await api.delete(`/api/form/remove/${id}`)
+    setShouldFetch(!shouldFetch)
   }
 
   const params: URLSearchParams = new URLSearchParams(window.location.search);
@@ -63,7 +74,7 @@ function Forms() {
 
   useEffect(() => {
     getForms()
-  }, [page]);
+  }, [page, shouldFetch]);
 
   return (
     <>
@@ -92,13 +103,37 @@ function Forms() {
                 <div>
                   {
                     forms.map(form => (
-                      <div key={form.id} onClick={()=> redirectToForm(form.id)} className={'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-100 cursor-pointer border-xl'}>
+                      <div key={form.id} className={'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl'}>
                         <div>
                           <p className={'font-semibold'}>{form.title}</p>
                           {/*<p className={'text-sm text-gray-500'}>Tempo de resposta: {form.time}</p>*/}
                         </div>
                         <div className={'flex gap-2 items-center'}>
-                          <Trash2 size={20} color={'red'} className={'hover:scale-110 transition'} />
+                          <Button variant='outline' onClick={()=> redirectToForm(form.id)}>Editar</Button>
+                          <Dialog>
+                            <DialogTrigger>
+                              <Button variant='destructive'>Excluir</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Tem certeza que deseja excluir esse formulário?</DialogTitle>
+                                <DialogDescription>
+                                  Você não poderá reverter essa ação.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <div className={'flex justify-end gap-3'}>
+                                  <DialogClose asChild>
+                                    <Button onClick={() => deleteForm(form.id)} variant="destructive">Sim, apagar</Button>
+                                  </DialogClose>
+                                  <DialogClose>
+                                    <Button variant="outline" >Cancelar</Button>
+                                  </DialogClose>
+                                </div>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+
                         </div>
                       </div>
                     ))
@@ -113,16 +148,16 @@ function Forms() {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <Button variant={'ghost'} disabled={Number(page) - 1 <= 0} className={'cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed'} onClick={()=> page > 1 ? setParams( page -1 ) : null }>Anterior</Button>
+              <Button variant='ghost' disabled={Number(page) - 1 <= 0} className={'cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed'} onClick={()=> page > 1 ? setParams( page -1 ) : null }>Anterior</Button>
             </PaginationItem>
             <PaginationItem>
-              <Button variant={'ghost'} disabled={Number(page) - 1 <= 0} onClick={()=> Number(page) - 2 <= 0 ? setParams(Number(page) -1) : setParams(Number(page) - 2)}>{Number(page) - 2 < 1 ? 1 : Number(page) - 1}</Button>
+              <Button variant='ghost' disabled={Number(page) - 1 <= 0} onClick={()=> Number(page) - 2 <= 0 ? setParams(Number(page) -1) : setParams(Number(page) - 2)}>{Number(page) - 2 < 1 ? 1 : Number(page) - 1}</Button>
             </PaginationItem>
             <PaginationItem>
-              <Button variant={'ghost'} disabled={Number(page) + 1 > pagesRounded && Number(page) + 2 > pagesRounded} onClick={()=> Number(page) + 2 > pagesRounded ? null : setParams((Number(page) + 2)) }>{Number(page) + 2}</Button>
+              <Button variant='ghost' disabled={Number(page) + 1 > pagesRounded && Number(page) + 2 > pagesRounded} onClick={()=> Number(page) + 2 > pagesRounded ? null : setParams((Number(page) + 2)) }>{Number(page) + 2}</Button>
             </PaginationItem>
             <PaginationItem>
-              <Button variant={'ghost'} disabled={Number(page) + 1 > pagesRounded} className={'cursor-pointer'} onClick={()=> Number(page) + 1 > pagesRounded ? null : setParams(Number(page) + 1)}>Próximo</Button>
+              <Button variant='ghost' disabled={Number(page) + 1 > pagesRounded} className={'cursor-pointer'} onClick={()=> Number(page) + 1 > pagesRounded ? null : setParams(Number(page) + 1)}>Próximo</Button>
             </PaginationItem>
           </PaginationContent>
         </Pagination>

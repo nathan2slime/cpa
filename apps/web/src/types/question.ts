@@ -1,5 +1,9 @@
 export type QuestionType = {
-  type: 'choose' | 'text';
-  question: string;
-  options: string[];
+  id: string;
+  title: string;
+  type: 'CHOOSE' | 'TEXT';
+  formId: string;
+  createdAt: string;
+  deletedAt: string | null;
+  updatedAt: string;
 };

@@ -1,122 +1,57 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { HeaderForm } from '../components/HeaderForm';
-import { NewFormQuestion } from '../components/cardForm';
-import { Input } from '@/components/ui/input';
+import { Question } from '@/app/form/[id]/components/cardForm';
 import { QuestionType } from '@/types/question';
-import { MenuOptionNewForm } from '../components/MenuOptionNewForm';
-import { Button } from '@/components/ui/button';
-import { PlusCircle, SquarePlus } from 'lucide-react';
+import { MenuOptionNewForm } from '@/app/form/[id]/components/MenuOptionNewForm';
+import { useParams } from 'next/navigation';
+import { api } from '@/api';
+import { FormType } from '@/types/form';
 
 const NewForm: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [title, setTitle] = useState<string>('');
-  const [activeQuestionIndex, setActiveQuestionIndex] = useState<number | null>(null);
+  const [form, setForm] = useState(null)
 
-  const newQuestion: QuestionType = {
-    type: 'choose',
-    question: '',
-    options: [''],
-  };
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
 
-  const addQuestion = () => {
-    setQuestions([...questions, newQuestion]);
-  };
+  const params = useParams()
+  const {id} : string = params
 
-  const handleQuestionTitleChange = (e: string, index: number) => {
-    const updatedQuestions = [...questions];
-    if (updatedQuestions[index]) {
-      updatedQuestions[index].question = e;
-      setQuestions(updatedQuestions);
-    }
-  };
-
-  const removeOption = (questionIndex: number, optionIndex: number) => {
-    const updatedQuestions = [...questions];
-    if (updatedQuestions[questionIndex]) {
-      updatedQuestions[questionIndex].options.splice(optionIndex, 1);
-      setQuestions(updatedQuestions);
-    }
+  const getDataForm = async () => {
+    const {data} : FormType = await api.get(`/api/form/show/${id}`)
+    setForm(data)
+    setQuestions(data.questions)
   }
 
-  const removeQuestion = (index: number) => {
-    const updatedQuestions = [...questions];
-    if (updatedQuestions[index]) {
-      updatedQuestions.splice(index, 1);
-      setQuestions(updatedQuestions);
-    }
-    // Atualiza a questão ativa, caso a removida seja a ativa
-    if (activeQuestionIndex === index) {
-      setActiveQuestionIndex(null);
-    }
-  };
+  const addQuestion = () => {
 
-  const handleOptionChange = (
-    e: string,
-    questionIndex: number,
-    optionIndex: number,
-  ) => {
-    const updatedQuestions = [...questions];
-    if (updatedQuestions[questionIndex]) {
-      updatedQuestions[questionIndex].options[optionIndex] = e;
-      setQuestions(updatedQuestions);
-    }
-  };
-
-  const handleAddOption = (index: number) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[index].options.push('');
-    setQuestions(updatedQuestions);
-  };
+  }
 
   useEffect(() => {
-
-  }, []);
+    getDataForm()
+  }, [shouldFetch])
 
   return (
-    <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-      <MenuOptionNewForm onClick={addQuestion} />
+      <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
+        <MenuOptionNewForm idForm={id} shouldFetch={setShouldFetch} />
 
-      {questions.length === 0 && (
-        <div className="h-max w-full max-w-3xl m-auto p-3 bg-white rounded-lg flex justify-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-2/5"
-            onClick={addQuestion}
-          >
-            <p className="font-bold text-lg flex">Adicionar questão</p>
-            <PlusCircle className={'ml-2'} size={20} />
-          </Button>
-        </div>
-      )}
+      <div className={'flex flex-col gap-3'}>
+        {
+          questions?.map((question: QuestionType, index) => (
+            question.deletedAt === null &&
+            <Question
+              key={question.id}
+              index={index + 1}
+              id={question.id}
+              titleQuestion={question.title}
+              type={question.type}
+              setShouldFetch={setShouldFetch}
+              shouldFetch={shouldFetch}
+            />
+          ))
 
-      {questions.map((question, index) => (
-        <div key={index} onClick={() => setActiveQuestionIndex(index)}>
-          <NewFormQuestion
-            question={question}
-            index={index}
-            handleQuestionTitleChange={handleQuestionTitleChange}
-            handleOptionChange={handleOptionChange}
-            handleAddOption={handleAddOption}
-            isLastQuestion={index === questions.length - 1}
-            addQuestion={addQuestion}
-            removeQuestion={() => removeQuestion(index)}
-            removeOption={removeOption}
-            // Passa informações adicionais para saber se é a questão ativa
-            isActive={activeQuestionIndex === index}
-          />
-        </div>
-      ))}
-
-      {
-        questions.length > 0 && (
-          <div className={'flex w-full justify-center'}>
-            <Button>Finalizar Formulário</Button>
-          </div>
-        )
-      }
+        }
+      </div>
 
     </main>
   );
