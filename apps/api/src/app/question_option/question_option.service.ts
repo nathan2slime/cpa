@@ -7,7 +7,7 @@ import {
   QueryQuestionOptionDto,
   UpdateQuestionOptionDto,
 } from '~/app/question_option/question_option.dto';
-import { INVALID_QUESTION, UNIQUE_WEIGHT } from '~/errors';
+import { INVALID_QUESTION } from '~/errors';
 
 @Injectable()
 export class QuestionOptionService {
@@ -20,11 +20,11 @@ export class QuestionOptionService {
 
     if(type == QuestionType.TEXT) throw new HttpException(INVALID_QUESTION, HttpStatus.BAD_REQUEST);
 
-    const weight = await this.prisma.questionOption.findFirst({
-      where: { question: { id: question }, weight: data.weight },
-    });
+    // const weight = await this.prisma.questionOption.findFirst({
+    //   where: { question: { id: question }, weight: data.weight },
+    // });
 
-    if (!!weight) throw new HttpException(UNIQUE_WEIGHT, HttpStatus.CONFLICT);
+    // if (!!weight) throw new HttpException(UNIQUE_WEIGHT, HttpStatus.CONFLICT);
 
     return this.prisma.questionOption.create({
       data: { ...data, question: { connect: { id: question } } },

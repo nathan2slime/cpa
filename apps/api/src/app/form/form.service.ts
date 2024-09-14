@@ -15,7 +15,7 @@ export class FormService {
 
   async getById(id: string) {
     return this.prisma.form.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
       include: {
         questions: true,
       },

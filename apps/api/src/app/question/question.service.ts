@@ -36,6 +36,8 @@ export class QuestionService {
   }
 
   async show({ form }: QueryQuestionDto) {
-    return this.prisma.question.findMany({ where: { form: { id: form } } });
+    return this.prisma.question.findMany({
+      where: { deletedAt: null, form: { id: form } },
+    });
   }
 }

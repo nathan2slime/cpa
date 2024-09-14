@@ -6,10 +6,10 @@ export class CreateQuestionOptionDto {
   @IsNotEmpty()
   question: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @Min(0)
-  weight: number;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @Min(0)
+  // weight: number;
 
   @ApiProperty()
   @IsNotEmpty()
