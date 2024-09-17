@@ -48,8 +48,11 @@ export class FormService {
           title: {
             contains: query,
           },
+          deletedAt: null,
         }
-      : {};
+      : {
+          deletedAt: null,
+        };
     const total = await this.prisma.form.count({ where });
 
     const data = await this.prisma.form.findMany({

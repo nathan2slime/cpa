@@ -23,10 +23,10 @@ export class QueryQuestionOptionDto {
 }
 
 export class UpdateQuestionOptionDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @Min(0)
-  weight: number;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @Min(0)
+  // weight: number;
 
   @ApiProperty()
   @IsNotEmpty()
