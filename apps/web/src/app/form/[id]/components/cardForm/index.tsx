@@ -11,8 +11,6 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
 
   const [options, setOptions] = useState<OptionsTypes[]>([])
 
-  console.log(options);
-
   const getOptions = async () => {
     const {data} : OptionsTypes = await api.get(`/api/question/option/show?question=${id}`)
     setOptions(data)
@@ -22,7 +20,13 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
     const newOption = {
       title: options.find((option) => option.id === id).title
     }
-    await api.patch(`api/question/option/update/${id}`, newOption)
+
+    if (newOption.title !== "") {
+      await api.patch(`api/question/option/update/${id}`, newOption)
+    }else{
+      setOptions(state => state.map((option)=> option.id === id ? {...option, title: "Opção"} : option))
+      await api.patch(`api/question/option/update/${id}`, {title: "Opção"})
+    }
 
   }
 
@@ -36,9 +40,15 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
   }
 
   const putTitle = async (title: string) => {
-    await api.patch(`/api/question/update/${id}`, {
-      title: title
-    })
+    if (title != ""){
+      await api.patch(`api/question/update/${id}`, {
+        title: title
+      })
+    }else{
+      setTitle("Questão")
+      await api.patch(`api/question/update/${id}`, {title: "Questão"})
+    }
+
   }
 
   const deleteQuestion = async () => {

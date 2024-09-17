@@ -23,6 +23,8 @@ const NewForm: React.FC = () => {
     setQuestions(data.questions)
   }
 
+  console.log(questions);
+
   const addQuestion = () => {
 
   }
@@ -38,7 +40,6 @@ const NewForm: React.FC = () => {
       <div className={'flex flex-col gap-3'}>
         {
           questions?.map((question: QuestionType, index) => (
-            question.deletedAt === null &&
             <Question
               key={question.id}
               index={index + 1}

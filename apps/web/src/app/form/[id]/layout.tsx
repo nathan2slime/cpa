@@ -11,7 +11,7 @@ import { api } from '@/api';
 export default ({ children }: Readonly<AppChildren>) => {
 
   const params = useParams()
-  const {id} = params
+  const {id} : string = params
 
   const [title, setTitle] = useState()
 

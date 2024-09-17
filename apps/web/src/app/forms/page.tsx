@@ -100,7 +100,7 @@ function Forms() {
 
           <div className='border w-full rounded-xl'>
             {
-              forms?.length === 0 && <p>Sem formulários criados, crie um formulario no botão acima "Criar novo formulário".</p>
+              forms?.length === 0 && <p className={'p-5'}>Sem formulários criados, crie um formulario no botão acima "Criar novo formulário".</p>
             }
             {
               forms  && (

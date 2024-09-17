@@ -34,8 +34,11 @@ export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: str
   const [favorite, setFavorite] = useState(false);
 
   const putTitle = async () => {
-    api.patch(`/api/form/update/${idForm}`, {
-      title: title
+
+    title == "" && setTitle("Rascunho");
+
+    await api.patch(`/api/form/update/${idForm}`, {
+      title: title == "" ? "Rascunho" : title
     })
   }
 
