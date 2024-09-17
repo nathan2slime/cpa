@@ -19,6 +19,7 @@ import { AUTH_COOKIE } from '~/constants';
 import { SignInDto } from '~/app/auth/auth.dto';
 
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
+import { env } from '~/env';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -56,8 +57,16 @@ export class AuthController {
     const session = req.user as Session;
     const { accessToken, refreshToken } = session;
 
-    res.cookie(AUTH_COOKIE, { accessToken, refreshToken }, { httpOnly: true });
-
+    res.cookie(
+      AUTH_COOKIE,
+      { accessToken, refreshToken },
+      {
+        httpOnly: true,
+        expires: new Date(
+          Date.now() + require('ms')(env.REFRESH_TOKEN_EXPIRES_IN),
+        ),
+      },
+    );
     return res.status(HttpStatus.OK).json(session);
   }
 
@@ -67,8 +76,16 @@ export class AuthController {
     const data = await this.authService.signIn(body);
 
     const { accessToken, refreshToken } = data;
-    res.cookie(AUTH_COOKIE, { accessToken, refreshToken }, { httpOnly: true });
-
+    res.cookie(
+      AUTH_COOKIE,
+      { accessToken, refreshToken },
+      {
+        httpOnly: true,
+        expires: new Date(
+          Date.now() + require('ms')(env.REFRESH_TOKEN_EXPIRES_IN),
+        ),
+      },
+    );
     return res.status(HttpStatus.OK).json(data);
   }
 }
