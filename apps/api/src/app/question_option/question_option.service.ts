@@ -50,7 +50,7 @@ export class QuestionOptionService {
 
   async show({ question }: QueryQuestionOptionDto) {
     return this.prisma.questionOption.findMany({
-      where: { question: { id: question } },
+      where: { question: { id: question }, deletedAt: null },
     });
   }
 }
