@@ -1,5 +1,5 @@
 export type OptionsTypes = {
-  id?: string;
+  id: string;
   title: string;
   weight: number;
   questionId?: string;

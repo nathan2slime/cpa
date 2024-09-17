@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { CirclePlus, Trash2 } from 'lucide-react';
+import { CirclePlus, Trash2, CircleX } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { api } from '@/api';
 import { OptionsTypes } from '@/types/options.types';
@@ -11,20 +11,24 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
 
   const [options, setOptions] = useState<OptionsTypes[]>([])
 
+  console.log(options);
+
   const getOptions = async () => {
     const {data} : OptionsTypes = await api.get(`/api/question/option/show?question=${id}`)
     setOptions(data)
   }
 
   const putOption = async (id: string | undefined) => {
-
     const newOption = {
-      weight: options.find((option) => option.id === id).weight,
       title: options.find((option) => option.id === id).title
     }
-
     await api.patch(`api/question/option/update/${id}`, newOption)
 
+  }
+
+  const removeOption = async (id: string) => {
+    await api.delete(`api/question/option/remove/${id}`)
+    setShouldFetch(prev => !prev)
   }
 
   const changeOption = async (id: string | undefined, title: string) => {
@@ -45,7 +49,6 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
   const createOption = async () => {
     const option = {
       question: id,
-      weight: 1,
       title: "Opção"
     }
 
@@ -75,12 +78,9 @@ export const Question = ({titleQuestion, type, id, shouldFetch, setShouldFetch, 
           {
             options.length > 0 &&
             options.map((option, index) => (
-              <div className={'ml-16 flex gap-1 items-center'} key={index}>
+              <div className={'ml-16 flex gap-1 items-center'} key={option.id}>
                 <Input className={'bg-white'} value={option.title} onBlur={()=> putOption(option.id)} onChange={(e)=> changeOption(option.id, e.target.value)}/>
-                <Input
-                  className={'w-[35px]'}
-                  value={option.weight}
-                  />
+                <CircleX color={'red'} size={15} className={'cursor-pointer '} onClick={()=> removeOption(option.id)}/>
               </div>
             ))
           }
