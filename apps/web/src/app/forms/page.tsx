@@ -26,7 +26,6 @@ function Forms() {
   // Simula os formulários criados
   const [forms, setForms] = useState<FormReq[]>();
   const [shouldFetch, setShouldFetch] = useState<boolean>(true)
-  const [isOpenModalDeleteForm, setIsOpenModalDeleteForm] = useState<boolean>(false)
 
   //redireciona para o formulário
   const redirectToForm = (id: string) => {
@@ -84,7 +83,7 @@ function Forms() {
     <>
       <main className="w-full h-full flex flex-col justify-start items-start">
 
-        <div className={'justify-between w-full flex px-6 items-center'}>
+        <div className={'justify-between w-full flex px-5 items-center'}>
 
           <p className={'font-semibold text-xl'}>Gerenciar Formulários</p>
 

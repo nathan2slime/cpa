@@ -23,8 +23,6 @@ const NewForm: React.FC = () => {
     setQuestions(data.questions)
   }
 
-  console.log(questions);
-
   const addQuestion = () => {
 
   }
