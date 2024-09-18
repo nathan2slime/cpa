@@ -14,20 +14,18 @@ export class FormService {
   }
 
   async getById(id: string) {
-    return this.prisma.form.findUnique({
+    const items = await this.prisma.form.findFirst({
       where: {
         id,
         deletedAt: null,
-        questions: {
-          some: {
-            deletedAt: null,
-          },
-        },
+
       },
       include: {
         questions: true,
       },
     });
+
+    return {...items, questions: items.questions.filter(e => e.deletedAt == null)}
   }
 
   async remove(where: Prisma.FormWhereUniqueInput) {

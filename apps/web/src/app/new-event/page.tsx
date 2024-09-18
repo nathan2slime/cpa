@@ -18,8 +18,6 @@ const NewEvent = () => {
   const [courseSelected, setCourseSelected] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>()
 
-  console.log(coursesSelected);
-
   const [event, setEvent] = useState<EventForm>()
 
   const getCourses = async () => {
@@ -79,7 +77,7 @@ const NewEvent = () => {
                 }
               </SelectContent>
             </Select>
-            <Button onClick={selectCourse}>Adicionar</Button>
+            <Button variant='outline' onClick={selectCourse}>Adicionar</Button>
           </div>
         </div>
 
