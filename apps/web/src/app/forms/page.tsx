@@ -4,41 +4,56 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
 import { FormReq } from '@/types/form';
-import { Pen, Trash2 } from 'lucide-react';
-import { useRouter } from 'next/router';
 
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/components/ui/pagination"
-import { useSearchParams } from 'next/navigation';
+import {
+  Dialog, DialogClose,
+  DialogContent,
+  DialogDescription, DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import { formatDistanceToNow } from 'date-fns';
+import {ptBR} from 'date-fns/locale'
 
 
 function Forms() {
   // Simula os formulários criados
   const [forms, setForms] = useState<FormReq[]>();
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
 
+  //redireciona para o formulário
   const redirectToForm = (id: string) => {
     location.href = `/form/${id}`
   }
 
+  const deleteForm = async (id: string) => {
+    await api.delete(`/api/form/remove/${id}`)
+    setShouldFetch(!shouldFetch)
+  }
+
   const params: URLSearchParams = new URLSearchParams(window.location.search);
   const [page, setPage] = useState(params.get("page") || "1");
-  const [totalForms, setTotalForms] = useState<number>(1);
+  const [totalForms, setTotalForms] = useState<number>(0);
 
+  //limite por pagina de formularios q serão pegos
+  const perPage = 6
+
+  //quantidade de paginas totais arredondadas
+  const pagesRounded = Math.ceil(totalForms / perPage);
+
+  //muda o parametro page da url
   const setParams = (page: number) => {
     setPage(String(page));
     params.set("page", String(page));
 
     window.history.pushState(null, "", `?${params.toString()}`);
   };
-
-  console.log(totalForms);
 
   //criar um formulário e redireciona para o mesmo
   const createForm = async () => {
@@ -50,9 +65,11 @@ function Forms() {
 
   const getForms = async () => {
     try {
-      const res = await api.get<FormReq[]>(`/api/form/search?perPage=6`);
-      setForms(res.data.data);
+      const res = await api.get<FormReq[]>(`/api/form/search?page=${page}&perPage=${perPage}`);
+      const orderedForms = res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+      setForms(orderedForms);
       setTotalForms(res.data.total);
+      console.log(orderedForms);
     } catch (error) {
       console.error('Erro ao buscar formulários:', error);
     }
@@ -60,13 +77,13 @@ function Forms() {
 
   useEffect(() => {
     getForms()
-  }, []);
+  }, [page, shouldFetch]);
 
   return (
     <>
       <main className="w-full h-full flex flex-col justify-start items-start">
 
-        <div className={'justify-between w-full flex px-6 items-center'}>
+        <div className={'justify-between w-full flex px-5 items-center'}>
 
           <p className={'font-semibold text-xl'}>Gerenciar Formulários</p>
 
@@ -80,22 +97,45 @@ function Forms() {
 
           <p className={'font-semibold mb-3'}>Formulários recentes</p>
 
-          <div className='border w-full rounded-xl p-2'>
+          <div className='border w-full rounded-xl'>
             {
-              forms?.length === 0 && <p>Sem formulários criados, crie um formulario no botão acima "Criar novo formulário".</p>
+              forms?.length === 0 && <p className={'p-5'}>Sem formulários criados, crie um formulario no botão acima "Criar novo formulário".</p>
             }
             {
               forms  && (
                 <div>
                   {
                     forms.map(form => (
-                      <div key={form.id} onClick={()=> redirectToForm(form.id)} className={'flex justify-between items-center p-4 border-b last:border-none hover:bg-gray-100 cursor-pointer border-xl'}>
-                        <div>
+                      <div key={form.id} className={'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl'}>
+                        <div className={'flex gap-3 items-center'}>
                           <p className={'font-semibold'}>{form.title}</p>
-                          {/*<p className={'text-sm text-gray-500'}>Tempo de resposta: {form.time}</p>*/}
+                          <p className={'text-gray-500 text-sm'}>{formatDistanceToNow(form.updatedAt, {addSuffix: true, locale: ptBR})}</p>
                         </div>
                         <div className={'flex gap-2 items-center'}>
-                          <Trash2 size={20} color={'red'} className={'hover:scale-110 transition'} />
+                          <Button variant='outline' onClick={()=> redirectToForm(form.id)}>Editar</Button>
+                          <Dialog>
+                            <DialogTrigger>
+                              <Button variant='destructive'>Excluir</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Tem certeza que deseja excluir esse formulário?</DialogTitle>
+                                <DialogDescription>
+                                  Você não poderá reverter essa ação.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <DialogFooter>
+                                <div className={'flex justify-end gap-3'}>
+                                  <DialogClose asChild>
+                                    <Button onClick={() => deleteForm(form.id)} variant="destructive">Sim, apagar</Button>
+                                  </DialogClose>
+                                  <DialogClose>
+                                    <Button variant="outline" >Cancelar</Button>
+                                  </DialogClose>
+                                </div>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         </div>
                       </div>
                     ))
@@ -110,20 +150,19 @@ function Forms() {
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious className={'cursor-pointer'} onClick={()=> page > 1 ? setParams( page -1 ) : null } />
+              <Button variant='ghost' disabled={Number(page) - 1 <= 0} className={'cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed'} onClick={()=> page > 1 ? setParams( page -1 ) : null }>Anterior</Button>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink onClick={()=> setParams(Number(page) - 2)}>{Number(page) - 2}</PaginationLink>
+              <Button variant='ghost' disabled={Number(page) - 1 <= 0} onClick={()=> Number(page) - 2 <= 0 ? setParams(Number(page) -1) : setParams(Number(page) - 2)}>{Number(page) - 2 < 1 ? 1 : Number(page) - 1}</Button>
             </PaginationItem>
             <PaginationItem>
-              <PaginationLink onClick={()=> setParams(Number(page) + 2)}>{Number(page) + 2}</PaginationLink>
+              <Button variant='ghost' disabled={Number(page) + 1 > pagesRounded && Number(page) + 2 > pagesRounded} onClick={()=> Number(page) + 2 > pagesRounded ? null : setParams((Number(page) + 2)) }>{Number(page) + 2}</Button>
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext className={'cursor-pointer'} onClick={()=> setParams(Number(page) + 1)} />
+              <Button variant='ghost' disabled={Number(page) + 1 > pagesRounded} className={'cursor-pointer'} onClick={()=> Number(page) + 1 > pagesRounded ? null : setParams(Number(page) + 1)}>Próximo</Button>
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-
 
       </main>
     </>
