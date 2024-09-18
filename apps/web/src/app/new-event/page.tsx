@@ -2,88 +2,88 @@
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useRef, useState } from 'react';
-import { X } from 'lucide-react'
+import { useEffect, useState } from 'react';
 import { EventForm } from '@/types/event.form.types';
+import { Textarea } from '@/components/ui/textarea';
+import { DatePickerWithRange } from '@/components/DateRangePicker';
+import { DateRange } from 'react-day-picker';
+import { api } from '@/api';
+import { coursesReq, TCourses } from '@/types/courseType';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const NewEvent = () => {
 
-  const [courses, setCourses] = useState<string[]>([]);
-  const [course, setCourse] = useState<string>("");
+  const [courses, setCourses] = useState<coursesReq[]>([]);
+  const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
+  const [courseSelected, setCourseSelected] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<DateRange | undefined>()
 
-  const [event, setEvent] = useState<EventForm>({
-    eventName: "",
-    courses: courses,
-    formId: null,
-    initialDate: null,
-    endDate: null,
-  })
+  console.log(coursesSelected);
 
-  const insertCourse = () => {
-    if (course.trim()) {
-      setEvent({...event, courses: [...event.courses, course]});
-      setCourse("");
-    }
-  };
+  const [event, setEvent] = useState<EventForm>()
 
-  const removeCourse = (index: number) => {
-    const newCourses = event.courses.filter((_, i) => i !== index);
-    setEvent({...event, courses: newCourses})
-  };
-
-  const saveEvent = () => {
-    console.log(event);
+  const getCourses = async () => {
+    const coursesRes = await api.get("/api/course/show")
+    setCourses(coursesRes.data)
   }
+
+  const selectCourse = () => {
+    setCoursesSelected([...coursesSelected, courseSelected])
+  }
+
+  const handleDateChange = (date: DateRange) => {
+    setSelectedDate(date)
+  }
+
+  useEffect(() => {
+    getCourses()
+  }, []);
 
   return (
     <main className="w-full h-[90vh] flex flex-col items-center">
-      <p className={'font-semibold text-xl text-center mb-5'}>Gerenciar Eventos</p>
+      <p className={'font-semibold text-xl text-center mb-5'}>Criar Evento</p>
 
-      <div className="flex flex-col p-5 border rounded-xl gap-5 w-2/3">
+      <div className="flex flex-col p-5 border rounded-xl gap-2 w-2/3">
         <div>
-          <p>Nome do Evento</p>
-          <Input onChange={(e)=> setEvent({...event, eventName: e.target.value })} />
-        </div>
-
-        <div className={'flex gap-5'}>
-          <div>
-            <p>Data inicial</p>
-            <Input type={'date'} onChange={(e) => setEvent({...event, initialDate: e.target.value ? new Date(e.target.value) : null })} />
-          </div>
-
-          <div>
-            <p>Data de termino</p>
-            <Input type={'date'} onChange={(e) => setEvent({...event, endDate: e.target.value ? new Date(e.target.value) : null })} />
-          </div>
+          <p>Titulo</p>
+          <Input onChange={(e) => setEvent({ ...event, title: e.target.value })} />
         </div>
 
         <div>
-          <p>Cursos</p>
-          <span className={'flex gap-5'}>
-            <Input value={course} onChange={(e) => {
-              setCourse(e.target.value)
-            }} type={'text'} />
-            <Button onClick={insertCourse}>Adicionar</Button>
-          </span>
-
-          <div className={'flex text-sm gap-2 text-purple-500'}>
-            {event.courses.length > 0 &&
-              event.courses.map((course, index) => (
-                <div className={'flex gap-1 items-center'}>
-                  <div key={index}>{course}</div>
-                  <X size={15} color={'red'} className={'cursor-pointer'} onClick={()=> removeCourse(index)}/>
-                </div>
-              ))
-            }
-          </div>
-
+          <p>Descrição</p>
+          <Textarea onChange={(e) => setEvent({ ...event, description: e.target.value })} />
         </div>
 
         <div>
-          <p>Formulário</p>
-          <Input />
+          <p>Responsável</p>
+          <Input onChange={(e) => setEvent({ ...event, responsible: e.target.value })} />
         </div>
-        <Button onClick={saveEvent}>
+
+        <div>
+          <p>Data</p>
+          <DatePickerWithRange onDateChange={handleDateChange}/>
+        </div>
+
+        <div>
+          <p>Curso</p>
+          <div className={'flex gap-2'}>
+            <Select value={courseSelected} onValueChange={(value)=> setCourseSelected(value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Selecione os Cursos" />
+              </SelectTrigger>
+              <SelectContent>
+                {
+                  courses.map((course) => (
+                    <SelectItem key={course.id} value={course.id}>{course.name}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+            <Button onClick={selectCourse}>Adicionar</Button>
+          </div>
+        </div>
+
+        <Button>
           Salvar
         </Button>
       </div>

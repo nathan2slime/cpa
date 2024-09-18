@@ -9,6 +9,7 @@ export type TCourses =
   | 'Bacharelado em Engenharia Civil'
   | 'Bacharelado em Engenharia Elétrica'
   | 'Bacharelado em Farmácia'
+  | 'Bacharelado em Medicina'
   | 'Bacharelado em Fisioterapia'
   | 'Bacharelado em Nutrição'
   | 'Bacharelado em Odontologia'
@@ -20,3 +21,9 @@ export type TCourses =
   | 'Superior de Tecnologia em Design de Moda'
   | 'Superior de Tecnologia em Estética e Cosmética'
   | 'Superior de Tecnologia em Radiologia';
+
+export type coursesReq = {
+  id: string,
+  type: 'TECH' | 'HUMAN' | 'HEALTH',
+  name: TCourses
+}

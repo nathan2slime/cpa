@@ -1,7 +1,10 @@
 export type EventForm = {
-  eventName: string,
+  title: string,
+  description: string,
   courses: string[],
-  initialDate: Date | null,
-  endDate: Date | null,
-  formId: number | null
+  responsible: string
+  startDate: Date,
+  endDate: Date,
+  form: string,
+  open: boolean
 }
