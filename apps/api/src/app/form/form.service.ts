@@ -19,7 +19,7 @@ export class FormService {
         id,
         deletedAt: null,
         questions: {
-          some: {
+          every: {
             deletedAt: null,
           },
         },
