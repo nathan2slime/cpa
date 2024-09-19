@@ -21,7 +21,7 @@ services:
       postgres:
           condition: service_healthy
   postgres:
-    image: postgres:latest
+    image: postgres:alpine
     ports:
       - "5432:5432"
     env_file:

@@ -74,8 +74,6 @@ model Event {
 
   startDate DateTime?
   endDate   DateTime?
-  open      Boolean
-
 
   courses CourseEvent[]
   answers   Answer[]
