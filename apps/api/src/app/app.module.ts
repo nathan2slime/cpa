@@ -8,6 +8,7 @@ import { FormModule } from '~/app/form/form.module';
 import { QuestionModule } from '~/app/question/question.module';
 import { QuestionOptionModule } from '~/app/question_option/question_option.module';
 import { EventModule } from '~/app/event/event.module';
+import { AnswerModule } from '~/app/answer/answer.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EventModule } from '~/app/event/event.module';
     QuestionModule,
     QuestionOptionModule,
     CourseModule,
+    AnswerModule,
     HealthModule,
     EventModule,
   ],

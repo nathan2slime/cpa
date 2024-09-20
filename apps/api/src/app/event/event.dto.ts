@@ -30,10 +30,6 @@ export class CreateEventDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
   courses: string[];
-
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  open: boolean;
 }
 
 
@@ -61,9 +57,5 @@ export class UpdateEventDto {
   @ApiProperty({ required: false })
   @IsOptional()
   courses: string[];
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  open: boolean;
 }
 

@@ -33,5 +33,4 @@ export class PaginationDto {
   @IsOptional()
   @Min(1)
   perPage: number = 12;
-
 }
