@@ -92,7 +92,6 @@ const NewEvent = () => {
       ...data,
       startDate: selectedDate.from,
       endDate: selectedDate.to,
-      open: true,
       courses: isAllCourses ? allCourses : coursesSelected,
     };
 
@@ -101,7 +100,7 @@ const NewEvent = () => {
     const {status} = await api.post("/api/event/create", eventReq)
 
     if (status === 201) {
-      toast.success("Evento criado com sucesso!");
+      toast.success("Evento criado com sucesso!")
     }
 
   };
