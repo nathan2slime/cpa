@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
   Post,
   Put,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -17,10 +19,8 @@ import { Roles } from '~/app/auth/auth.decorator';
 import { RoleGuard } from '~/app/auth/role.guard';
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
 import { EventService } from '~/app/event/event.service';
-import {
-  CreateEventDto,
-  UpdateEventDto,
-} from '~/app/event/event.dto';
+import { CreateEventDto, UpdateEventDto } from '~/app/event/event.dto';
+import { PaginationDto } from '../app.dto';
 
 @Controller('event')
 @ApiTags('Event')
@@ -37,8 +37,8 @@ export class EventController {
   }
 
   @Get('show')
-  async getAll(@Res() res: Response) {
-    const data = await this.eventService.getAll();
+  async search(@Res() res: Response, @Query() query: PaginationDto) {
+    const data = await this.eventService.paginate(query);
 
     return res.status(HttpStatus.OK).json(data);
   }
@@ -48,6 +48,13 @@ export class EventController {
     const data = await this.eventService.getById(id);
 
     return res.status(HttpStatus.OK).json(data);
+  }
+
+  @Delete('delete/:id')
+  async delete(@Param('id') id: string, @Res() res: Response) {
+    await this.eventService.remove(id);
+
+    return res.status(HttpStatus.OK).send();
   }
 
   @Put('update/:id')
