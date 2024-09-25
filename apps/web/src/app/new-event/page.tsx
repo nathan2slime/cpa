@@ -82,7 +82,9 @@ const NewEvent = () => {
   }
 
   const saveEvent = async (data: EventForm) => {
-    if (!selectedDate?.from || !selectedDate?.to) return;
+    if (!selectedDate?.from || !selectedDate?.to) {
+      toast.error("Preencha corretamente a data do formulário")
+    }
 
     const allCourses = courses.map((course) => {
       return course.id
