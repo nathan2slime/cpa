@@ -1,4 +1,8 @@
 export type EventForm = {
+  id: string
+  updatedAt: Date,
+  deletedAt: Date,
+  createdAt: Date,
   title: string,
   description: string,
   courses: string[],
