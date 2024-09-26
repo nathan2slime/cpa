@@ -42,7 +42,7 @@ function Forms() {
   const [totalForms, setTotalForms] = useState<number>(0);
 
   //limite por pagina de formularios q serão pegos
-  const perPage = 6
+  const perPage = 5
 
   //quantidade de paginas totais arredondadas
   const pagesRounded = Math.ceil(totalForms / perPage);
@@ -69,7 +69,6 @@ function Forms() {
       const orderedForms = res.data.data.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
       setForms(orderedForms);
       setTotalForms(res.data.total);
-      console.log(orderedForms);
     } catch (error) {
       console.error('Erro ao buscar formulários:', error);
     }
