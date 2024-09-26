@@ -46,6 +46,11 @@ export class UpdateEventDto {
   @IsOptional()
   responsible: string;
 
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  form: string;
+
   @ApiProperty({ required: false })
   @IsOptional()
   startDate: Date;
