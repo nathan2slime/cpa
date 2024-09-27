@@ -20,18 +20,53 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormReq } from '@/types/form';
 import { useForm, Controller } from "react-hook-form";
-import toast from 'react-hot-toast'; // Importação do react-hook-form
+import { zodResolver } from '@hookform/resolvers/zod';
+import {z} from 'zod'
+import toast from 'react-hot-toast';
+import { INVALID_TYPE, REQUIRED_FIELD } from '@/constants'; // Importação do react-hook-form
+
+const eventFormSchema = z.object({
+  title: z.string({
+    invalid_type_error: INVALID_TYPE,
+    required_error: REQUIRED_FIELD
+  }).min(1, REQUIRED_FIELD),
+  description: z.string({
+    invalid_type_error: INVALID_TYPE,
+    required_error: REQUIRED_FIELD
+  }).min(1, REQUIRED_FIELD),
+  courses: z.array(z.string({
+    invalid_type_error: INVALID_TYPE,
+    required_error: REQUIRED_FIELD
+  })),
+  responsible: z.string({
+    invalid_type_error: INVALID_TYPE,
+    required_error: REQUIRED_FIELD
+  }).min(1, REQUIRED_FIELD),
+  startDate: z.date({
+    invalid_type_error: INVALID_TYPE,
+    required_error: "Preencha a data inicial"
+  }),
+  endDate: z.date({
+    invalid_type_error: INVALID_TYPE,
+    required_error: "Preencha data final"
+  }),
+  form: z.string({
+    invalid_type_error: INVALID_TYPE,
+    required_error: REQUIRED_FIELD
+  })
+});
 
 const NewEvent = () => {
 
-  const { register, handleSubmit, control, setValue, watch } = useForm<EventForm>();
+  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<EventForm>({
+    resolver: zodResolver(eventFormSchema)
+  });
+
   const [courses, setCourses] = useState<coursesReq[]>([]);
   const [forms, setForms] = useState<FormReq[]>([]);
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [courseSelected, setCourseSelected] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<DateRange | undefined>();
-
-  const [formSelected, setFormSelected] = useState<string>('');
 
   const [isOpenQueryForm, setIsOpenQueryForm] = useState(false);
   const [queryForm, setQueryForm] = useState<string>();
@@ -52,16 +87,6 @@ const NewEvent = () => {
     setCourses(coursesRes.data);
   };
 
-  const selectCourse = () => {
-    if (courseSelected && !coursesSelected.includes(courseSelected)) {
-      setCoursesSelected([...coursesSelected, courseSelected]);
-    }
-  };
-
-  const handleDateChange = (date: DateRange) => {
-    setSelectedDate(date);
-  };
-
   useEffect(() => {
     getCourse();
   }, []);
@@ -69,6 +94,14 @@ const NewEvent = () => {
   useEffect(() => {
     getForms();
   }, [queryForm]);
+
+  const selectCourse = () => {
+    if (courseSelected && !coursesSelected.includes(courseSelected)) {
+      const updatedCourses = [...coursesSelected, courseSelected];
+      setCoursesSelected(updatedCourses);
+      setValue('courses', updatedCourses);
+    }
+  };
 
   const getSelectedCourseNames = () => {
     return coursesSelected.map((courseId) => {
@@ -81,23 +114,26 @@ const NewEvent = () => {
     setQueryForm(title)
   }
 
-  const saveEvent = async (data: EventForm) => {
-    if (!selectedDate?.from || !selectedDate?.to) {
-      toast.error("Preencha corretamente a data do formulário")
+  const setAllCourses = () => {
+    if (!isAllCourses) {
+      const allCourseIds = courses.map((course) => course.id)
+      setCoursesSelected(allCourseIds)
+      setValue('courses', allCourseIds)
+    } else {
+      setCoursesSelected([])
+      setValue('courses', undefined)
     }
+    setIsAllCourses(!isAllCourses)
+  };
 
-    const allCourses = courses.map((course) => {
-      return course.id
-    })
+  const saveEvent = async (data: EventForm) => {
 
     const eventReq: EventForm = {
       ...data,
       startDate: selectedDate.from,
       endDate: selectedDate.to,
-      courses: isAllCourses ? allCourses : coursesSelected,
+      courses: watch().courses
     };
-
-    console.log(eventReq);
 
     const {status} = await api.post("/api/event/create", eventReq)
 
@@ -112,61 +148,70 @@ const NewEvent = () => {
       <form className="flex flex-col gap-1 w-2/3" onSubmit={handleSubmit(saveEvent)}>
         <div>
           <p>Título</p>
-          <Input {...register("title")} />
+          <Input {...register('title')} />
+          {errors.title && <span className="text-red-500 text-sm">{errors.title?.message?.toString()}</span>}
         </div>
 
         <div>
           <p>Descrição</p>
-          <Textarea {...register("description")} />
+          <Textarea {...register('description')} />
+          {errors.description && <span className="text-red-500 text-sm">{errors.description.message}</span>}
         </div>
 
-        <div className={'flex gap-3'}>
-          <div className={'w-full'}>
+        <div className="flex gap-3">
+          <div className="w-full">
             <p>Responsável</p>
-            <Input {...register('responsible')} />
+            <Input {...register("responsible")} />
+            {errors.responsible && <span className="text-red-500 text-sm">{errors.responsible.message}</span>}
           </div>
 
-          <div className={'w-full'}>
+          <div className="w-full">
             <p>Data</p>
             <Controller
               control={control}
               name="startDate"
-              render={() => (
-                <DatePickerWithRange onDateChange={handleDateChange} />
+              render={({ field: { onChange } }) => (
+                <DatePickerWithRange
+                  onDateChange={
+                  (date: DateRange) => {
+                    setSelectedDate(date);
+                    onChange(date?.from);
+                    setValue("endDate", date?.to)
+                  }}
+                />
               )}
             />
+            { !selectedDate && errors.startDate && <span className="text-red-500 text-sm mr-3">{errors.startDate?.message}</span>}
+            { !selectedDate && errors.endDate && <span className="text-red-500 text-sm">{errors.endDate?.message}</span>}
           </div>
         </div>
 
         <div className="relative">
           <p>Formulário</p>
-          <Input value={queryForm} onFocus={() => setIsOpenQueryForm(true)} onBlur={() => setIsOpenQueryForm(false)}
+          <Input value={queryForm} onFocus={() => setIsOpenQueryForm(true)}
+                 onBlur={() => setIsOpenQueryForm(false)}
                  onChange={(e) => setQueryForm(e.target.value)} />
-          {
-            isOpenQueryForm &&
-            <div className={'absolute mt-1 bg-white w-full border rounded z-40'}>
+
+          { !queryForm && errors.form && <span className="text-red-500 text-sm">{errors.form.message}</span> }
+          {isOpenQueryForm && (
+            <div className="absolute mt-1 bg-white w-full border rounded z-40">
               {forms.length > 0 ? forms.map((form) => (
-                <div key={form.id}
-                     onMouseDown={() => getFormSelected(form.id, form.title)}
-                     className={'p-2 border-b last:border-none hover:bg-gray-50 cursor-pointer'}>
+                <div key={form.id} onMouseDown={() => getFormSelected(form.id, form.title)}
+                     className="p-2 border-b last:border-none hover:bg-gray-50 cursor-pointer">
                   {form.title}
                 </div>
               )) : (
-                <div className={'p-2 border-b last:border-none'}>Nenhum formulário encontrado.</div>
+                <div className="p-2 border-b last:border-none">Nenhum formulário encontrado.</div>
               )}
             </div>
-          }
+          )}
         </div>
 
-        <div className={'z-10'}>
+        <div className="z-10">
           <p>Curso</p>
-          <div className={"flex flex-col gap-2"}>
-            <div className={'flex gap-2 w-full'}>
-              <Select
-                disabled={isAllCourses}
-                value={courseSelected}
-                onValueChange={(value) => setCourseSelected(value)}
-              >
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 w-full">
+              <Select disabled={isAllCourses} value={courseSelected} onValueChange={(value) => setCourseSelected(value)}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecione os Cursos" />
                 </SelectTrigger>
@@ -178,35 +223,38 @@ const NewEvent = () => {
                   ))}
                 </SelectContent>
               </Select>
-              <Button type={'button'} disabled={isAllCourses} variant="outline" onClick={selectCourse}>
+              <Button type="button" disabled={isAllCourses} variant="outline" onClick={selectCourse}>
                 Adicionar
               </Button>
             </div>
 
-            <div className={'flex gap-1 w-full items-center'}>
-              <Checkbox id={'isAllCourses'} checked={isAllCourses}
-                        onCheckedChange={() => setIsAllCourses(!isAllCourses)} />
-              <label htmlFor={'isAllCourses'} className={'cursor-pointer text-sm'}>Todos os Cursos</label>
+            <div className="flex gap-1 w-full items-center">
+              <Checkbox id="isAllCourses" checked={isAllCourses} onCheckedChange={setAllCourses} />
+              <label htmlFor="isAllCourses" className="cursor-pointer text-sm">Todos os Cursos</label>
             </div>
+
+            {
+              !isAllCourses && errors.courses && <span className="text-red-500 text-sm">Preencha esse campo</span>
+            }
+
           </div>
         </div>
 
-        {
-          coursesSelected.length > 0 && !isAllCourses &&
+        {coursesSelected.length > 0 && !isAllCourses && (
           <div>
             <p className="mt-4">Cursos Selecionados:</p>
-            <ul className={'flex gap-2 flex-wrap'}>
+            <ul className="flex gap-2 flex-wrap">
               {getSelectedCourseNames().map((course, index) => (
-                <div key={index} className={'flex'}>
+                <div key={index} className="flex">
                   <li className="mt-2 text-sm">{course?.name}</li>
-                  <X className={'cursor-pointer'} onClick={() => removeCourse(course?.id!)} size={15} color="red" />
+                  <X className="cursor-pointer" onClick={() => removeCourse(course?.id!)} size={15} color="red" />
                 </div>
               ))}
             </ul>
           </div>
-        }
+        )}
 
-        <Button type="submit" className={'mt-3'}>Salvar</Button>
+        <Button type="submit" className="mt-3">Salvar</Button>
       </form>
     </main>
   );

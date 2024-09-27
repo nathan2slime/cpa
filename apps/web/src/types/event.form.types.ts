@@ -1,5 +1,5 @@
 export type EventForm = {
-  id: string
+  id?: string
   updatedAt: Date,
   deletedAt: Date,
   createdAt: Date,
@@ -7,8 +7,7 @@ export type EventForm = {
   description: string,
   courses: string[],
   responsible: string
-  startDate: Date,
-  endDate: Date,
+  startDate?: Date,
+  endDate?: Date,
   form: string,
-  open: boolean
 }
