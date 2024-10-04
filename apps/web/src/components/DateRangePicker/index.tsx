@@ -11,19 +11,27 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
+interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
+  selectedRange?: DateRange;
+  onDateChange: (date: DateRange | undefined) => void;
+}
+
 export function DatePickerWithRange({
-                                      className,
-                                      onDateChange,
-                                    }: React.HTMLAttributes<HTMLDivElement> & { onDateChange: (date: DateRange | undefined) => void }) {
+  className,
+  selectedRange,
+  onDateChange,
+}: DatePickerWithRangeProps) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(),
     to: addDays(new Date(), 20),
-  })
+  });
 
-  const handleDateChange = (newDate: DateRange) => {
-    setDate(newDate)
-    onDateChange(newDate)
-  }
+  const handleDateChange = (newDate: DateRange | undefined) => {
+    if (newDate) {
+      setDate(newDate);
+      onDateChange(newDate);
+    }
+  };
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -65,5 +73,5 @@ export function DatePickerWithRange({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

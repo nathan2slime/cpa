@@ -22,7 +22,7 @@ export type TCourses =
   | 'Superior de Tecnologia em Estética e Cosmética'
   | 'Superior de Tecnologia em Radiologia';
 
-export type coursesReq = {
+export type CoursesReq = {
   id: string,
   type: 'TECH' | 'HUMAN' | 'HEALTH',
   name: TCourses

@@ -21,40 +21,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { FormReq } from '@/types/form';
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import {z} from 'zod'
 import toast from 'react-hot-toast';
-import { INVALID_TYPE, REQUIRED_FIELD } from '@/constants'; // Importação do react-hook-form
-
-const eventFormSchema = z.object({
-  title: z.string({
-    invalid_type_error: INVALID_TYPE,
-    required_error: REQUIRED_FIELD
-  }).min(1, REQUIRED_FIELD),
-  description: z.string({
-    invalid_type_error: INVALID_TYPE,
-    required_error: REQUIRED_FIELD
-  }).min(1, REQUIRED_FIELD),
-  courses: z.array(z.string({
-    invalid_type_error: INVALID_TYPE,
-    required_error: REQUIRED_FIELD
-  })),
-  responsible: z.string({
-    invalid_type_error: INVALID_TYPE,
-    required_error: REQUIRED_FIELD
-  }).min(1, REQUIRED_FIELD),
-  startDate: z.date({
-    invalid_type_error: INVALID_TYPE,
-    required_error: "Preencha a data inicial"
-  }),
-  endDate: z.date({
-    invalid_type_error: INVALID_TYPE,
-    required_error: "Preencha data final"
-  }),
-  form: z.string({
-    invalid_type_error: INVALID_TYPE,
-    required_error: REQUIRED_FIELD
-  })
-});
+import { eventFormSchema } from '@/schemas/eventForm';
 
 const NewEvent = () => {
 
@@ -66,7 +34,10 @@ const NewEvent = () => {
   const [forms, setForms] = useState<FormReq[]>([]);
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [courseSelected, setCourseSelected] = useState<string>();
-  const [selectedDate, setSelectedDate] = useState<DateRange | undefined>();
+  const [selectedDate, setSelectedDate] = useState<DateRange>({
+    from: new Date(),
+    to: new Date()
+  });
 
   const [isOpenQueryForm, setIsOpenQueryForm] = useState(false);
   const [queryForm, setQueryForm] = useState<string>();
@@ -121,7 +92,7 @@ const NewEvent = () => {
       setValue('courses', allCourseIds)
     } else {
       setCoursesSelected([])
-      setValue('courses', undefined)
+      setValue('courses', [])
     }
     setIsAllCourses(!isAllCourses)
   };
@@ -172,11 +143,12 @@ const NewEvent = () => {
               name="startDate"
               render={({ field: { onChange } }) => (
                 <DatePickerWithRange
-                  onDateChange={
-                  (date: DateRange) => {
-                    setSelectedDate(date);
-                    onChange(date?.from);
-                    setValue("endDate", date?.to)
+                  onDateChange={(date: DateRange | undefined) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      onChange(date.from);
+                      setValue("endDate", date.to);
+                    }
                   }}
                 />
               )}
