@@ -1,12 +1,12 @@
 import { QuestionType } from '@/types/question';
 
 export type FormType = {
-  id?: string
-  title: string
+  id?: string;
+  title: string;
   createdAt?: string;
   deletedAt?: string | null;
-  updatedAt?: string
-  questions?: QuestionType[]
+  updatedAt?: string;
+  questions?: QuestionType[];
 };
 
 export type FormReq = {
@@ -14,7 +14,5 @@ export type FormReq = {
   title: string;
   createdAt?: string;
   deletedAt?: string | null;
-  updatedAt?: string
-}
-
-
+  updatedAt?: string;
+};

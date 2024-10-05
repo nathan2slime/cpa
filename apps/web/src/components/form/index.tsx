@@ -20,7 +20,6 @@ import { AvatarFallback } from '@radix-ui/react-avatar';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '@/services/firebaseConfig';
 
-
 // enviar para o banco de dados
 const handleFormSubmit = async (data: Record<string, any>) => {
   const response = await addDoc(collection(db, 'answers'), {
@@ -29,7 +28,6 @@ const handleFormSubmit = async (data: Record<string, any>) => {
 
   console.log('Document written with ID: ', response.id);
 };
-
 
 export const Form = ({ id }: FormProps) => {
   const payload = database[id];
@@ -110,7 +108,6 @@ export const Form = ({ id }: FormProps) => {
           size="lg"
           disabled={!isValid}
           color="primary"
-
           onClick={() => handleFormSubmit(form)}
         >
           Enviar

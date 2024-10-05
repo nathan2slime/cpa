@@ -18,14 +18,16 @@ export class FormService {
       where: {
         id,
         deletedAt: null,
-
       },
       include: {
         questions: true,
       },
     });
 
-    return {...items, questions: items.questions.filter(e => e.deletedAt == null)}
+    return {
+      ...items,
+      questions: items.questions.filter((e) => e.deletedAt == null),
+    };
   }
 
   async remove(where: Prisma.FormWhereUniqueInput) {

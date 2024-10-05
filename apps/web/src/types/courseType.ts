@@ -1,5 +1,5 @@
 export type TCourses =
-  | 'Todos' 
+  | 'Todos'
   | 'Bacharelado em Administração'
   | 'Bacharelado em Arquitetura e Urbanismo'
   | 'Bacharelado em Biomedicina'
@@ -23,7 +23,7 @@ export type TCourses =
   | 'Superior de Tecnologia em Radiologia';
 
 export type CoursesReq = {
-  id: string,
-  type: 'TECH' | 'HUMAN' | 'HEALTH',
-  name: TCourses
-}
+  id: string;
+  type: 'TECH' | 'HUMAN' | 'HEALTH';
+  name: TCourses;
+};
