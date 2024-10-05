@@ -1,38 +1,50 @@
 "use client"
 
-import { ReactElement, ReactNode, useState } from "react"
+import { Children, HTMLAttributes, ReactNode, useState } from "react"
 import { Input } from "../ui/input"
 
-interface InputSearchSelectProps {
-  children: ReactElement<SelectItem>[];
+interface InputSearchSelectProps extends HTMLAttributes<HTMLInputElement>{
+  children: ReactNode;
+  value: string,
 }
 
-interface SelectItem {
+interface SelectItem extends HTMLAttributes<HTMLDivElement> {
   name: string
   key: string
-  value: string
+  value: string,
+  
 }
 
-export const SelectItemSearch = ({name, key, value}: SelectItem) =>  {
+export const SelectItemSearch = ({name, key, value, ...rest}: SelectItem) =>  {
+
+
   return (
-    <div className="p-2 hover:bg-gray-200 cursor-pointer" key={key}>{name}</div>
+    <div {...rest} className="p-2 hover:bg-gray-200 cursor-pointer" key={key}>{name}</div>
   )
 }
 
-export function InputSearchSelect({children} : InputSearchSelectProps) {
+export function InputSearchSelect({children, ...rest} : InputSearchSelectProps) {
 
   const [isOpen, setIsOpen] = useState(false)
+  
+  const onClose = () => {
+    setTimeout(()=> {
+      setIsOpen(false)
+    }, 100)
 
-  console.log(isOpen);
+  }
   
 
   return (
     <div className="relative">
-        <Input onFocus={()=> setIsOpen(true)} onBlur={()=> setIsOpen(false)}/>
+        <Input {...rest} onFocus={()=> setIsOpen(true)} onBlur={onClose}/>
         {
-          isOpen && 
+          isOpen &&
             <div className="absolute mt-2 w-full bg-white border rounded">
-              {children}
+              {Children.count(children) > 0 ? 
+              children 
+              : 
+              <div className="p-2 hover:bg-gray-200 cursor-pointer">Nenhum resultado encontrado</div>}
             </div>
         }
     </div>

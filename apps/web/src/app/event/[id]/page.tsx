@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { EventForm } from '@/types/event.form.types';
 import { api } from '@/api';
 import { useParams } from 'next/navigation';
@@ -33,6 +33,8 @@ const Event = () => {
   const [nameForm, setNameForm] = useState<string>()
   const [forms, setForms] = useState<FormReq[]>()
 
+  const [selectSearch, setSelectSearch] = useState<FormReq>()
+
   const {handleSubmit, control, setValue, watch, formState: {
     errors
   }} = form
@@ -44,9 +46,6 @@ const Event = () => {
     //pegando os cursos
     const {data: courses} = await api.get<CoursesReq[]>('api/course/show')
 
-    const {data: forms} = await api.get('/api/form/search?sortOrder=desc')
-    setForms(forms.data)
-
     setCourses(courses)
 
     //setando o evento no useForm
@@ -57,9 +56,26 @@ const Event = () => {
     setValue('endDate', event.endDate)
   }
 
+  const getForm = async () => {
+    const {data: forms} = await api.get(`/api/form/search?perPage=5&sortOrder=desc&${selectSearch?.title && `query=${selectSearch.title}`}`)
+    setForms(forms.data)
+  }
+
+  const onSelectSearch = (form: FormReq) => {
+    setSelectSearch(form)
+  }
+
+  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectSearch({ title: e.target.value, id: ''});
+  };
+
   const saveEvent = async () => {
     console.log(watch)
   }
+
+  useEffect(()=> {
+    getForm()
+  }, [selectSearch?.title])
 
   useEffect(() => {
     getData()
@@ -159,10 +175,10 @@ const Event = () => {
                 )}
               />
 
-            <InputSearchSelect>
+            <InputSearchSelect onChange={onChangeTitle} value={selectSearch?.title || ''}>
                 {
                   forms?.map((form)=> (
-                    <SelectItemSearch key={form.id} name={form.title} value={form.id} />
+                    <SelectItemSearch onClick={()=> onSelectSearch(form)} key={form.id} name={form.title} value={form.id} />
                   ))
                 }
             </InputSearchSelect>

@@ -12,9 +12,9 @@ export type FormType = {
 export type FormReq = {
   id: string;
   title: string;
-  createdAt: string;
-  deletedAt: string | null;
-  updatedAt: string
+  createdAt?: string;
+  deletedAt?: string | null;
+  updatedAt?: string
 }
 
 
