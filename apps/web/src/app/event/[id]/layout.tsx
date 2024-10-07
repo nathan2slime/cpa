@@ -3,10 +3,6 @@
 import { Sidebar } from '@/components/core/sidebar';
 
 import { AppChildren } from '@/types';
-import React, { useEffect, useState } from 'react';
-import { HeaderForm } from '@/app/form/[id]/components/HeaderForm';
-import { useParams } from 'next/navigation';
-import { api } from '@/api';
 import { Navbar } from '@/components/Navbar';
 
 export default ({ children }: Readonly<AppChildren>) => {

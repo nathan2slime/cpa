@@ -1,7 +1,7 @@
 'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { EventForm } from '@/types/event.form.types';
+import { EventForm, EventReq } from '@/types/event.types';
 import { api } from '@/api';
 import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
@@ -32,6 +32,8 @@ import {
 import { SelectGroup } from '@radix-ui/react-select';
 import { InputSearchSelect, SelectItemSearch } from '@/components/Combobox';
 import { FormReq } from '@/types/form';
+import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Event = () => {
   const { id } = useParams();
@@ -41,14 +43,10 @@ const Event = () => {
     resolver: yupResolver(eventFormSchema),
   });
 
-  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>(
-    undefined,
-  );
+  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
   const [courses, setCourses] = useState<CoursesReq[]>();
-  const [nameForm, setNameForm] = useState<string>();
   const [forms, setForms] = useState<FormReq[]>();
-
-  const [selectSearch, setSelectSearch] = useState<FormReq>();
+  const [selectCourse, setSelectCourse] = useState<string>()
 
   const {
     handleSubmit,
@@ -58,14 +56,25 @@ const Event = () => {
     formState: { errors },
   } = form;
 
+  console.log(errors);
+  
+
+  const [selectSearch, setSelectSearch] = useState<FormReq>();
+  
+  const coursesEvent = watch('courses')?.map((courseId) => {
+    return courses?.find((course) => course.id === courseId)
+  })
+  
   const getData = async () => {
     //pegando o eventos
-    const { data: event } = await api.get<EventForm>(`/api/event/show/${id}`);
+    const { data: event } = await api.get<EventReq>(`/api/event/show/${id}`);
 
     //pegando os cursos
     const { data: courses } = await api.get<CoursesReq[]>('api/course/show');
 
     setCourses(courses);
+
+    const {data: formEvent} = await api.get<FormReq>(`api/form/show/${event?.formId}`)
 
     //setando o evento no useForm
     setValue('title', event.title);
@@ -73,6 +82,15 @@ const Event = () => {
     setValue('responsible', event.responsible);
     setValue('startDate', event.startDate);
     setValue('endDate', event.endDate);
+    setValue('courses', event.courses)
+    
+    setValue('form', formEvent.id)
+
+    setSelectSearch(formEvent)
+    setSelectedRange({
+      from: new Date(event.startDate),
+      to: new Date(event.endDate),
+    });
   };
 
   const getForm = async () => {
@@ -84,14 +102,37 @@ const Event = () => {
 
   const onSelectSearch = (form: FormReq) => {
     setSelectSearch(form);
+    setValue('form', form.id)
   };
 
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectSearch({ title: e.target.value, id: '' });
+    setValue('form', '')
   };
 
-  const saveEvent = async () => {
-    console.log(watch);
+  const handleSelectChange = (value: string) => {
+    setSelectCourse(value)
+  }
+
+  const addSelectChange = () => {
+  const currentCourses = watch('courses') || [];
+  if (selectCourse) {
+    if (!currentCourses.includes(selectCourse)) {
+      setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+    }
+  }
+};
+
+const removeCourse = (id: string) => {
+  const currentCourses = watch('courses') || [];
+  const newCourses = currentCourses.filter((course) => course !== id);
+  setValue('courses', newCourses);
+};
+
+  const saveEvent = async (values: EventForm) => {
+    const {status} = await api.put(`api/event/update/${id}`, values)
+
+    if (status === 200) toast.success('Evento Atualizado com sucesso')
   };
 
   useEffect(() => {
@@ -107,7 +148,7 @@ const Event = () => {
       <Form {...form}>
         <form
           onSubmit={handleSubmit(saveEvent)}
-          className="flex flex-col gap-1 w-2/3"
+          className="flex flex-col gap-2 w-2/3"
         >
           <FormField
             control={control}
@@ -170,45 +211,82 @@ const Event = () => {
 
           <FormField
             control={control}
-            name="courses"
-            render={({ field }) => (
+            name="form"
+            render={() => (
               <FormItem>
-                <FormLabel>Cursos</FormLabel>
+                <FormLabel>Formulário</FormLabel>
                 <FormControl>
-                  <Select>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Theme" />
-                    </SelectTrigger>
-                    <SelectGroup>
-                      <SelectContent>
-                        <SelectLabel>Selecione o Curso</SelectLabel>
-                        {courses?.map((course) => (
-                          <SelectItem key={course.id} value={course.id}>
-                            {course.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </SelectGroup>
-                  </Select>
+                  <InputSearchSelect
+                      onChange={onChangeTitle}
+                      value={selectSearch?.title || ''}
+                    >
+                      {forms?.map((form) => (
+                        <SelectItemSearch
+                          onClick={() => onSelectSearch(form)}
+                          key={form.id}
+                          name={form.title}
+                          value={form.id}
+                        />
+                      ))}
+                    </InputSearchSelect>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <InputSearchSelect
-            onChange={onChangeTitle}
-            value={selectSearch?.title || ''}
-          >
-            {forms?.map((form) => (
-              <SelectItemSearch
-                onClick={() => onSelectSearch(form)}
-                key={form.id}
-                name={form.title}
-                value={form.id}
-              />
-            ))}
-          </InputSearchSelect>
+          <div className='w-full flex flex-col gap-3'>
+            <FormField
+              control={control}
+              name="courses"
+              render={() => (
+                <FormItem className="w-full">
+                  <FormLabel>Cursos</FormLabel>
+                  <FormControl>
+                    <div className='flex gap-2'>
+                      <Select onValueChange={handleSelectChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Selecione o curso" />
+                        </SelectTrigger>
+                        <SelectGroup>
+                          <SelectContent>
+                            <SelectLabel>Selecione o Curso</SelectLabel>
+                            {courses?.map((course) => (
+                              <SelectItem key={course.id} value={course.id}>
+                                {course.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </SelectGroup>
+                      </Select>
+                        <Button onClick={addSelectChange} className='mb-1'>Adicionar</Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {
+              coursesEvent && (
+                <ul className='text-sm flex flex-wrap gap-1'>
+                  {
+                    coursesEvent?.map((courses) => (
+                      <li className='flex items-end'>
+                        {courses?.name}
+                        {
+                          courses?.id &&
+                          <X color='red' onClick={()=> removeCourse(courses.id)}/>
+                        }
+                      </li>
+                    ))
+                  }
+                </ul>
+              )
+                
+            }
+
+          </div>
 
           <Button type="submit" className="mt-3">
             Salvar

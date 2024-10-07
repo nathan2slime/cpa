@@ -1,13 +1,12 @@
-import * as Yup from 'yup';
+import * as yup from 'yup';
 
-import { REQUIRED_FIELD } from '@/constants';
-
-export const eventFormSchema = Yup.object().shape({
-  title: Yup.string().required(REQUIRED_FIELD),
-  description: Yup.string().required(REQUIRED_FIELD),
-  courses: Yup.array().required(REQUIRED_FIELD),
-  responsible: Yup.string().required(REQUIRED_FIELD),
-  startDate: Yup.date().required('Preencha a data inicial'),
-  endDate: Yup.date().required('Preencha a data final'),
-  form: Yup.string().required(REQUIRED_FIELD),
+export const eventFormSchema = yup.object().shape({
+  title: yup.string().required('Título é obrigatório'),
+  description: yup.string().required('Descrição é obrigatória'),
+  courses: yup.array().required('Curso é Obrigatório').min(1, 'É obrigatorio selecionar no mínimo um curso'),
+  responsible: yup.string().required('Responsável é obrigatório'),
+  startDate: yup.date().required('Data de início é obrigatória'),
+  endDate: yup.date().required('Data de término é obrigatória'),
+  form: yup.string().required('Formulário é obrigatório'),
 });
+

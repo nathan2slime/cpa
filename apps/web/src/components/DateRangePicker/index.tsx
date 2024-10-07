@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import { useEffect } from 'react';
 
 interface DatePickerWithRangeProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -30,6 +31,12 @@ export function DatePickerWithRange({
     from: new Date(),
     to: addDays(new Date(), 20),
   });
+
+  useEffect(() => {
+    if (selectedRange) {
+      setDate(selectedRange);
+    }
+  }, [selectedRange]);
 
   const handleDateChange = (newDate: DateRange | undefined) => {
     if (newDate) {

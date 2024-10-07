@@ -39,13 +39,32 @@ export class EventService {
   }
 
   async getById(id: string) {
-    return this.prisma.event.findUnique({
+    const event = await this.prisma.event.findUnique({
       where: {
         id,
         deletedAt: null,
       },
+      include: {
+        courses: {
+          include: {
+            course: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
     });
+  
+    const courseIds = event?.courses.map((course) => course.course.id) || [];
+  
+    return {
+      ...event,
+      courses: courseIds,
+    };
   }
+  
 
   async paginate({
     perPage,

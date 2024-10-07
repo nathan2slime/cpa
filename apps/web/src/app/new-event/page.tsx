@@ -3,7 +3,7 @@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { EventForm } from '@/types/event.form.types';
+import { EventForm } from '@/types/event.types';
 import { Textarea } from '@/components/ui/textarea';
 import { DatePickerWithRange } from '@/components/DateRangePicker';
 import { DateRange } from 'react-day-picker';
