@@ -31,7 +31,7 @@ export function InputSearchSelect({
   const onClose = () => {
     setTimeout(() => {
       setIsOpen(false);
-    }, 100);
+    }, 400);
   };
 
   return (

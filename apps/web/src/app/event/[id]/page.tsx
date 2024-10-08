@@ -56,9 +56,6 @@ const Event = () => {
     formState: { errors },
   } = form;
 
-  console.log(errors);
-  
-
   const [selectSearch, setSelectSearch] = useState<FormReq>();
   
   const coursesEvent = watch('courses')?.map((courseId) => {
@@ -131,7 +128,7 @@ const removeCourse = (id: string) => {
 
   const saveEvent = async (values: EventForm) => {
     const {status} = await api.put(`api/event/update/${id}`, values)
-
+    
     if (status === 200) toast.success('Evento Atualizado com sucesso')
   };
 
