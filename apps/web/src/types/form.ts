@@ -9,6 +9,14 @@ export type FormType = {
   questions?: QuestionType[];
 };
 
+export type FormResponse = {
+  total: number;
+  data: FormReq[];
+  pages: number;
+  perPage: number;
+  page: number;
+}
+
 export type FormReq = {
   id: string;
   title: string;

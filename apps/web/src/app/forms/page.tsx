@@ -3,13 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
-import { FormReq } from '@/types/form';
+import { FormReq, FormResponse } from '@/types/form';
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from '@/components/ui/pagination';
 import {
   Dialog,
   DialogClose,
@@ -22,6 +17,7 @@ import {
 } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { PaginationComponent } from '@/components/PaginationComponent';
 
 function Forms() {
   // Simula os formulários criados
@@ -38,8 +34,8 @@ function Forms() {
     setShouldFetch(!shouldFetch);
   };
 
-  const params: URLSearchParams = new URLSearchParams(window.location.search);
-  const [page, setPage] = useState(params.get('page') || '1');
+  const [page, setPage] = useState<number>(1);
+
   const [totalForms, setTotalForms] = useState<number>(0);
 
   //limite por pagina de formularios q serão pegos
@@ -47,14 +43,6 @@ function Forms() {
 
   //quantidade de paginas totais arredondadas
   const pagesRounded = Math.ceil(totalForms / perPage);
-
-  //muda o parametro page da url
-  const setParams = (page: number) => {
-    setPage(String(page));
-    params.set('page', String(page));
-
-    window.history.pushState(null, '', `?${params.toString()}`);
-  };
 
   //criar um formulário e redireciona para o mesmo
   const createForm = async () => {
@@ -65,18 +53,14 @@ function Forms() {
   };
 
   const getForms = async () => {
-    try {
-      const res = await api.get<FormReq[]>(
-        `/api/form/search?page=${page}&perPage=${perPage}`,
-      );
-      const orderedForms = res.data.data.sort(
-        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
-      );
-      setForms(orderedForms);
-      setTotalForms(res.data.total);
-    } catch (error) {
-      console.error('Erro ao buscar formulários:', error);
-    }
+
+    const {data} = await api.get<FormResponse>(
+      `/api/form/search?page=${page}&perPage=${perPage}`,
+    );
+
+    const orderedForms = data.data.sort((a, b) => new Date(b.updatedAt ?? new Date()).getTime() - new Date(a.updatedAt ?? new Date()).getTime());
+    setForms(orderedForms);
+    setTotalForms(data.total);
   };
 
   useEffect(() => {
@@ -114,10 +98,13 @@ function Forms() {
                     <div className={'flex gap-3 items-center'}>
                       <p className={'font-semibold'}>{form.title}</p>
                       <p className={'text-gray-500 text-sm'}>
-                        {formatDistanceToNow(form.updatedAt, {
-                          addSuffix: true,
-                          locale: ptBR,
-                        })}
+                        {
+                          form.updatedAt && form &&
+                          formatDistanceToNow(new Date(form.updatedAt), {
+                            addSuffix: true,
+                            locale: ptBR,
+                          })
+                        }
                       </p>
                     </div>
                     <div className={'flex gap-2 items-center'}>
@@ -165,65 +152,8 @@ function Forms() {
           </div>
         </div>
 
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                disabled={Number(page) - 1 <= 0}
-                className={
-                  'cursor-pointer disabled:text-gray-500 disabled:cursor-not-allowed'
-                }
-                onClick={() => (page > 1 ? setParams(page - 1) : null)}
-              >
-                Anterior
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                disabled={Number(page) - 1 <= 0}
-                onClick={() =>
-                  Number(page) - 2 <= 0
-                    ? setParams(Number(page) - 1)
-                    : setParams(Number(page) - 2)
-                }
-              >
-                {Number(page) - 2 < 1 ? 1 : Number(page) - 1}
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                disabled={
-                  Number(page) + 1 > pagesRounded &&
-                  Number(page) + 2 > pagesRounded
-                }
-                onClick={() =>
-                  Number(page) + 2 > pagesRounded
-                    ? null
-                    : setParams(Number(page) + 2)
-                }
-              >
-                {Number(page) + 2}
-              </Button>
-            </PaginationItem>
-            <PaginationItem>
-              <Button
-                variant="ghost"
-                disabled={Number(page) + 1 > pagesRounded}
-                className={'cursor-pointer'}
-                onClick={() =>
-                  Number(page) + 1 > pagesRounded
-                    ? null
-                    : setParams(Number(page) + 1)
-                }
-              >
-                Próximo
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <PaginationComponent setPage={setPage} totalPages={pagesRounded}/>
+        
       </main>
     </>
   );

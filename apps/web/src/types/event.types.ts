@@ -12,6 +12,14 @@ export type EventForm = {
   form: string;
 };
 
+export type EventFormResponse = {
+  total: number;
+  data: EventForm[];
+  pages: number;
+  perPage: number;
+  page: number;
+};
+
 export type EventReq = {
   id?: string;
   updatedAt?: Date;
