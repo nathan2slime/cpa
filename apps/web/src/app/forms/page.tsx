@@ -18,6 +18,7 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PaginationComponent } from '@/components/PaginationComponent';
+import { orderBy } from 'lodash';
 
 function Forms() {
   // Simula os formulários criados
@@ -58,7 +59,12 @@ function Forms() {
       `/api/form/search?page=${page}&perPage=${perPage}`,
     );
 
-    const orderedForms = data.data.sort((a, b) => new Date(b.updatedAt ?? new Date()).getTime() - new Date(a.updatedAt ?? new Date()).getTime());
+    const orderedForms = orderBy(
+      data.data,
+      (event) => new Date(event.updatedAt || 0),
+      'desc'
+    )
+    
     setForms(orderedForms);
     setTotalForms(data.total);
   };

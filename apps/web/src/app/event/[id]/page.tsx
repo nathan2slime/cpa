@@ -112,19 +112,19 @@ const Event = () => {
   }
 
   const addSelectChange = () => {
-  const currentCourses = watch('courses') || [];
-  if (selectCourse) {
-    if (!currentCourses.includes(selectCourse)) {
-      setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+    const currentCourses = watch('courses') || [];
+    if (selectCourse) {
+      if (!currentCourses.includes(selectCourse)) {
+        setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+      }
     }
-  }
-};
+  };
 
-const removeCourse = (id: string) => {
-  const currentCourses = watch('courses') || [];
-  const newCourses = currentCourses.filter((course) => course !== id);
-  setValue('courses', newCourses);
-};
+  const removeCourse = (id: string) => {
+    const currentCourses = watch('courses') || [];
+    const newCourses = currentCourses.filter((course) => course !== id);
+    setValue('courses', newCourses);
+  };
 
   const saveEvent = async (values: EventForm) => {
     const {status} = await api.put(`api/event/update/${id}`, values)

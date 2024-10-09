@@ -1,5 +1,7 @@
 'use client';
 
+import {orderBy} from 'lodash'
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -44,9 +46,11 @@ const Events = () => {
     
     setTotalEvents(data.total);
     
-    const orderedEvents = data.data.sort((a, b) => 
-      new Date(b.updatedAt ?? new Date()).getTime() - new Date(a.updatedAt ?? new Date()).getTime()
-    );
+    const orderedEvents = orderBy(
+      data.data,
+      (event) => new Date(event.updatedAt || 0),
+      'desc'
+    )
 
     setEvents(orderedEvents);
   };
