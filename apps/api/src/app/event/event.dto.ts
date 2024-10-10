@@ -32,7 +32,6 @@ export class CreateEventDto {
   courses: string[];
 }
 
-
 export class UpdateEventDto {
   @ApiProperty({ required: false })
   @IsOptional()
@@ -46,7 +45,6 @@ export class UpdateEventDto {
   @IsOptional()
   responsible: string;
 
-
   @ApiProperty({ required: true })
   @IsNotEmpty()
   form: string;
@@ -58,9 +56,8 @@ export class UpdateEventDto {
   @ApiProperty({ required: false })
   @IsOptional()
   endDate: Date;
-  
+
   @ApiProperty({ required: false })
   @IsOptional()
   courses: string[];
 }
-

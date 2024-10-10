@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { Copy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,8 +18,7 @@ import Link from 'next/link';
 type TModal = { formId?: string; onClose?: () => void };
 
 export function Modal({ formId = '', onClose }: TModal) {
-
-  const host = window.location.origin
+  const host = window.location.origin;
 
   return (
     <Dialog>
@@ -56,12 +55,17 @@ export function Modal({ formId = '', onClose }: TModal) {
         </div>
         <DialogFooter className="sm:justify-start gap-2">
           <DialogClose asChild>
-            <Button type="button" variant="secondary" onClick={onClose} className="w-min">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+              className="w-min"
+            >
               Fechar
             </Button>
           </DialogClose>
 
-          <Link href={`${host}/qrcode/${formId}`} target='_blank' >
+          <Link href={`${host}/qrcode/${formId}`} target="_blank">
             <Button type="button" variant="secondary" className="w-min">
               QRCode
             </Button>

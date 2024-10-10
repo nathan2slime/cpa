@@ -15,7 +15,11 @@ import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { Role } from '@prisma/client';
 
-import { CreateQuestionDto, QueryQuestionDto, UpdateQuestionDto } from '~/app/question/question.dto';
+import {
+  CreateQuestionDto,
+  QueryQuestionDto,
+  UpdateQuestionDto,
+} from '~/app/question/question.dto';
 import { QuestionService } from '~/app/question/question.service';
 import { Roles } from '~/app/auth/auth.decorator';
 import { RoleGuard } from '~/app/auth/role.guard';

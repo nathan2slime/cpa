@@ -32,6 +32,5 @@ import { PrismaService } from '~/database/prisma.service';
     JwtRefreshStrategy,
   ],
   exports: [AuthService],
-
 })
 export class AuthModule {}

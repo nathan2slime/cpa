@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,16 +6,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from '../ui/button'
-import { Text } from 'lucide-react'
-
+} from '@/components/ui/dropdown-menu';
+import { Button } from '../ui/button';
+import { Text } from 'lucide-react';
 
 export const QuestionGrafic = (): React.ReactNode => {
   return (
     <DropdownMenu>
-      <Button variant="ghost" >
-        <DropdownMenuTrigger> <Text /></DropdownMenuTrigger>
+      <Button variant="ghost">
+        <DropdownMenuTrigger>
+          {' '}
+          <Text />
+        </DropdownMenuTrigger>
       </Button>
       <DropdownMenuContent>
         <DropdownMenuLabel>Gráficos</DropdownMenuLabel>
@@ -25,6 +27,5 @@ export const QuestionGrafic = (): React.ReactNode => {
         <DropdownMenuItem>Barras Vertical</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
-
+  );
+};

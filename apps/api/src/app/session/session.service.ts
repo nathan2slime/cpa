@@ -62,18 +62,19 @@ export class SessionService {
   }
 
   async refresh(payload: JwtAuthPayload) {
-    const accessToken = await this.jwtService.signAsync({ sessionId: payload.sessionId, userId: payload.userId}, {
-      secret: env.SECRET_KEY,
-      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
-    });
-    
+    const accessToken = await this.jwtService.signAsync(
+      { sessionId: payload.sessionId, userId: payload.userId },
+      {
+        secret: env.SECRET_KEY,
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
+      },
+    );
 
     const session = await this.prisma.session.update({
       where: { id: payload.sessionId, isExpired: false },
       data: { accessToken },
       include: { user: true },
     });
-    
 
     if (session) {
       const user = exclude(session.user, ['password']);

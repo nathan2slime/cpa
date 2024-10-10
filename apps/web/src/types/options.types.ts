@@ -6,4 +6,4 @@ export type OptionsTypes = {
   createdAt?: string;
   deletedAt?: string | null;
   updatedAt?: string;
-}
+};

@@ -15,7 +15,8 @@ import {
   Palette,
   EyeIcon,
   EllipsisIcon,
-  Printer, ChevronDown
+  Printer,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -24,8 +25,13 @@ import { authState } from '@/store/auth.state';
 import { UserData } from '@/types/auth.types';
 import { api } from '@/api';
 
-export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: string}) => {
-
+export const HeaderForm = ({
+  titleForm,
+  idForm,
+}: {
+  titleForm: string;
+  idForm: string;
+}) => {
   const { data } = useSnapshot(authState);
 
   const user = (data && data.user) as UserData;
@@ -34,16 +40,15 @@ export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: str
   const [favorite, setFavorite] = useState(false);
 
   const putTitle = async () => {
-
-    title == "" && setTitle("Rascunho");
+    title == '' && setTitle('Rascunho');
 
     await api.patch(`/api/form/update/${idForm}`, {
-      title: title == "" ? "Rascunho" : title
-    })
-  }
+      title: title == '' ? 'Rascunho' : title,
+    });
+  };
 
   useEffect(() => {
-    setTitle(titleForm)
+    setTitle(titleForm);
   }, [titleForm]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +67,7 @@ export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: str
     <header className="fixed top-0 left-0 z-50 flex justify-between items-center gap-4 h-[60px] w-full p-4 bg-white border-b border-b-gray-200">
       <div className="flex items-center gap-4">
         <Link href="/dashboard">
-          <h4 className='font-bold tracking-wide'>UniFacema</h4>
+          <h4 className="font-bold tracking-wide">UniFacema</h4>
         </Link>
 
         <Input
@@ -89,7 +94,6 @@ export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: str
       </div>
 
       <div className="flex items-center gap-4">
-
         <Button variant="ghost" size="icon" onClick={handleOpenModalTheme}>
           <Palette size={20} color="gray" />
         </Button>
@@ -118,25 +122,24 @@ export const HeaderForm = ({titleForm, idForm} : {titleForm: string, idForm: str
         </div>
 
         <span className="flex gap-4">
-        <DropdownMenu dir="ltr">
-          <DropdownMenuTrigger
-            className="flex items-center py-1 px-2 gap-2 outline-none bg-accent border border-border rounded-lg">
-            <Avatar className="w-[30px] h-[30px] cursor-pointer">
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>US</AvatarFallback>
-            </Avatar>
+          <DropdownMenu dir="ltr">
+            <DropdownMenuTrigger className="flex items-center py-1 px-2 gap-2 outline-none bg-accent border border-border rounded-lg">
+              <Avatar className="w-[30px] h-[30px] cursor-pointer">
+                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarFallback>US</AvatarFallback>
+              </Avatar>
 
-            <p className="text-accent-foreground text-sm font-normal">
-              {user?.login}
-            </p>
+              <p className="text-accent-foreground text-sm font-normal">
+                {user?.login}
+              </p>
 
-            <ChevronDown className="ml-4 w-4 text-accent-foreground" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem>Sair</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </span>
+              <ChevronDown className="ml-4 w-4 text-accent-foreground" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>Sair</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </span>
       </div>
     </header>
   );

@@ -11,6 +11,7 @@ export const courses: Array<TCourses> = [
   'Bacharelado em Engenharia Civil',
   'Bacharelado em Engenharia Elétrica',
   'Bacharelado em Farmácia',
+  'Bacharelado em Medicina',
   'Bacharelado em Fisioterapia',
   'Bacharelado em Nutrição',
   'Bacharelado em Odontologia',

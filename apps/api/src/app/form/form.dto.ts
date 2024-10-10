@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty,  } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class CreateFormDto {
   @ApiProperty()
@@ -12,4 +12,3 @@ export class UpdateFormDto {
   @IsNotEmpty()
   title: string;
 }
-

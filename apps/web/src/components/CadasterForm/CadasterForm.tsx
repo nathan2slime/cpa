@@ -1,11 +1,24 @@
-"use client";
+'use client';
 
 import { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 import { dataCampus } from '@/database/campus';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -20,9 +33,9 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
 
     if (cpf.trim() === '' || nome.trim() === '' || campus.trim() === '') {
       toast({
-        title: "Preencha todos os campos para continuar.",
-        description: "Forneca as informações solicitadas para continuar.",
-      })
+        title: 'Preencha todos os campos para continuar.',
+        description: 'Forneca as informações solicitadas para continuar.',
+      });
       return;
     }
     onSubmitSuccess(); // Chama a função de callback ao enviar o formulário com sucesso
@@ -30,11 +43,13 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Card className="w-[350px] shadow-none" style={
-        {
-          clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 44px), calc(100% - 44px) 100%, 0 100%)',
-        }
-      }>
+      <Card
+        className="w-[350px] shadow-none"
+        style={{
+          clipPath:
+            'polygon(0 0, 100% 0, 100% calc(100% - 44px), calc(100% - 44px) 100%, 0 100%)',
+        }}
+      >
         <CardHeader>
           <CardTitle>Avaliação Institucional</CardTitle>
           <CardDescription>
@@ -60,7 +75,7 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
                   id="nome"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  type='password'
+                  type="password"
                   placeholder="Somente números"
                   required
                 />
@@ -71,7 +86,10 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
                   value={campus}
                   onValueChange={(value) => setCampus(value)}
                 >
-                  <SelectTrigger id="campus" className="flex w-full justify-between bg-gray-200 rounded-md">
+                  <SelectTrigger
+                    id="campus"
+                    className="flex w-full justify-between bg-gray-200 rounded-md"
+                  >
                     <SelectValue placeholder="Campus Universitário" />
                   </SelectTrigger>
                   <SelectContent>
@@ -86,10 +104,14 @@ const CadasterForm = ({ onSubmitSuccess }: { onSubmitSuccess: () => void }) => {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button type="submit" variant="ghost"
+            <Button
+              type="submit"
+              variant="ghost"
               className="bg-[#1e3a8a] hover:bg-green-400 text-white"
               disabled={!nome || !cpf || !campus}
-            >Continuar</Button>
+            >
+              Continuar
+            </Button>
           </CardFooter>
         </form>
       </Card>
