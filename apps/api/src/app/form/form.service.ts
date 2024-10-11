@@ -68,10 +68,9 @@ export class FormService {
       skip: page == 1 ? 0 : perPage * (page - 1),
       where,
       orderBy: sortField
-        ? {
-            [sortField]: sortOrder,
-            createdAt: 'asc',
-          }
+        ? [
+            {[sortField]: sortOrder},
+          ]
         : {
             createdAt: 'asc',
           },

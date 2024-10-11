@@ -25,6 +25,7 @@ import { PaginationComponent } from '@/components/PaginationComponent';
 import toast from 'react-hot-toast';
 
 const Events = () => {
+
   const [events, setEvents] = useState<EventForm[]>([]);
   const [totalEvents, setTotalEvents] = useState<number>(0);
 
@@ -41,18 +42,12 @@ const Events = () => {
   const getEvents = async () => {
 
     const { data } = await api.get<EventFormResponse>(
-      `api/event/show?page=${page}&perPage=${perPage}`,
+      `api/event/show?page=${page}&perPage=${perPage}&sortField=updatedAt&sortOrder=desc`,
     );
     
     setTotalEvents(data.total);
-    
-    const orderedEvents = orderBy(
-      data.data,
-      (event) => new Date(event.updatedAt || 0),
-      'desc'
-    )
 
-    setEvents(orderedEvents);
+    setEvents(data.data);
   };
 
   const deleteEvent = async (id: string) => {
@@ -146,8 +141,15 @@ const Events = () => {
                 </div>
               </div>
             ))}
+            {
+              events.length === 0 &&
+              <p className={'p-5'}>
+                Sem Eventos criados {page > 0 && 'ou itens na paginação'}, crie um evento no botão acima
+                "Criar novo evento".
+              </p> 
+            }
           </div>
-        </div>
+        </div>  
 
         <PaginationComponent setPage={setPage} totalPages={pagesRounded}/>
 

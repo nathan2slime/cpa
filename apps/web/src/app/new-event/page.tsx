@@ -34,8 +34,11 @@ import { InputSearchSelect, SelectItemSearch } from '@/components/Combobox';
 import { FormReq } from '@/types/form';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const Event = () => {
+
+  const router = useRouter()
 
   const form = useForm<EventForm>({
     mode: 'all',
@@ -93,24 +96,26 @@ const Event = () => {
   }
 
   const addSelectChange = () => {
-  const currentCourses = watch('courses') || [];
-  if (selectCourse) {
-    if (!currentCourses.includes(selectCourse)) {
-      setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+    const currentCourses = watch('courses') || [];
+    if (selectCourse) {
+      if (!currentCourses.includes(selectCourse)) {
+        setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+      }
     }
-  }
-};
+  };
 
-const removeCourse = (id: string) => {
-  const currentCourses = watch('courses') || [];
-  const newCourses = currentCourses.filter((course) => course !== id);
-  setValue('courses', newCourses);
-};
+  const removeCourse = (id: string) => {
+    const currentCourses = watch('courses') || [];
+    const newCourses = currentCourses.filter((course) => course !== id);
+    setValue('courses', newCourses);
+  };
 
   const saveEvent = async (values: EventForm) => {
     const {status} = await api.post('api/event/create', values)
 
     if (status === 201) toast.success('Evento Criado com sucesso!')
+
+    router.push('/events')
     
   };
 

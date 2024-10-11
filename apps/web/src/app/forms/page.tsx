@@ -56,16 +56,10 @@ function Forms() {
   const getForms = async () => {
 
     const {data} = await api.get<FormResponse>(
-      `/api/form/search?page=${page}&perPage=${perPage}`,
+      `/api/form/search?page=${page}&perPage=${perPage}&sortField=updatedAt&sortOrder=desc`,
     );
-
-    const orderedForms = orderBy(
-      data.data,
-      (event) => new Date(event.updatedAt || 0),
-      'desc'
-    )
     
-    setForms(orderedForms);
+    setForms(data.data);
     setTotalForms(data.total);
   };
 
@@ -88,7 +82,7 @@ function Forms() {
           <div className="border w-full rounded-xl">
             {forms?.length === 0 && (
               <p className={'p-5'}>
-                Sem formulários criados, crie um formulario no botão acima
+                Sem formulários criados {page > 0 && 'ou itens na paginação'}, crie um formulario no botão acima
                 "Criar novo formulário".
               </p>
             )}

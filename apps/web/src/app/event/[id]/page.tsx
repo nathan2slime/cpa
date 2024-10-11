@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { eventFormSchema } from '@/schemas/eventForm';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useRouter } from 'next/navigation';
 import {
   Form,
   FormField,
@@ -36,6 +37,9 @@ import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Event = () => {
+
+  const router = useRouter();
+
   const { id } = useParams();
 
   const form = useForm<EventForm>({
@@ -63,6 +67,7 @@ const Event = () => {
   })
   
   const getData = async () => {
+
     //pegando o eventos
     const { data: event } = await api.get<EventReq>(`/api/event/show/${id}`);
 
@@ -127,9 +132,13 @@ const Event = () => {
   };
 
   const saveEvent = async (values: EventForm) => {
+
     const {status} = await api.put(`api/event/update/${id}`, values)
-    
-    if (status === 200) toast.success('Evento Atualizado com sucesso')
+
+    if (status == 200) toast.success("Evento editado com sucesso!") 
+
+    router.push('/events')
+
   };
 
   useEffect(() => {

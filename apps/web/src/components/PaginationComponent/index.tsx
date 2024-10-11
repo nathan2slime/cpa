@@ -53,7 +53,7 @@ export const PaginationComponent = ({ totalPages, setPage }: PaginationComponent
           return (
             <PaginationItem key={pageNumber}>
               <PaginationLink
-                href={`?page=${pageNumber}`}
+                className='cursor-pointer'
                 isActive={pageNumber === currentPage}
                 onClick={() => setParams(pageNumber)}
               >
