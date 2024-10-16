@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
 import { FormReq, FormResponse } from '@/types/form';
+import { QrCode } from 'lucide-react';
 
 import {
   Dialog,
@@ -18,12 +19,16 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { PaginationComponent } from '@/components/PaginationComponent';
-import { orderBy } from 'lodash';
+import { NewQRCode } from '@/components/GenerateQRCode';
+import { useParams } from 'next/navigation';
 
 function Forms() {
   // Simula os formulários criados
   const [forms, setForms] = useState<FormReq[]>();
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
+
+  const params = useParams();
+  const host = window.location.origin;
 
   //redireciona para o formulário
   const redirectToForm = (id: string) => {
@@ -72,7 +77,6 @@ function Forms() {
       <main className="w-full h-full flex flex-col justify-start items-start">
         <div className={'justify-between w-full flex px-5 items-center'}>
           <p className={'font-semibold text-xl'}>Gerenciar Formulários</p>
-
           <Button onClick={createForm}>Criar novo formulário</Button>
         </div>
 
@@ -108,6 +112,19 @@ function Forms() {
                       </p>
                     </div>
                     <div className={'flex gap-2 items-center'}>
+                    <Dialog>
+                        <DialogTrigger>
+                          <QrCode className='p-1 border rounded' size={35}/>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              QrCode - Unifacema
+                            </DialogTitle>
+                          </DialogHeader>
+                          <NewQRCode text={`${host}/form/${form.id}`} />
+                        </DialogContent>
+                      </Dialog>
                       <Button
                         variant="outline"
                         onClick={() => redirectToForm(form.id)}

@@ -15,16 +15,13 @@ const NewForm: React.FC = () => {
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
 
   const params = useParams();
-  const { id }: string = params;
+  const { id } = params;
 
   const getDataForm = async () => {
-    const { data }: FormType = await api.get(`/api/form/show/${id}`);
+    const { data } = await api.get(`/api/form/show/${id}`);
     setForm(data);
     setQuestions(data.questions);
   };
-
-  const addQuestion = () => {};
-
   useEffect(() => {
     getDataForm();
   }, [shouldFetch]);

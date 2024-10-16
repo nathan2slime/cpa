@@ -5,18 +5,18 @@ import { toast } from '@/components/ui/use-toast';
 
 type TQRCode = {
   text: string;
+  size?: number 
 };
 
 export const NewQRCode = ({
-  text = 'https://anderson-kauer.vercel.app/',
+  text = 'texto',
+  size = 400
 }: TQRCode) => {
   useEffect(() => {
-    QRCod.toCanvas(document.getElementById('canvas'), text, function (error) {
+    QRCod.toCanvas(document.getElementById('canvas'), text, {
+      width: size
+    }, function (error) {
       if (error) console.error(error);
-      toast({
-        title: 'Bem-vindo!',
-        description: 'Acesse o QR Code para responder a avaliação!',
-      });
     });
   });
 
