@@ -24,4 +24,3 @@ export const getStorage = <T = {}>(key: string): T | null => {
     return null;
   }
 };
-

@@ -7,4 +7,4 @@ export const authSchema = yup.object().shape({
   password: yup.string().required(REQUIRED_FIELD),
 });
 
-export type AuthSchema = yup.InferType<typeof authSchema>
+export type AuthSchema = yup.InferType<typeof authSchema>;

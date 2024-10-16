@@ -6,7 +6,7 @@ import { SortOrder } from '~/types/filter.enum';
 
 export class PaginationDto {
   @ApiProperty({ required: false })
-  @Transform(params => {
+  @Transform((params) => {
     if (params.value) {
       if (params.value.trim().length == 0) return undefined;
     }
@@ -16,7 +16,7 @@ export class PaginationDto {
   query: string;
 
   @ApiProperty({ default: 1, required: false })
-  @Transform(params => parseInt(params.value))
+  @Transform((params) => parseInt(params.value))
   @IsOptional()
   @Min(1)
   page: number = 1;
@@ -29,7 +29,7 @@ export class PaginationDto {
   sortField: string;
 
   @ApiProperty({ default: 12, required: false })
-  @Transform(params => parseInt(params.value))
+  @Transform((params) => parseInt(params.value))
   @IsOptional()
   @Min(1)
   perPage: number = 12;

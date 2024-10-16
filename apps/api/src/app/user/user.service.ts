@@ -4,7 +4,6 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '~/database/prisma.service';
 import { UpdateUserProfileDto } from '~/app/user/user.dto';
 
-
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}

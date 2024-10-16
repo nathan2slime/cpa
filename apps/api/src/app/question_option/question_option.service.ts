@@ -18,7 +18,8 @@ export class QuestionOptionService {
       where: { id: question },
     });
 
-    if(type == QuestionType.TEXT) throw new HttpException(INVALID_QUESTION, HttpStatus.BAD_REQUEST);
+    if (type == QuestionType.TEXT)
+      throw new HttpException(INVALID_QUESTION, HttpStatus.BAD_REQUEST);
 
     // const weight = await this.prisma.questionOption.findFirst({
     //   where: { question: { id: question }, weight: data.weight },

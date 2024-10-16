@@ -13,7 +13,6 @@ import { courses } from '@/database/courses';
 import { Modal } from '../Modal';
 
 export const WrapperEvent = () => {
-
   const [responsavelEvent, setResponsavelEvent] = useState('');
   const [coursesSelected, setCoursesSelected] = useState<string[]>([]);
   const [typeForm, setTypeForm] = useState('');
@@ -121,12 +120,8 @@ export const WrapperEvent = () => {
             <SelectItem value="avaliacao-institucional">
               Avaliação Institucional
             </SelectItem>
-            <SelectItem value="avaliacao-2">
-              Avaliação 2
-            </SelectItem>
-            <SelectItem value="avaliacao-3">
-              Avaliação 3
-            </SelectItem>
+            <SelectItem value="avaliacao-2">Avaliação 2</SelectItem>
+            <SelectItem value="avaliacao-3">Avaliação 3</SelectItem>
           </SelectContent>
         </Select>
 

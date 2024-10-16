@@ -67,6 +67,6 @@ export class EventController {
   ) {
     const data = await this.eventService.update(id, body);
 
-    return data;
+    return res.status(HttpStatus.OK).json(data);
   }
 }

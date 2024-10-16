@@ -4,17 +4,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from '@/components/ui/select';
 
 type TSelectType = {
   setGraphType: (value: string) => void;
   graphType?: string;
 };
 
-const SelectTipo = ({ setGraphType, graphType = "pizza" }: TSelectType) => {
-
+const SelectTipo = ({ setGraphType, graphType = 'pizza' }: TSelectType) => {
   return (
-    <Select value={graphType} onValueChange={setGraphType}  >
+    <Select value={graphType} onValueChange={setGraphType}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Grafico" />
       </SelectTrigger>

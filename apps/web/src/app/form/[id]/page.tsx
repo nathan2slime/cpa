@@ -10,48 +10,42 @@ import { FormType } from '@/types/form';
 
 const NewForm: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [form, setForm] = useState(null)
+  const [form, setForm] = useState(null);
 
-  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true);
 
-  const params = useParams()
-  const {id} : string = params
+  const params = useParams();
+  const { id }: string = params;
 
   const getDataForm = async () => {
-    const {data} : FormType = await api.get(`/api/form/show/${id}`)
-    setForm(data)
-    setQuestions(data.questions)
-  }
+    const { data }: FormType = await api.get(`/api/form/show/${id}`);
+    setForm(data);
+    setQuestions(data.questions);
+  };
 
-  const addQuestion = () => {
-
-  }
+  const addQuestion = () => {};
 
   useEffect(() => {
-    getDataForm()
-  }, [shouldFetch])
+    getDataForm();
+  }, [shouldFetch]);
 
   return (
-      <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
-        <MenuOptionNewForm idForm={id} shouldFetch={setShouldFetch} />
+    <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
+      <MenuOptionNewForm idForm={id} shouldFetch={setShouldFetch} />
 
       <div className={'flex flex-col gap-3'}>
-        {
-          questions?.map((question: QuestionType, index) => (
-            <Question
-              key={question.id}
-              index={index + 1}
-              id={question.id}
-              titleQuestion={question.title}
-              type={question.type}
-              setShouldFetch={setShouldFetch}
-              shouldFetch={shouldFetch}
-            />
-          ))
-
-        }
+        {questions?.map((question: QuestionType, index) => (
+          <Question
+            key={question.id}
+            index={index + 1}
+            id={question.id}
+            titleQuestion={question.title}
+            type={question.type}
+            setShouldFetch={setShouldFetch}
+            shouldFetch={shouldFetch}
+          />
+        ))}
       </div>
-
     </main>
   );
 };

@@ -39,13 +39,32 @@ export class EventService {
   }
 
   async getById(id: string) {
-    return this.prisma.event.findUnique({
+    const event = await this.prisma.event.findUnique({
       where: {
         id,
         deletedAt: null,
       },
+      include: {
+        courses: {
+          include: {
+            course: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
     });
+  
+    const courseIds = event?.courses.map((course) => course.course.id) || [];
+  
+    return {
+      ...event,
+      courses: courseIds,
+    };
   }
+  
 
   async paginate({
     perPage,
@@ -71,10 +90,9 @@ export class EventService {
       skip: page == 1 ? 0 : perPage * (page - 1),
       where,
       orderBy: sortField
-        ? {
-            [sortField]: sortOrder,
-            createdAt: 'asc',
-          }
+        ? [
+          {[sortField]: sortOrder},
+        ]
         : {
             createdAt: 'asc',
           },
@@ -117,8 +135,7 @@ export class EventService {
       },
       where: {
         id,
-      },
-      select: {},
+      }
     });
 
     await this.prisma.courseEvent.deleteMany({

@@ -1,94 +1,310 @@
-"use client"
+'use client';
 
+import { ChangeEvent, useEffect, useState } from 'react';
+import { EventForm, EventReq } from '@/types/event.types';
+import { api } from '@/api';
+import { useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { useRef, useState } from 'react';
-import { X } from 'lucide-react'
-import { EventForm } from '@/types/event.form.types';
+import { eventFormSchema } from '@/schemas/eventForm';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormControl,
+} from '@/components/ui/form';
+import { DatePickerWithRange } from '@/components/DateRangePicker';
+import { DateRange } from 'react-day-picker';
+import { CoursesReq } from '@/types/courseType';
+import {
+  Select,
+  SelectTrigger,
+  SelectItem,
+  SelectLabel,
+  SelectContent,
+  SelectValue,
+} from '@/components/ui/select';
+import { SelectGroup } from '@radix-ui/react-select';
+import { InputSearchSelect, SelectItemSearch } from '@/components/Combobox';
+import { FormReq } from '@/types/form';
+import { X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
-const NewEvent = () => {
+const Event = () => {
 
-  const [courses, setCourses] = useState<string[]>([]);
-  const [course, setCourse] = useState<string>("");
+  const router = useRouter()
 
-  const [event, setEvent] = useState<EventForm>({
-    eventName: "",
-    courses: courses,
-    formId: null,
-    initialDate: null,
-    endDate: null,
+  const form = useForm<EventForm>({
+    mode: 'all',
+    resolver: yupResolver(eventFormSchema),
+  });
+
+  const [selectedRange, setSelectedRange] = useState<DateRange | undefined>();
+  const [courses, setCourses] = useState<CoursesReq[]>();
+  const [forms, setForms] = useState<FormReq[]>();
+  const [selectCourse, setSelectCourse] = useState<string>()
+
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors },
+  } = form;
+  
+  const [selectSearch, setSelectSearch] = useState<FormReq>();
+  
+  const coursesEvent = watch('courses')?.map((courseId) => {
+    return courses?.find((course) => course.id === courseId)
   })
+  
+  const getData = async () => {
 
-  const insertCourse = () => {
-    if (course.trim()) {
-      setEvent({...event, courses: [...event.courses, course]});
-      setCourse("");
+    //pegando os cursos
+    const { data: courses } = await api.get<CoursesReq[]>('api/course/show');
+
+    setCourses(courses);
+  };
+
+  const getForms = async () => {
+    const { data: forms } = await api.get(
+      `/api/form/search?perPage=5&sortOrder=desc&${selectSearch?.title && `query=${selectSearch.title}`}`,
+    );
+    setForms(forms.data);
+  };
+
+  const onSelectSearch = (form: FormReq) => {
+    console.log(form);
+    
+    setSelectSearch(form);
+    setValue('form', form.id)
+  };
+
+  const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+    setSelectSearch({ title: e.target.value, id: '' });
+    setValue('form', '')
+  };
+
+  const handleSelectChange = (value: string) => {
+    setSelectCourse(value)
+  }
+
+  const addSelectChange = () => {
+    const currentCourses = watch('courses') || [];
+    if (selectCourse) {
+      if (!currentCourses.includes(selectCourse)) {
+        setValue('courses', [...currentCourses, selectCourse], {shouldValidate: true});
+      }
     }
   };
 
-  const removeCourse = (index: number) => {
-    const newCourses = event.courses.filter((_, i) => i !== index);
-    setEvent({...event, courses: newCourses})
+  const removeCourse = (id: string) => {
+    const currentCourses = watch('courses') || [];
+    const newCourses = currentCourses.filter((course) => course !== id);
+    setValue('courses', newCourses);
   };
 
-  const saveEvent = () => {
-    console.log(event);
-  }
+  const saveEvent = async (values: EventForm) => {
+    const {status} = await api.post('api/event/create', values)
+
+    if (status === 201) toast.success('Evento Criado com sucesso!')
+
+    router.push('/events')
+    
+  };
+
+  useEffect(() => {
+    getForms();
+  }, [selectSearch?.title]);
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
-    <main className="w-full h-[90vh] flex flex-col items-center">
-      <p className={'font-semibold text-xl text-center mb-5'}>Gerenciar Eventos</p>
+    <main className="w-full h-[90vh] mb-5 flex flex-col items-center">
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(saveEvent)}
+          className="flex flex-col gap-2 w-2/3"
+        >
+          <FormField
+            control={control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Titulo</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <div className="flex flex-col p-5 border rounded-xl gap-5 w-2/3">
-        <div>
-          <p>Nome do Evento</p>
-          <Input onChange={(e)=> setEvent({...event, eventName: e.target.value })} />
-        </div>
+          <FormField
+            control={control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Descrição</FormLabel>
+                <FormControl>
+                  <Textarea {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div className={'flex gap-5'}>
-          <div>
-            <p>Data inicial</p>
-            <Input type={'date'} onChange={(e) => setEvent({...event, initialDate: e.target.value ? new Date(e.target.value) : null })} />
+          <div className="flex gap-3">
+            <div className="w-full">
+              <FormField
+                control={control}
+                name="responsible"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Responsável</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className={`w-full flex flex-col justify-end ${errors.endDate || errors.startDate ? 'gap-1' : null}`}>
+              <DatePickerWithRange
+                selectedRange={selectedRange}
+                onDateChange={(range) => {
+                  setSelectedRange(range);
+                  if (range && range.from && range.to) {
+                    setValue('startDate', range.from);
+                    setValue('endDate', range.to);
+                  }
+                }}
+              />
+              <div className="w-full flex gap-2">
+                <FormField
+                  control={control}
+                  name="startDate"
+                  render={() => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <FormMessage />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={control}
+                  name="endDate"
+                  render={() => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <FormMessage />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
           </div>
 
-          <div>
-            <p>Data de termino</p>
-            <Input type={'date'} onChange={(e) => setEvent({...event, endDate: e.target.value ? new Date(e.target.value) : null })} />
-          </div>
-        </div>
+          <FormField
+            control={control}
+            name="form"
+            render={() => (
+              <FormItem>
+                <FormLabel>Formulário</FormLabel>
+                <FormControl>
+                  <InputSearchSelect
+                      onChange={onChangeTitle}
+                      value={selectSearch?.title || ''}
+                    >
+                      {forms?.map((form) => (
+                        <SelectItemSearch
+                          onClick={() => onSelectSearch(form)}
+                          key={form.id}
+                          name={form.title}
+                          value={form.id}
+                        />
+                      ))}
+                    </InputSearchSelect>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <div>
-          <p>Cursos</p>
-          <span className={'flex gap-5'}>
-            <Input value={course} onChange={(e) => {
-              setCourse(e.target.value)
-            }} type={'text'} />
-            <Button onClick={insertCourse}>Adicionar</Button>
-          </span>
+          <div className='w-full flex flex-col gap-3'>
+            <FormField
+              control={control}
+              name="courses"
+              render={() => (
+                <FormItem className="w-full">
+                  <FormLabel>Cursos</FormLabel>
+                  <FormControl>
+                    <div className='flex gap-2'>
+                      <Select onValueChange={handleSelectChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Selecione o curso" />
+                        </SelectTrigger>
+                        <SelectGroup>
+                          <SelectContent>
+                            <SelectLabel>Selecione o Curso</SelectLabel>
+                            {courses?.map((course) => (
+                              <SelectItem key={course.id} value={course.id}>
+                                {course.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </SelectGroup>
+                      </Select>
+                        <Button type='button' onClick={addSelectChange} className='mb-1'>Adicionar</Button>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className={'flex text-sm gap-2 text-purple-500'}>
-            {event.courses.length > 0 &&
-              event.courses.map((course, index) => (
-                <div className={'flex gap-1 items-center'}>
-                  <div key={index}>{course}</div>
-                  <X size={15} color={'red'} className={'cursor-pointer'} onClick={()=> removeCourse(index)}/>
-                </div>
-              ))
+            {
+              coursesEvent && (
+                <ul className='text-sm flex flex-wrap gap-1'>
+                  {
+                    coursesEvent?.map((courses) => (
+                      <li className='flex items-end'>
+                        {courses?.name}
+                        {
+                          courses?.id &&
+                          <X color='red' onClick={()=> removeCourse(courses.id)}/>
+                        }
+                      </li>
+                    ))
+                  }
+                </ul>
+              )
+                
             }
+
           </div>
 
-        </div>
-
-        <div>
-          <p>Formulário</p>
-          <Input />
-        </div>
-        <Button onClick={saveEvent}>
-          Salvar
-        </Button>
-      </div>
+          <Button type="submit" className="mt-3">
+            Salvar
+          </Button>
+        </form>
+      </Form>
     </main>
-  )
-}
+  );
+};
 
-export default NewEvent;
+export default Event;
