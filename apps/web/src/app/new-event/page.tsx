@@ -1,9 +1,9 @@
 'use client';
 
 import { ChangeEvent, useEffect, useState } from 'react';
-import { EventForm, EventReq } from '@/types/event.types';
+import { EventForm } from '@/types/event.types';
 import { api } from '@/api';
-import { useParams } from 'next/navigation';
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -49,6 +49,8 @@ const Event = () => {
   const [courses, setCourses] = useState<CoursesReq[]>();
   const [forms, setForms] = useState<FormReq[]>();
   const [selectCourse, setSelectCourse] = useState<string>()
+  
+  const [isAllCourses, setIsAllCourses] = useState<boolean>(false)
 
   const {
     handleSubmit,
@@ -80,8 +82,6 @@ const Event = () => {
   };
 
   const onSelectSearch = (form: FormReq) => {
-    console.log(form);
-    
     setSelectSearch(form);
     setValue('form', form.id)
   };
@@ -126,6 +126,23 @@ const Event = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(()=> {
+    if (isAllCourses){
+
+      setValue('courses', [])
+
+      const coursesId = courses?.map((course) => {
+        return course.id
+      })
+
+      if (coursesId) setValue('courses', coursesId);
+
+    }
+
+    if (!isAllCourses) setValue('courses', [])
+
+  }, [isAllCourses])
 
   return (
     <main className="w-full h-[90vh] mb-5 flex flex-col items-center">
@@ -245,7 +262,7 @@ const Event = () => {
             )}
           />
 
-          <div className='w-full flex flex-col gap-3'>
+          <div className='w-full flex flex-col gap-1'>
             <FormField
               control={control}
               name="courses"
@@ -254,7 +271,7 @@ const Event = () => {
                   <FormLabel>Cursos</FormLabel>
                   <FormControl>
                     <div className='flex gap-2'>
-                      <Select onValueChange={handleSelectChange}>
+                      <Select disabled={isAllCourses} onValueChange={handleSelectChange}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione o curso" />
                         </SelectTrigger>
@@ -269,7 +286,7 @@ const Event = () => {
                           </SelectContent>
                         </SelectGroup>
                       </Select>
-                        <Button type='button' onClick={addSelectChange} className='mb-1'>Adicionar</Button>
+                        <Button disabled={isAllCourses} type='button' onClick={addSelectChange} className='mb-1'>Adicionar</Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -277,7 +294,7 @@ const Event = () => {
               )}
             />
 
-            {
+            { !isAllCourses &&
               coursesEvent && (
                 <ul className='text-sm flex flex-wrap gap-1'>
                   {
@@ -295,6 +312,11 @@ const Event = () => {
               )
                 
             }
+
+            <div className='flex text-sm gap-2 items-center'>
+              <Checkbox id="allCourses" onClick={() => setIsAllCourses(!isAllCourses)} />
+              <label htmlFor='allCourses'>Selecionar todos os cursos</label>
+            </div>
 
           </div>
 

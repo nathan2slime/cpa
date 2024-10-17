@@ -35,6 +35,7 @@ import { InputSearchSelect, SelectItemSearch } from '@/components/Combobox';
 import { FormReq } from '@/types/form';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const Event = () => {
 
@@ -51,6 +52,8 @@ const Event = () => {
   const [courses, setCourses] = useState<CoursesReq[]>();
   const [forms, setForms] = useState<FormReq[]>();
   const [selectCourse, setSelectCourse] = useState<string>()
+
+  const [isAllCourses, setIsAllCourses] = useState<boolean>(false)
 
   const {
     handleSubmit,
@@ -148,6 +151,23 @@ const Event = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  useEffect(()=> {
+    if (isAllCourses){
+
+      setValue('courses', [])
+
+      const coursesId = courses?.map((course) => {
+        return course.id
+      })
+
+      if (coursesId) setValue('courses', coursesId);
+
+    }
+
+    if (!isAllCourses) setValue('courses', [])
+
+  }, [isAllCourses])
 
   return (
     <main className="w-full h-[90vh] mb-5 flex flex-col items-center">
@@ -273,7 +293,7 @@ const Event = () => {
               )}
             />
 
-            {
+            { !isAllCourses &&
               coursesEvent && (
                 <ul className='text-sm flex flex-wrap gap-1'>
                   {
@@ -291,6 +311,11 @@ const Event = () => {
               )
                 
             }
+
+            <div className='flex text-sm gap-2 items-center'>
+              <Checkbox id="allCourses" onClick={() => setIsAllCourses(!isAllCourses)} />
+              <label htmlFor='allCourses'>Selecionar todos os cursos</label>
+            </div>
 
           </div>
 

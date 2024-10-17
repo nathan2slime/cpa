@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { PaginationComponent } from '@/components/PaginationComponent';
+import { PaginationComponent } from '@/components/PaginationComponent'
 import { NewQRCode } from '@/components/GenerateQRCode';
 import { useParams } from 'next/navigation';
 
@@ -118,8 +118,8 @@ function Forms() {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>
-                              QrCode - Unifacema
+                            <DialogTitle className='text-center'>
+                              QrCode - {form.title}
                             </DialogTitle>
                           </DialogHeader>
                           <NewQRCode text={`${host}/form/${form.id}`} />

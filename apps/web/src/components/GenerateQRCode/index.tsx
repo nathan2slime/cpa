@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect } from 'react';
 import QRCod from 'qrcode';
-import { toast } from '@/components/ui/use-toast';
 
 type TQRCode = {
   text: string;
