@@ -63,7 +63,7 @@ export class QuestionController {
 
   @Get('show')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.ADMIN])
+  @Roles([Role.ADMIN, Role.USER])
   async show(@Res() res: Response, @Query() query: QueryQuestionDto) {
     const data = await this.questionService.show(query);
 
