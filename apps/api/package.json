@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
-    "dev": "nest start --watch | pino-pretty",
+    "dev": "nest start --watch | pino-pretty --preserveWatchOutput",
     "dev:debug": "nest start --debug --watch",
     "prod": "node dist/main | pino-pretty"
   },
