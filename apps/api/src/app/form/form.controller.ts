@@ -60,9 +60,18 @@ export class FormController {
 
   @Get('show/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.ADMIN])
+  @Roles([Role.ADMIN, Role.USER])
   async show(@Res() res: Response, @Param('id') id: string) {
     const data = await this.formService.getById(id);
+
+    return res.status(HttpStatus.OK).json(data);
+  }
+
+  @Get('full/:id')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.ADMIN, Role.USER])
+  async full(@Res() res: Response, @Param('id') id: string) {
+    const data = await this.formService.getFull(id);
 
     return res.status(HttpStatus.OK).json(data);
   }

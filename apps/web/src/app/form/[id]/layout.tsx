@@ -10,9 +10,9 @@ import { api } from '@/api';
 
 export default ({ children }: Readonly<AppChildren>) => {
   const params = useParams();
-  const { id }: string = params;
+  const id = params.id as string;
 
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState('');
 
   const getDataForm = async () => {
     const { data } = await api.get(`/api/form/show/${id}`);

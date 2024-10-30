@@ -13,6 +13,19 @@ export class FormService {
     return this.prisma.form.create({ data });
   }
 
+  async getFull(id: string) {
+    return this.prisma.form.findUnique({
+      where: { id },
+      include: {
+        questions: {
+          include: {
+            options: true,
+          },
+        },
+      },
+    });
+  }
+
   async getById(id: string) {
     const items = await this.prisma.form.findFirst({
       where: {
@@ -68,9 +81,7 @@ export class FormService {
       skip: page == 1 ? 0 : perPage * (page - 1),
       where,
       orderBy: sortField
-        ? [
-            {[sortField]: sortOrder},
-          ]
+        ? [{ [sortField]: sortOrder }]
         : {
             createdAt: 'asc',
           },

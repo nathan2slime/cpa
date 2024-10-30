@@ -19,12 +19,18 @@ export const AuthProvider = ({ children }: AppChildren) => {
   }, []);
 
   useEffect(() => {
+    const isAnswer = pathname.includes('answer');
+
     if (logged && pathname.includes('/signing')) return router.push('/');
 
     if (loading || logged) return;
 
     if (pathname.includes('/signing')) return;
 
+    if (isAnswer) {
+      router.push('/auth/signing?callback=' + pathname);
+    return
+    }
     router.push('/auth/signing');
   }, [loading]);
 

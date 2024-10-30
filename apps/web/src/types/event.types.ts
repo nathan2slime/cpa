@@ -14,7 +14,7 @@ export type EventForm = {
 
 export type EventFormResponse = {
   total: number;
-  data: EventReq[];
+  data: EventForm[];
   pages: number;
   perPage: number;
   page: number;

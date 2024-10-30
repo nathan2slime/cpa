@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import toast from 'react-hot-toast';
+import { cookies } from 'next/headers';
 
 export const api = axios.create({
   withCredentials: true,
@@ -16,16 +16,7 @@ api.interceptors.response.use(
     return response;
   },
   (error: AxiosError) => {
-    const exclude = ['/api/auth', '/api/auth/refresh'];
-    if (error.response) {
-      const data = error.response.data as Record<string, string>;
-
-      if (data) {
-        if (!exclude.includes(data.path) && !isServer) {
-          toast.error(data.message);
-        }
-      }
-    }
+    console.log(error);
 
     return Promise.resolve(null);
   },

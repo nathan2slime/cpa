@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
 import { FormReq, FormResponse } from '@/types/form';
-import { QrCode } from 'lucide-react';
 
 import {
   Dialog,
@@ -17,23 +16,17 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 import { ptBR } from 'date-fns/locale';
-import { PaginationComponent } from '@/components/PaginationComponent'
-import { NewQRCode } from '@/components/GenerateQRCode';
-import { useParams } from 'next/navigation';
+
+import { PaginationComponent } from '@/components/PaginationComponent';
+import { orderBy } from 'lodash';
 
 function Forms() {
   // Simula os formulários criados
+  const router = useRouter();
   const [forms, setForms] = useState<FormReq[]>();
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
-
-  const params = useParams();
-  const host = window.location.origin;
-
-  //redireciona para o formulário
-  const redirectToForm = (id: string) => {
-    location.href = `/form/${id}`;
-  };
 
   const deleteForm = async (id: string) => {
     await api.delete(`/api/form/remove/${id}`);
@@ -55,15 +48,14 @@ function Forms() {
     const res = await api.post(`/api/form/create`, {
       title: 'Rascunho',
     });
-    redirectToForm(res.data.id);
+    router.push('/form/' + res.data.id);
   };
 
   const getForms = async () => {
-
-    const {data} = await api.get<FormResponse>(
+    const { data } = await api.get<FormResponse>(
       `/api/form/search?page=${page}&perPage=${perPage}&sortField=updatedAt&sortOrder=desc`,
     );
-    
+
     setForms(data.data);
     setTotalForms(data.total);
   };
@@ -77,6 +69,7 @@ function Forms() {
       <main className="w-full h-full flex flex-col justify-start items-start">
         <div className={'justify-between w-full flex px-5 items-center'}>
           <p className={'font-semibold text-xl'}>Gerenciar Formulários</p>
+
           <Button onClick={createForm}>Criar novo formulário</Button>
         </div>
 
@@ -86,8 +79,8 @@ function Forms() {
           <div className="border w-full rounded-xl">
             {forms?.length === 0 && (
               <p className={'p-5'}>
-                Sem formulários criados {page > 0 && 'ou itens na paginação'}, crie um formulario no botão acima
-                "Criar novo formulário".
+                Sem formulários criados {page > 0 && 'ou itens na paginação'},
+                crie um formulario no botão acima "Criar novo formulário".
               </p>
             )}
             {forms && (
@@ -102,32 +95,18 @@ function Forms() {
                     <div className={'flex gap-3 items-center'}>
                       <p className={'font-semibold'}>{form.title}</p>
                       <p className={'text-gray-500 text-sm'}>
-                        {
-                          form.updatedAt && form &&
+                        {form.updatedAt &&
+                          form &&
                           formatDistanceToNow(new Date(form.updatedAt), {
                             addSuffix: true,
                             locale: ptBR,
-                          })
-                        }
+                          })}
                       </p>
                     </div>
                     <div className={'flex gap-2 items-center'}>
-                    <Dialog>
-                        <DialogTrigger>
-                          <QrCode className='p-1 border rounded' size={35}/>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle className='text-center'>
-                              QrCode - {form.title}
-                            </DialogTitle>
-                          </DialogHeader>
-                          <NewQRCode text={`${host}/form/${form.id}`} />
-                        </DialogContent>
-                      </Dialog>
                       <Button
                         variant="outline"
-                        onClick={() => redirectToForm(form.id)}
+                        onClick={() => router.push('/form/' + form.id)}
                       >
                         Editar
                       </Button>
@@ -169,8 +148,7 @@ function Forms() {
           </div>
         </div>
 
-        <PaginationComponent setPage={setPage} totalPages={pagesRounded}/>
-        
+        <PaginationComponent setPage={setPage} totalPages={pagesRounded} />
       </main>
     </>
   );
