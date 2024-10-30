@@ -11,7 +11,9 @@ export const NewQRCode = ({
   text = 'https://anderson-kauer.vercel.app/',
 }: TQRCode) => {
   useEffect(() => {
-    QRCod.toCanvas(document.getElementById('canvas'), text, function (error) {
+    QRCod.toCanvas(document.getElementById('canvas'), text, {
+      width: 300
+    }, function (error) {
       if (error) console.error(error);
       toast({
         title: 'Bem-vindo!',

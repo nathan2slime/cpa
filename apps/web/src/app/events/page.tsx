@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
-import { EventForm, EventFormResponse } from '@/types/event.types';
+import { EventFormResponse, EventReq } from '@/types/event.types';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -19,19 +19,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-
+import { QrCode } from 'lucide-react';
+import { NewQRCode } from '@/components/GenerateQRCode';
+import { copyToClipboard } from '@/components/CopyTransferArea';
 import { PaginationComponent } from '@/components/PaginationComponent';
 
 import toast from 'react-hot-toast';
+import { Router } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const Events = () => {
 
-  const [events, setEvents] = useState<EventForm[]>([]);
+  const [events, setEvents] = useState<EventReq[]>([]);
   const [totalEvents, setTotalEvents] = useState<number>(0);
-
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
-
   const [page, setPage] = useState<number>(1)
+  const router = useRouter()
+  const host = window.location.origin;
 
   //limite por pagina de formularios q serão pegos
   const perPage = 5;
@@ -58,10 +62,6 @@ const Events = () => {
     }
   };
 
-  const redirectToEvent = (id: string) => {
-    location.href = `/event/${id}`;
-  };
-
   useEffect(() => {
     getEvents();
   }, [page, shouldFetch]);
@@ -81,7 +81,7 @@ const Events = () => {
           <p className={'font-semibold mb-3'}>Eventos recentes</p>
 
           <div className={'border w-full rounded-xl'}>
-            {events?.map((event: EventForm) => (
+            {events?.map((event: EventReq) => (
               <div
                 key={event.id}
                 className={
@@ -102,9 +102,25 @@ const Events = () => {
                 </div>
 
                 <div className={'flex gap-2 items-center'}>
+                  <Dialog>
+                    <DialogTrigger>
+                      <QrCode className='p-1 border rounded' size={35}/>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle className='text-center'>
+                          QrCode - {event.title}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <NewQRCode text={`${host}/form/${event.formId}`}/>
+                      <div className='flex justify-center'>
+                        <Button onClick={()=> copyToClipboard(`${host}/form/${event.formId}`)} variant={'link'}>Copiar link de resposta</Button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
                   <Button
                     variant="outline"
-                    onClick={() => event.id && redirectToEvent(event.id)}
+                    onClick={() => event.id && router.push(`/event/${event.id}`)}
                   >
                     Editar
                   </Button>

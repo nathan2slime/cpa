@@ -154,7 +154,7 @@ const Event = () => {
       <Form {...form}>
         <form
           onSubmit={handleSubmit(saveEvent)}
-          className="flex flex-col gap-2 w-2/3"
+          className="flex flex-col gap-1 w-2/3"
         >
           <FormField
             control={control}
@@ -294,7 +294,7 @@ const Event = () => {
 
           </div>
 
-          <Button type="submit" className="mt-3">
+          <Button type="submit">
             Salvar
           </Button>
         </form>

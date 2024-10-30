@@ -35,6 +35,7 @@ import { FormReq } from '@/types/form';
 import { X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const Event = () => {
 
@@ -49,6 +50,7 @@ const Event = () => {
   const [courses, setCourses] = useState<CoursesReq[]>();
   const [forms, setForms] = useState<FormReq[]>();
   const [selectCourse, setSelectCourse] = useState<string>()
+  const [isAllCourses, setIsAllCourses] = useState<boolean>(false)
 
   const {
     handleSubmit,
@@ -111,6 +113,7 @@ const Event = () => {
   };
 
   const saveEvent = async (values: EventForm) => {
+
     const {status} = await api.post('api/event/create', values)
 
     if (status === 201) toast.success('Evento Criado com sucesso!')
@@ -118,6 +121,19 @@ const Event = () => {
     router.push('/events')
     
   };
+
+  useEffect(()=> {
+    if (isAllCourses && courses){
+
+      const allCourses = courses.map((course) => {
+        return course.id
+      })
+
+      setValue('courses', allCourses)
+    }else{
+      setValue('courses', [])
+    }
+  }, [isAllCourses])
 
   useEffect(() => {
     getForms();
@@ -254,7 +270,7 @@ const Event = () => {
                   <FormLabel>Cursos</FormLabel>
                   <FormControl>
                     <div className='flex gap-2'>
-                      <Select onValueChange={handleSelectChange}>
+                      <Select disabled={isAllCourses} onValueChange={handleSelectChange}>
                         <SelectTrigger className="w-full">
                           <SelectValue placeholder="Selecione o curso" />
                         </SelectTrigger>
@@ -269,7 +285,7 @@ const Event = () => {
                           </SelectContent>
                         </SelectGroup>
                       </Select>
-                        <Button type='button' onClick={addSelectChange} className='mb-1'>Adicionar</Button>
+                        <Button disabled={isAllCourses} type='button' onClick={addSelectChange} className='mb-1'>Adicionar</Button>
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -278,7 +294,7 @@ const Event = () => {
             />
 
             {
-              coursesEvent && (
+              coursesEvent && !isAllCourses && (
                 <ul className='text-sm flex flex-wrap gap-1'>
                   {
                     coursesEvent?.map((courses) => (
@@ -293,12 +309,21 @@ const Event = () => {
                   }
                 </ul>
               )
-                
             }
-
           </div>
 
-          <Button type="submit" className="mt-3">
+          <div className="flex items-center space-x-2">
+            <Checkbox id="isAllCourses" checked={isAllCourses} onCheckedChange={()=> setIsAllCourses(!isAllCourses)}/>
+            <label
+              onChange={()=> setIsAllCourses(!isAllCourses)}
+              htmlFor="isAllCourses"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+            >
+              Todos os Cursos
+            </label>
+          </div>
+
+          <Button type="submit">
             Salvar
           </Button>
         </form>
