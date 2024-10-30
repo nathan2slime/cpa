@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { api } from '@/api';
-import { EventForm, EventFormResponse } from '@/types/event.types';
+import { EventFormResponse, EventReq } from '@/types/event.types';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import {
@@ -18,16 +18,23 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
+import { QrCode } from 'lucide-react';
 import { PaginationComponent } from '@/components/PaginationComponent';
 
 import toast from 'react-hot-toast';
+import { NewQRCode } from '@/components/GenerateQRCode';
+import { useParams } from 'next/navigation';
+import { copyToClipboard } from '@/components/CopyTransferArea';
 
 const Events = () => {
 
-  const [events, setEvents] = useState<EventForm[]>([]);
+  const [events, setEvents] = useState<EventReq[]>([]);
   const [totalEvents, setTotalEvents] = useState<number>(0);
 
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
+
+  const params = useParams();
+  const host = window.location.origin;
 
   const [page, setPage] = useState<number>(1)
 
@@ -79,7 +86,7 @@ const Events = () => {
           <p className={'font-semibold mb-3'}>Eventos recentes</p>
 
           <div className={'border w-full rounded-xl'}>
-            {events?.map((event: EventForm) => (
+            {events?.map((event: EventReq) => (
               <div
                 key={event.id}
                 className={
@@ -100,6 +107,22 @@ const Events = () => {
                 </div>
 
                 <div className={'flex gap-2 items-center'}>
+                    <Dialog>
+                        <DialogTrigger>
+                          <QrCode className='p-1 border rounded' size={35}/>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle className='text-center'>
+                              QrCode - {event.title}
+                            </DialogTitle>
+                        </DialogHeader>
+                        <NewQRCode text={`${host}/form/${event.formId}`} />
+                        <div className='flex justify-center'> 
+                          <Button onClick={()=> copyToClipboard(`${host}/form/${event.formId}`)} variant={'link'}>Copiar link de resposta</Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   <Button
                     variant="outline"
                     onClick={() => event.id && redirectToEvent(event.id)}
@@ -150,7 +173,6 @@ const Events = () => {
         </div>  
 
         <PaginationComponent setPage={setPage} totalPages={pagesRounded}/>
-
       </main>
     </>
   );
