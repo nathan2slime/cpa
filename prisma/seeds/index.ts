@@ -16,4 +16,12 @@ import { hash } from 'bcrypt';
       password: await hash(password, 10),
     },
   });
+
+  const student = await prisma.user.create({
+    data: {
+      login: 'student',
+      password: 'student',
+      roles: [Role.USER],
+    },
+  });
 })();
