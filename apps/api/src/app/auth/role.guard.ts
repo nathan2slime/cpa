@@ -16,8 +16,7 @@ export class RoleGuard implements CanActivate {
       const session = req.user as Session & { user: User };
 
       return (
-        roles.filter((role) => session.user.roles.includes(role)).length ==
-        roles.length
+        roles.filter((role) => session.user.roles.includes(role)).length >= 1
       );
     }
 

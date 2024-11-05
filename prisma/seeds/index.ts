@@ -7,21 +7,29 @@ import { hash } from 'bcrypt';
   const password = process.env.ROOT_PASSWORD || 'root';
   const hasRoot = await prisma.user.findUnique({ where: { login } });
 
-  if (hasRoot) return;
+  if (!hasRoot) {
+    const user = await prisma.user.create({
+      data: {
+        login,
+        roles: [Role.ADMIN],
+        password: await hash(password, 10),
+      },
+    });
+  }
+  
+  const student = {
+    login: 'student',
+      password: await hash('student', 10),
+    roles: [Role.USER],
+  };
 
-  const user = await prisma.user.create({
-    data: {
-      login,
-      roles: [Role.ADMIN],
-      password: await hash(password, 10),
-    },
+  const hasStudent = await prisma.user.findUnique({
+    where: { login: student.login },
   });
 
-  const student = await prisma.user.create({
-    data: {
-      login: 'student',
-      password: 'student',
-      roles: [Role.USER],
-    },
-  });
+  if (!hasStudent) {
+    await prisma.user.create({
+      data: student,
+    });
+  }
 })();

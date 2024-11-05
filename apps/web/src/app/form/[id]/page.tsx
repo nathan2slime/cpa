@@ -10,17 +10,21 @@ import { FormType } from '@/types/form';
 
 const NewForm: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [form, setForm] = useState(null);
+  const [form, setForm] = useState<FormType>();
 
   const [shouldFetch, setShouldFetch] = useState<boolean>(true);
 
   const params = useParams();
-  const { id }: string = params;
+  const id = params.id as string;
 
   const getDataForm = async () => {
-    const { data }: FormType = await api.get(`/api/form/show/${id}`);
-    setForm(data);
-    setQuestions(data.questions);
+    const { data } = await api.get<FormType>(`/api/form/show/${id}`);
+
+    if (data) {
+      setForm(data);
+
+      data.questions && setQuestions(data.questions);
+    }
   };
 
   const addQuestion = () => {};
@@ -34,7 +38,7 @@ const NewForm: React.FC = () => {
       <MenuOptionNewForm idForm={id} shouldFetch={setShouldFetch} />
 
       <div className={'flex flex-col gap-3'}>
-        {questions?.map((question: QuestionType, index) => (
+        {questions.map((question: QuestionType, index) => (
           <Question
             key={question.id}
             index={index + 1}

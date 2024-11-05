@@ -30,6 +30,12 @@ import { authState } from '@/store/auth.state';
 
 type Props = {};
 
+const redirectByRole: Record<string, string> = {
+  USER: '/',
+  ADMIN: '/dashboard',
+  MANAGER: '/dashboard',
+};
+
 export default ({}: Props) => {
   const router = useRouter();
   const params = useSearchParams();
@@ -46,9 +52,12 @@ export default ({}: Props) => {
     if (data) {
       authState.logged = true;
       authState.data = data;
+      const roles = data.user.roles;
 
       if (callback) {
         router.push(callback);
+      } else {
+        router.push(redirectByRole[roles[0]]);
       }
     }
   };
