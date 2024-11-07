@@ -46,7 +46,7 @@ function Forms() {
   //criar um formulário e redireciona para o mesmo
   const createForm = async () => {
     const res = await api.post(`/api/form/create`, {
-      title: 'Rascunho',
+      title: 'Formulário sem Título',
     });
     router.push('/form/' + res.data.id);
   };

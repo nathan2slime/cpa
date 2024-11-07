@@ -112,9 +112,9 @@ const Events = () => {
                           QrCode - {event.title}
                         </DialogTitle>
                       </DialogHeader>
-                      <NewQRCode text={`${host}/form/${event.formId}`}/>
+                      <NewQRCode text={`${host}/answer/${event.id}`}/>
                       <div className='flex justify-center'>
-                        <Button onClick={()=> copyToClipboard(`${host}/form/${event.formId}`)} variant={'link'}>Copiar link de resposta</Button>
+                        <Button onClick={()=> copyToClipboard(`${host}/answer/${event.id}`)} variant={'link'}>Copiar link de resposta</Button>
                       </div>
                     </DialogContent>
                   </Dialog>

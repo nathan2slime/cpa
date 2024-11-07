@@ -22,7 +22,7 @@ export const MenuOptionNewForm = ({
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 mt-2 flex items-center gap-4 bg-white w-min m-auto rounded-full p-1">
+    <div className="flex items-center justify-center gap-4 bg-white m-auto rounded-full p-1 mb-4">
       <Button
         className="rounded-full"
         variant="ghost"
