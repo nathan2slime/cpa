@@ -10,16 +10,22 @@ import {Question} from '@/components/QuestionComponents';
 import { QuestionOptionsRoot } from '@/components/QuestionComponents/QuestionOptionsRoot';
 import { EditQuestionOption } from '@/components/QuestionComponents/EditQuestionOption';
 import { FetchProvider, useFetch } from '@/context/FetchContext';
+import { OptionsTypes } from '@/types/options.types';
+import { Textarea } from '@/components/ui/textarea';
+
+export interface Question extends QuestionType {
+  options: OptionsTypes[];
+}
 
 const NewForm: React.FC = () => {
 
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [shouldFetch, setShouldFetch] = useFetch()
 
   const params = useParams();
-  const id = params.id as string;
+  const id = params.id as string
 
-  console.log(shouldFetch);
+  console.log(questions);
 
   const getDataForm = async () => {
     const { data } = await api.get<FormType>(`/api/form/show/${id}`);
@@ -37,12 +43,17 @@ const NewForm: React.FC = () => {
     <main className="w-full h-[90vh] custom-scrollbar overflow-y-auto">
       <MenuOptionNewForm idForm={id} shouldFetch={setShouldFetch} />
       <div className={'flex flex-col gap-3'}>
-        {questions.map((question: QuestionType, index) => (
+        {questions.map((question: Question, index) => (
           <div className={'flex w-full'}>
             <Question.Root key={question.id}>
               <Question.Header key={index} title={question.title} id={question.id} index={index}/>
-              <QuestionOptionsRoot questionId={question.id} OptionComponent={EditQuestionOption}>
-              </QuestionOptionsRoot>
+              {
+                question.type === "CHOOSE" ?
+                  <QuestionOptionsRoot questionId={question.id} opt={question.options} OptionComponent={EditQuestionOption}>
+                  </QuestionOptionsRoot>
+                  :
+                  <Textarea/>
+              }
             </Question.Root>
 
             <Question.Manager type={question.type} optionId={question.id}/>

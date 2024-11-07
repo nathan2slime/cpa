@@ -1,8 +1,9 @@
 'use client';
+
 import { NextPage } from 'next';
 import { useEffect, useState } from 'react';
 
-import { FormReq, FormResponse, FormType } from '@/types/form';
+import { FormResponse, FormType } from '@/types/form';
 import { getFullFormByIdService } from '@/services/form.sevices';
 import { QuestionType } from '@/types/question';
 import { OptionsTypes } from '@/types/options.types';
@@ -15,13 +16,13 @@ import toast from 'react-hot-toast';
 import { submitForm } from '@/services/answear.services';
 import { getEventByIdService } from '@/services/event.services';
 import { EventReq } from '@/types/event.types';
-import { useFetch } from '@/context/FetchContext';
 
 type Props = {
   params: {
     id: string;
   };
 };
+
 export interface Question extends QuestionType {
   options: OptionsTypes[];
 }
@@ -36,11 +37,20 @@ const Answer: NextPage<Props> = ({ params: { id } }) => {
   const [form, setForm] = useState<FullFormType>();
   const [formResponse, setFormResponse] = useState<AnswerData[]>([])
   const [event, setEvent] = useState<EventReq>()
-  const [shouldFetch, setShouldFetch] = useState<boolean>()
 
   const [errors, setErrors] = useState<boolean>(false)
 
   const onLoadEvent = async () => {
+
+    if (event && event.formId){
+
+      if (eventRes && eventRes.formId){
+        const formRes : FormResponse = await getFullFormByIdService(eventRes.formId)
+        setForm(formRes)
+      }
+
+      return
+    }
 
     const eventRes : EventReq = await getEventByIdService(id)
 
@@ -61,7 +71,7 @@ const Answer: NextPage<Props> = ({ params: { id } }) => {
   const onSubmit = async () => {
     if (formResponse.length !== form.questions.length){
       setErrors(true)
-      toast.error("Responda todos as Questões")
+      toast.error("Responda todas as Questões")
       return
     }
 
@@ -97,7 +107,7 @@ const Answer: NextPage<Props> = ({ params: { id } }) => {
                 <Question.Header index={index} title={question.title} isAdmin={false}/>
                 {
                   question.type == "CHOOSE" ?
-                    <Question.OptionsRoot opt={question.options} setShouldFetch={setShouldFetch} setValue={setFormResponse} formResponse={formResponse} isAdmin={false} OptionComponent={QuestionOptions}>
+                    <Question.OptionsRoot opt={question.options} setValue={setFormResponse} formResponse={formResponse} isAdmin={false} OptionComponent={QuestionOptions}>
                     </Question.OptionsRoot>
                     :
                     <Textarea className={'bg-white'} onChange={(e)=> handleResponseQuestionText(question.id, e.target.value)}/>

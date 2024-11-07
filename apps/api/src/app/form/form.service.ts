@@ -18,8 +18,11 @@ export class FormService {
       where: { id },
       include: {
         questions: {
+          where: { deletedAt: null },
           include: {
-            options: true,
+            options: {
+              where: { deletedAt: null },
+            },
           },
         },
       },
