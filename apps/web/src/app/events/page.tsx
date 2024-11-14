@@ -1,7 +1,5 @@
 'use client';
 
-import {orderBy} from 'lodash'
-
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -104,7 +102,7 @@ const Events = () => {
                 <div className={'flex gap-2 items-center'}>
                   <Dialog>
                     <DialogTrigger>
-                      <QrCode className='p-1 border rounded' size={35}/>
+                      <QrCode className='p-1 border rounded bg-white' size={35}/>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

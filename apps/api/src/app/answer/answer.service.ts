@@ -32,9 +32,11 @@ export class AnswerService {
         },
       },
     });
-
+    console.log(event);
+    
     const answer = await this.prisma.answer.create({
       data: {
+
         event: {
           connect: {
             id: eventId,

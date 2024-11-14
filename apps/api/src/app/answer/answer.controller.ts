@@ -22,13 +22,14 @@ export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
   @Post('create')
-  create(
+  async create(
     @Body() body: CreateAnswerDto,
     @Res() res: Response,
     @Req() req: Request,
   ) {
-    const data = this.answerService.create(body, req.user);
-
+    const session = req.user
+    const data = await this.answerService.create(body, session.user);
+    
     return res.status(HttpStatus.CREATED).json(data);
   }
 }

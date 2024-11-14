@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 import { ptBR } from 'date-fns/locale';
 
 import { PaginationComponent } from '@/components/PaginationComponent';
-import { orderBy } from 'lodash';
+import toast from 'react-hot-toast';
 
 function Forms() {
   // Simula os formulários criados
@@ -30,6 +30,7 @@ function Forms() {
 
   const deleteForm = async (id: string) => {
     await api.delete(`/api/form/remove/${id}`);
+    toast.success("Formulário deletado!")
     setShouldFetch(!shouldFetch);
   };
 

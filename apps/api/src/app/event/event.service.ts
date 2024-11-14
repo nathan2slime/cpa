@@ -114,12 +114,15 @@ export class EventService {
   }
 
   async remove(id: string) {
-    await this.prisma.courseEvent.deleteMany({ where: { eventId: id } });
+    await this.prisma.courseEvent.updateMany({ where: { eventId: id }, data:  { deletedAt: new Date() }});
 
-    return this.prisma.event.delete({
+    await this.prisma.answer.updateMany({where: {eventId: id}, data: { deletedAt: new Date() }})
+
+    return this.prisma.event.update({
       where: {
         id,
       },
+      data: { deletedAt: new Date() }
     });
   }
 
