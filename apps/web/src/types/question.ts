@@ -1,3 +1,5 @@
+import { OptionsTypes } from "./options.types";
+
 export type QuestionType = {
   id: string;
   title: string;
@@ -6,4 +8,5 @@ export type QuestionType = {
   createdAt: string;
   deletedAt: string | null;
   updatedAt: string;
+  options?: OptionsTypes[]
 };

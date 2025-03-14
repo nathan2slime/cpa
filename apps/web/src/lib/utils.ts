@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from 'clsx';
+import toast from 'react-hot-toast';
 import { twMerge } from 'tailwind-merge';
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
@@ -24,3 +25,12 @@ export const getStorage = <T = {}>(key: string): T | null => {
     return null;
   }
 };
+
+export const copyTextToTranferArea = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success('Link Copiado');
+    } catch (err) {
+      toast.error('Erro ao copiar o link');
+    }
+  };

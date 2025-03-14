@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Session } from '@prisma/client';
 import { z } from 'zod';
 
 import { CreateAnswerDto } from '~/app/answer/answer.dto';
@@ -9,16 +9,16 @@ import { PrismaService } from '~/database/prisma.service';
 export class AnswerService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create({ data, eventId }: CreateAnswerDto, user: User) {
+  async create({ data, eventId }: CreateAnswerDto, session: Session) {
     const isAnswered = await this.prisma.answer.findFirst({
       where: {
         eventId,
-        userId: user.id,
+        userId: session.userId,
       },
     });
 
     if (!!isAnswered)
-      throw new HttpException('Resposta recebida', HttpStatus.CONFLICT);
+      throw new HttpException('Evento já repondido', HttpStatus.CONFLICT);
 
     const event = await this.prisma.event.findUnique({
       where: {
@@ -47,7 +47,7 @@ export class AnswerService {
         },
         user: {
           connect: {
-            id: user.id,
+            id: session.userId,
           },
         },
       },

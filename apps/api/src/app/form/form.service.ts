@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Prisma, Session } from '@prisma/client';
 
 import { PrismaService } from '~/database/prisma.service';
 import { CreateFormDto, UpdateFormDto } from '~/app/form/form.dto';
@@ -13,9 +13,31 @@ export class FormService {
     return this.prisma.form.create({ data });
   }
 
-  async getFull(id: string) {
-    return this.prisma.form.findUnique({
+  async getFull(id: string, session: Session) {
+
+    const event = await this.prisma.event.findUnique({
       where: { id },
+    })
+
+    const answer = await this.prisma.answer.findFirst({
+      where: {
+        eventId: id,
+        userId: session.userId,
+      }
+    })
+
+    if (answer) {
+      throw new HttpException("Evento já respondido", HttpStatus.NO_CONTENT)
+    }
+
+    if (!event) {
+      throw new HttpException('Evento não encontrado', HttpStatus.NOT_FOUND);
+    }
+
+    return this.prisma.form.findUnique({
+      where: { 
+        id: event.formId
+      },
       include: {
         questions: {
           include: {

@@ -4,6 +4,5 @@ import { FullFormType } from '@/app/answer/[id]/page';
 export const getFullFormByIdService = async (
   id: string,
 ) => {
-  const res = await api.get<FullFormType>('/api/form/full/' + id);
-  if (res) return res.data;
+  return await api.get<FullFormType>('/api/form/full/event/' + id);
 };

@@ -289,7 +289,6 @@ const Event = () => {
                   }
                 </ul>
               )
-                
             }
 
           </div>

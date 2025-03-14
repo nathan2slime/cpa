@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { Roles } from '~/app/auth/auth.decorator';
 import { RoleGuard } from '~/app/auth/role.guard';
 import { PaginationDto } from '~/app/app.dto';
 import { JwtAuthGuard } from '~/app/auth/auth.guard';
+import { AuthenticatedRequest } from '~/types/custom-request';
 
 @Controller('form')
 @ApiTags('Form')
@@ -67,11 +69,16 @@ export class FormController {
     return res.status(HttpStatus.OK).json(data);
   }
 
-  @Get('full/:id')
+  @Get('full/event/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN, Role.USER])
-  async full(@Res() res: Response, @Param('id') id: string) {
-    const data = await this.formService.getFull(id);
+  async full(
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    const session = req.user;
+    const data = await this.formService.getFull(id, session);
 
     return res.status(HttpStatus.OK).json(data);
   }
