@@ -40,6 +40,7 @@ export default ({}: Props) => {
   const router = useRouter();
   const params = useSearchParams();
   const callback = params.get('callback');
+  const event = params.get('event');
 
   const form = useForm<AuthSchema>({
     mode: 'all',
@@ -54,11 +55,15 @@ export default ({}: Props) => {
       authState.data = data;
       const roles = data.user.roles;
 
-      if (callback) {
-        router.push(callback);
-      } else {
-        router.push(redirectByRole[roles[0]]);
+      let redirectUrl = callback || redirectByRole[roles[0]];
+
+      if (event) {
+        const url = new URL(redirectUrl, window.location.origin);
+        url.searchParams.set('event', event);
+        redirectUrl = url.toString();
       }
+
+      router.push(redirectUrl);
     }
   };
 

@@ -8,6 +8,9 @@ services:
       - "3000:3000"
     env_file:
       - ./.env.prod
+    depends_on:
+      - api
+
   api:
     build:
       context: .
@@ -19,9 +22,11 @@ services:
       - ./.env.prod
     depends_on:
       postgres:
-          condition: service_healthy
+        condition: service_healthy
+
   postgres:
-    image: postgres:alpine
+    image: postgres:15-alpine
+    restart: always
     ports:
       - "5432:5432"
     env_file:
@@ -29,9 +34,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 volumes:
   postgres_data:
+    name: postgres_volume
