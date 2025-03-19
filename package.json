@@ -2,44 +2,35 @@
   "name": "app",
   "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
-    "build": "dotenv -- turbo run build",
-    "test": "dotenv -- turbo run test",
-    "clean": "rm -rf node_modules",
     "start": "dotenv -- turbo run start",
-    "dev": "dotenv -- turbo run dev",
-    "prod": "dotenv -- turbo run prod",
-    "prepare": "husky install && prisma generate",
-    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "migrate:dev": "prisma migrate dev",
-    "migrate:deploy": "prisma migrate deploy",
-    "seed": "dotenv -- ts-node-dev ./prisma/seeds/index.ts",
-    "generate": "prisma generate",
-    "migrate:reset": "prisma migrate reset",
+    "dev": "NODE_ENV=development dotenv -- turbo run dev",
+    "build": "NODE_ENV=production dotenv -- turbo run build",
+    "lint": "biome check",
+    "format": "biome format --write",
+    "db:migrate:dev": "dotenv -- turbo run db:migrate:dev --ui=tui",
+    "studio": "dotenv -- turbo run studio",
+    "db:migrate:deploy": "dotenv -- turbo run db:migrate:deploy",
+    "db:generate": "dotenv -- turbo run db:generate",
+    "db:push": "dotenv -- turbo run db:push",
+    "db:migrate:reset": "dotenv -- turbo run db:migrate:reset",
     "commit": "git-cz"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.5.1",
-    "@commitlint/config-conventional": "^17.4.4",
-    "@prisma/client": "^5.12.1",
-    "@types/node": "^20.11.28",
-    "bcrypt": "^5.1.1",
-    "commitizen": "^4.3.0",
+    "@biomejs/biome": "1.9.4",
+    "@commitlint/cli": "^17.8.1",
+    "@commitlint/config-conventional": "^17.8.1",
+    "@prisma/client": "^5.22.0",
+    "@types/node": "^20.17.24",
+    "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
-    "date-fns": "^2.30.0",
-    "dotenv-cli": "^7.1.0",
-    "husky": "^8.0.3",
-    "jest": "^29.5.0",
-    "prettier": "latest",
-    "prisma": "^5.12.1",
-    "ts-node": "^10.9.1",
+    "dotenv-cli": "^7.4.4",
+    "lefthook": "^1.11.3",
+    "ts-node": "^10.9.2",
     "tsup": "^6.7.0",
-    "turbo": "^1.13.3",
-    "typescript": "^5.0.4"
+    "turbo": "^2.4.4",
+    "typescript": "^5.8.2"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -58,14 +49,6 @@
   "installConfig": {
     "hoistingLimits": "none"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nathan2slime/dengue_app.git"
-  },
   "license": "MIT",
-  "dependencies": {
-    "@radix-ui/react-tooltip": "^1.1.2",
-    "firebase": "^10.12.2"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "pnpm@10.5.2"
 }

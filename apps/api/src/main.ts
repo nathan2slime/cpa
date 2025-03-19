@@ -1,56 +1,40 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
+import { env } from '@cpa/env'
+import { ValidationPipe } from '@nestjs/common'
+import { HttpAdapterHost, NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import * as cookieParser from 'cookie-parser'
 
-import { AppModule } from '~/app/app.module';
-import {
-  AllExceptionsFilter,
-  HttpExceptionFilter,
-} from '~/app/filters/http-exception.filter';
-import { env } from '~/env';
+import { AppModule } from '~/app/app.module'
+import { AllExceptionsFilter, HttpExceptionFilter } from '~/app/filters/http-exception.filter'
 
-import { logger } from '~/logger';
-import { AUTH_COOKIE } from '~/constants';
+import { AUTH_COOKIE } from '~/constants'
+import { logger } from '~/logger'
 
-import 'reflect-metadata';
-
-(async () => {
-  const app = await NestFactory.create(AppModule, { logger: false });
+import 'reflect-metadata'
+;(async () => {
+  const app = await NestFactory.create(AppModule, { logger: false })
 
   app.enableCors({
     credentials: true,
-    origin: env.NEXT_PUBLIC_WEB_URL,
-  });
-  app.use(cookieParser());
+    origin: env.CLIENT_URL
+  })
+  app.use(cookieParser())
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
-    }),
-  );
-  const { httpAdapter } = app.get(HttpAdapterHost);
+      transform: true
+    })
+  )
+  const { httpAdapter } = app.get(HttpAdapterHost)
 
-  app.useGlobalFilters(
-    new HttpExceptionFilter(),
-    new AllExceptionsFilter(httpAdapter),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter(), new AllExceptionsFilter(httpAdapter))
 
-  const config = new DocumentBuilder()
-    .addCookieAuth(AUTH_COOKIE)
-    .setTitle('CPA')
-    .setVersion('1.0')
-    .build();
+  const config = new DocumentBuilder().addCookieAuth(AUTH_COOKIE).setTitle('CPA').setVersion('1.0').build()
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api')
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  const document = SwaggerModule.createDocument(app, config)
+  SwaggerModule.setup('api/docs', app, document)
 
-  await app.listen(env.API_PORT, () =>
-    logger.info(
-      'app running in http://localhost:'
-        .concat(env.API_PORT)
-        .concat('/api/health'),
-    ),
-  );
-})();
+  const PORT = process.env.PORT || '8080'
+  await app.listen(PORT, () => logger.info('app running in http://localhost:'.concat(PORT).concat('/api/health')))
+})()

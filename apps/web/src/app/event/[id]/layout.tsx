@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { Sidebar } from '@/components/core/sidebar';
+import { Sidebar } from '@/components/core/sidebar'
 
-import { AppChildren } from '@/types';
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/Navbar'
+import { AppChildren } from '@/types'
 
 export default ({ children }: Readonly<AppChildren>) => {
   return (
@@ -16,5 +16,5 @@ export default ({ children }: Readonly<AppChildren>) => {
         <div className="w-full h-full p-4">{children}</div>
       </div>
     </main>
-  );
-};
+  )
+}

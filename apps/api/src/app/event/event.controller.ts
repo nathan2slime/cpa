@@ -1,26 +1,14 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
-import { Role } from '@prisma/client';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { Role } from '@prisma/client'
+import { Response } from 'express'
 
-import { Roles } from '~/app/auth/auth.decorator';
-import { RoleGuard } from '~/app/auth/role.guard';
-import { JwtAuthGuard } from '~/app/auth/auth.guard';
-import { EventService } from '~/app/event/event.service';
-import { CreateEventDto, UpdateEventDto } from '~/app/event/event.dto';
-import { PaginationDto } from '../app.dto';
+import { Roles } from '~/app/auth/auth.decorator'
+import { JwtAuthGuard } from '~/app/auth/auth.guard'
+import { RoleGuard } from '~/app/auth/role.guard'
+import { CreateEventDto, UpdateEventDto } from '~/app/event/event.dto'
+import { EventService } from '~/app/event/event.service'
+import { PaginationDto } from '../app.dto'
 
 @Controller('event')
 @ApiTags('Event')
@@ -31,42 +19,38 @@ export class EventController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   async create(@Res() res: Response, @Body() body: CreateEventDto) {
-    const data = await this.eventService.create(body);
+    const data = await this.eventService.create(body)
 
-    return res.status(HttpStatus.CREATED).json(data);
+    return res.status(HttpStatus.CREATED).json(data)
   }
 
   @Get('show')
   async search(@Res() res: Response, @Query() query: PaginationDto) {
-    const data = await this.eventService.paginate(query);
+    const data = await this.eventService.paginate(query)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 
   @Get('show/:id')
   async getById(@Param('id') id: string, @Res() res: Response) {
-    const data = await this.eventService.getById(id);
+    const data = await this.eventService.getById(id)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 
   @Delete('delete/:id')
   async delete(@Param('id') id: string, @Res() res: Response) {
-    await this.eventService.remove(id);
+    await this.eventService.remove(id)
 
-    return res.status(HttpStatus.OK).send();
+    return res.status(HttpStatus.OK).send()
   }
 
   @Put('update/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async update(
-    @Res() res: Response,
-    @Param('id') id: string,
-    @Body() body: UpdateEventDto,
-  ) {
-    const data = await this.eventService.update(id, body);
+  async update(@Res() res: Response, @Param('id') id: string, @Body() body: UpdateEventDto) {
+    const data = await this.eventService.update(id, body)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 }

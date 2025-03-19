@@ -1,0 +1,27 @@
+{
+  "name": "@cpa/env",
+  "version": "1.0.0",
+  "type": "module",
+  "module": "dist/index.js",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": " tsup",
+    "dev": "tsup --watch"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@t3-oss/env-core": "^0.11.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@cpa/tsconfig": "workspace:*",
+    "@types/node": "^22.9.3",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "@t3-oss/env-core": "^0.11.1",
+    "zod": "^3.23.8"
+  }
+}

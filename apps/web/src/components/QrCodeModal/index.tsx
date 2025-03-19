@@ -1,24 +1,16 @@
-import { useQRCode } from 'next-qrcode';
+import { useQRCode } from 'next-qrcode'
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Button } from '../ui/button';
-import { QrCode } from 'lucide-react';
-import { copyTextToTranferArea } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { copyTextToTranferArea } from '@/lib/utils'
+import { QrCode } from 'lucide-react'
+import { Button } from '../ui/button'
 
 type Props = {
-  text: string;
-};
+  text: string
+}
 
 export const QrCodeModal = ({ text }: Props) => {
-  const { Canvas } = useQRCode();
+  const { Canvas } = useQRCode()
 
   return (
     <Dialog>
@@ -40,18 +32,20 @@ export const QrCodeModal = ({ text }: Props) => {
                 width: 300,
                 color: {
                   dark: '#000',
-                  light: '#FFFF',
-                },
+                  light: '#FFFF'
+                }
               }}
             />
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="w-full">
-          <div className='w-full flex items-center justify-center'>
-            <Button onClick={() => copyTextToTranferArea(text)} variant={"link"}>Copiar link de resposta</Button>
+          <div className="w-full flex items-center justify-center">
+            <Button onClick={() => copyTextToTranferArea(text)} variant={'link'}>
+              Copiar link de resposta
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

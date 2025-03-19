@@ -1,28 +1,15 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
-import { Role } from '@prisma/client';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { Role } from '@prisma/client'
+import { Response } from 'express'
 
-import { CreateFormDto, UpdateFormDto } from '~/app/form/form.dto';
-import { FormService } from '~/app/form/form.service';
-import { Roles } from '~/app/auth/auth.decorator';
-import { RoleGuard } from '~/app/auth/role.guard';
-import { PaginationDto } from '~/app/app.dto';
-import { JwtAuthGuard } from '~/app/auth/auth.guard';
-import { AuthenticatedRequest } from '~/types/custom-request';
+import { PaginationDto } from '~/app/app.dto'
+import { Roles } from '~/app/auth/auth.decorator'
+import { JwtAuthGuard } from '~/app/auth/auth.guard'
+import { RoleGuard } from '~/app/auth/role.guard'
+import { CreateFormDto, UpdateFormDto } from '~/app/form/form.dto'
+import { FormService } from '~/app/form/form.service'
+import { AuthenticatedRequest } from '~/types/custom-request'
 
 @Controller('form')
 @ApiTags('Form')
@@ -33,62 +20,54 @@ export class FormController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   async create(@Res() res: Response, @Body() body: CreateFormDto) {
-    const data = await this.formService.create(body);
+    const data = await this.formService.create(body)
 
-    return res.status(HttpStatus.CREATED).json(data);
+    return res.status(HttpStatus.CREATED).json(data)
   }
 
   @Delete('remove/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   async remove(@Res() res: Response, @Param('id') id: string) {
-    await this.formService.remove({ id });
+    await this.formService.remove({ id })
 
-    return res.status(HttpStatus.OK).send();
+    return res.status(HttpStatus.OK).send()
   }
 
   @Patch('update/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async update(
-    @Res() res: Response,
-    @Param('id') id: string,
-    @Body() body: UpdateFormDto,
-  ) {
-    const data = await this.formService.update({ id }, body);
+  async update(@Res() res: Response, @Param('id') id: string, @Body() body: UpdateFormDto) {
+    const data = await this.formService.update({ id }, body)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 
   @Get('show/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN, Role.USER])
   async show(@Res() res: Response, @Param('id') id: string) {
-    const data = await this.formService.getById(id);
+    const data = await this.formService.getById(id)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 
   @Get('full/event/:id')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN, Role.USER])
-  async full(
-    @Res() res: Response,
-    @Param('id') id: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    const session = req.user;
-    const data = await this.formService.getFull(id, session);
+  async full(@Res() res: Response, @Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const session = req.user
+    const data = await this.formService.getFull(id, session)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 
   @Get('search')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   async search(@Res() res: Response, @Query() query: PaginationDto) {
-    const data = await this.formService.paginate(query);
+    const data = await this.formService.paginate(query)
 
-    return res.status(HttpStatus.OK).json(data);
+    return res.status(HttpStatus.OK).json(data)
   }
 }

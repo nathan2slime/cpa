@@ -1,9 +1,7 @@
-'use client';
+'use client'
+import { BookKey, FileType, LayoutDashboard, Star } from 'lucide-react'
 
-import React from 'react';
-import { LayoutDashboard, FileType, Star, BookKey } from 'lucide-react';
-
-import { Nav } from '@/components/core/nav';
+import { Nav } from '@/components/core/nav'
 
 export const Sidebar = () => {
   return (
@@ -14,25 +12,25 @@ export const Sidebar = () => {
           {
             title: 'Dashboard',
             icon: LayoutDashboard,
-            path: '/dashboard',
+            path: '/dashboard'
           },
           {
             title: 'Forms',
             icon: FileType,
-            path: '/forms',
+            path: '/forms'
           },
           {
             title: 'Eventos',
             icon: Star,
-            path: '/events',
+            path: '/events'
           },
           {
             title: 'Relatórios',
             icon: BookKey,
-            path: '/reports',
-          },
+            path: '/reports'
+          }
         ]}
       />
     </aside>
-  );
-};
+  )
+}

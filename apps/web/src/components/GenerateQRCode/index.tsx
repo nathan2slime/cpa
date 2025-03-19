@@ -1,24 +1,22 @@
-'use client';
-import React, { useEffect } from 'react';
-import QRCod from 'qrcode';
-import { toast } from '@/components/ui/use-toast';
+'use client'
+import { toast } from '@/components/ui/use-toast'
+import QRCod from 'qrcode'
+import { useEffect } from 'react'
 
 type TQRCode = {
-  text: string;
-};
+  text: string
+}
 
-export const NewQRCode = ({
-  text = 'https://anderson-kauer.vercel.app/',
-}: TQRCode) => {
+export const NewQRCode = ({ text = 'https://anderson-kauer.vercel.app/' }: TQRCode) => {
   useEffect(() => {
-    QRCod.toCanvas(document.getElementById('canvas'), text, function (error) {
-      if (error) console.error(error);
+    QRCod.toCanvas(document.getElementById('canvas'), text, error => {
+      if (error) console.error(error)
       toast({
         title: 'Bem-vindo!',
-        description: 'Acesse o QR Code para responder a avaliação!',
-      });
-    });
-  });
+        description: 'Acesse o QR Code para responder a avaliação!'
+      })
+    })
+  })
 
-  return <canvas id="canvas" className="m-auto" />;
-};
+  return <canvas id="canvas" className="m-auto" />
+}

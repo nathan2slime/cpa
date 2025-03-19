@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 
-import { PrismaService } from '~/database/prisma.service';
-import { UpdateUserProfileDto } from '~/app/user/user.dto';
+import { UpdateUserProfileDto } from '~/app/user/user.dto'
+import { PrismaService } from '~/database/prisma.service'
 
 @Injectable()
 export class UserService {
@@ -11,9 +11,9 @@ export class UserService {
   async getByLogin(login: string) {
     return this.prisma.user.findUnique({
       where: {
-        login,
-      },
-    });
+        login
+      }
+    })
   }
 
   async getPassword(where: Prisma.UserWhereUniqueInput) {
@@ -21,12 +21,12 @@ export class UserService {
       where,
       select: {
         id: true,
-        password: true,
-      },
-    });
+        password: true
+      }
+    })
   }
 
   async getByIdUpdate(id: string, data: UpdateUserProfileDto) {
-    return this.prisma.user.update({ data, where: { id } });
+    return this.prisma.user.update({ data, where: { id } })
   }
 }

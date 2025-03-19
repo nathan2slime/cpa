@@ -1,30 +1,22 @@
-'use client';
+'use client'
 
-import React from 'react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from 'recharts';
+import React from 'react'
+import { Bar, BarChart, CartesianGrid, Legend, Tooltip, XAxis, YAxis } from 'recharts'
 
 type Option = {
-  name: string;
-  qtd: number;
-};
+  name: string
+  qtd: number
+}
 
 type ChartData = {
-  question: string;
-  options: Option[];
-};
+  question: string
+  options: Option[]
+}
 
 type MyBarChartProps = {
-  data: ChartData;
-  index: number | string;
-};
+  data: ChartData
+  index: number | string
+}
 
 export const MyBarChart: React.FC<MyBarChartProps> = ({ index, data }) => {
   return (
@@ -37,7 +29,7 @@ export const MyBarChart: React.FC<MyBarChartProps> = ({ index, data }) => {
           top: 5,
           right: 30,
           left: 20,
-          bottom: 5,
+          bottom: 5
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
@@ -47,17 +39,11 @@ export const MyBarChart: React.FC<MyBarChartProps> = ({ index, data }) => {
         <Legend />
         {Object.keys(data).map((key, i) => {
           if (key !== 'name') {
-            return (
-              <Bar
-                key={i}
-                dataKey={key}
-                fill={i % 2 === 0 ? '#8884d8' : '#82ca9d'}
-              />
-            );
+            return <Bar key={i} dataKey={key} fill={i % 2 === 0 ? '#8884d8' : '#82ca9d'} />
           }
-          return null;
+          return null
         })}
       </BarChart>
     </div>
-  );
-};
+  )
+}

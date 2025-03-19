@@ -1,0 +1,7 @@
+{
+  "extends": "@cpa/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "dist"
+  }
+}

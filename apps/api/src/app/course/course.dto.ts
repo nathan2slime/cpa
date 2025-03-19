@@ -1,25 +1,25 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { CourseType } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { CourseType } from '@prisma/client'
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator'
 
 export class CreateCourseDto {
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  name: string;
+  name: string
 
   @ApiProperty({ enum: CourseType, required: true })
   @IsEnum(CourseType)
   @IsNotEmpty()
-  type: CourseType;
+  type: CourseType
 }
 
 export class UpdateCourseDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  name: string;
+  name: string
 
   @ApiProperty({ enum: CourseType, required: false })
   @IsOptional()
   @IsEnum(CourseType)
-  type: CourseType;
+  type: CourseType
 }

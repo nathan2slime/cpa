@@ -1,37 +1,37 @@
-'use client';
+'use client'
 
-import React, { useEffect, useState } from 'react';
-import { Question } from '@/app/form/[id]/components/cardForm';
-import { QuestionType } from '@/types/question';
-import { MenuOptionNewForm } from '@/app/form/[id]/components/MenuOptionNewForm';
-import { useParams } from 'next/navigation';
-import { api } from '@/api';
-import { FormType } from '@/types/form';
+import { api } from '@/api'
+import { MenuOptionNewForm } from '@/app/form/[id]/components/MenuOptionNewForm'
+import { Question } from '@/app/form/[id]/components/cardForm'
+import { FormType } from '@/types/form'
+import { QuestionType } from '@/types/question'
+import { useParams } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
 const NewForm: React.FC = () => {
-  const [questions, setQuestions] = useState<QuestionType[]>([]);
-  const [form, setForm] = useState<FormType>();
+  const [questions, setQuestions] = useState<QuestionType[]>([])
+  const [_form, setForm] = useState<FormType>()
 
-  const [shouldFetch, setShouldFetch] = useState<boolean>(true);
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
 
-  const params = useParams();
-  const id = params.id as string;
+  const params = useParams()
+  const id = params.id as string
 
   const getDataForm = async () => {
-    const { data } = await api.get<FormType>(`/api/form/show/${id}`);
+    const { data } = await api.get<FormType>(`/api/form/show/${id}`)
 
     if (data) {
-      setForm(data);
+      setForm(data)
 
-      data.questions && setQuestions(data.questions);
+      data.questions && setQuestions(data.questions)
     }
-  };
+  }
 
-  const addQuestion = () => {};
+  const _addQuestion = () => {}
 
   useEffect(() => {
-    getDataForm();
-  }, [shouldFetch]);
+    getDataForm()
+  }, [shouldFetch])
 
   return (
     <main className="pt-5 w-full h-[90vh] custom-scrollbar overflow-y-auto">
@@ -51,7 +51,7 @@ const NewForm: React.FC = () => {
         ))}
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default NewForm;
+export default NewForm

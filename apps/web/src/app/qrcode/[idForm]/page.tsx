@@ -1,14 +1,13 @@
-'use client';
-import { NewQRCode } from '@/components/GenerateQRCode';
-import { useParams } from 'next/navigation';
-import React from 'react';
+'use client'
+import { NewQRCode } from '@/components/GenerateQRCode'
+import { useParams } from 'next/navigation'
 
 const QRCode = () => {
-  const params = useParams();
-  const host = window.location.origin;
+  const params = useParams()
+  const host = window.location.origin
 
   if (params.idForm !== 'avaliacao-institucional') {
-    return <h1>&copy; ak 404</h1>;
+    return <h1>&copy; ak 404</h1>
   }
 
   return (
@@ -18,6 +17,6 @@ const QRCode = () => {
         <NewQRCode text={`${host}/form/${params.idForm}`} />
       </div>
     </div>
-  );
-};
-export default QRCode;
+  )
+}
+export default QRCode

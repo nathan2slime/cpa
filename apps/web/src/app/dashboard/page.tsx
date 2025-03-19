@@ -1,17 +1,8 @@
-import React from 'react';
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import GraphMain from '@/components/GrafMain';
-import { CardRecentAv } from '@/components/CardRecentAv';
-import { eventsRecents } from '@/database/eventsRecents';
-import { Badge } from '@/components/ui/badge';
+import { CardRecentAv } from '@/components/CardRecentAv'
+import GraphMain from '@/components/GrafMain'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { eventsRecents } from '@/database/eventsRecents'
 
 export default () => {
   return (
@@ -37,16 +28,11 @@ export default () => {
         <CardContent>
           {eventsRecents.map((r, index) => (
             <div key={index}>
-              <CardRecentAv
-                id={index}
-                name={r.name}
-                description={r.description}
-                date={r.date}
-              />
+              <CardRecentAv id={index} name={r.name} description={r.description} date={r.date} />
             </div>
           ))}
         </CardContent>
       </Card>
     </main>
-  );
-};
+  )
+}

@@ -1,46 +1,46 @@
-'use client';
+'use client'
 
-import { useEffect } from 'react';
-import { useSnapshot } from 'valtio';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useSnapshot } from 'valtio'
 
-import { AppChildren } from '@/types';
-import { authService } from '@/services/auth.services';
-import { authState } from '@/store/auth.state';
+import { authService } from '@/services/auth.services'
+import { authState } from '@/store/auth.state'
+import { AppChildren } from '@/types'
 
 export const AuthProvider = ({ children }: AppChildren) => {
-  const pathname = usePathname();
-  const router = useRouter();
+  const pathname = usePathname()
+  const router = useRouter()
 
-  const { logged, loading } = useSnapshot(authState);
-
-  useEffect(() => {
-    onLoadAuth();
-  }, []);
+  const { logged, loading } = useSnapshot(authState)
 
   useEffect(() => {
-    const isAnswer = pathname.includes('answer');
+    onLoadAuth()
+  }, [])
 
-    if (logged && pathname.includes('/signing')) return router.push('/');
+  useEffect(() => {
+    const isAnswer = pathname.includes('answer')
 
-    if (loading || logged) return;
+    if (logged && pathname.includes('/signing')) return router.push('/')
 
-    if (pathname.includes('/signing')) return;
+    if (loading || logged) return
+
+    if (pathname.includes('/signing')) return
 
     if (isAnswer) {
-      router.push('/auth/signing?callback=' + pathname);
-    return
+      router.push(`/auth/signing?callback=${pathname}`)
+      return
     }
-    router.push('/auth/signing');
-  }, [loading]);
+    router.push('/auth/signing')
+  }, [loading])
 
   const onLoadAuth = async () => {
-    const res = await authService();
+    const res = await authService()
 
-    authState.data = res || null;
-    authState.logged = !!res;
-    authState.loading = false;
-  };
+    authState.data = res || null
+    authState.logged = !!res
+    authState.loading = false
+  }
 
-  return <>{loading ? <div></div> : children}</>;
-};
+  return <>{loading ? <div /> : children}</>
+}

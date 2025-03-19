@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common'
 
-import { PrismaService } from '~/database/prisma.service';
-import { CourseController } from '~/app/course/course.controller';
-import { CourseService } from '~/app/course/course.service';
+import { CourseController } from '~/app/course/course.controller'
+import { CourseService } from '~/app/course/course.service'
+import { PrismaService } from '~/database/prisma.service'
 
 @Module({
   imports: [],
   controllers: [CourseController],
   providers: [CourseService, PrismaService],
-  exports: [],
+  exports: []
 })
 export class CourseModule {}

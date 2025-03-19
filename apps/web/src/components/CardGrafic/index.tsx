@@ -1,14 +1,7 @@
-import React from 'react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '../ui/button';
-import { Text } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Text } from 'lucide-react'
+import React from 'react'
+import { Button } from '../ui/button'
 
 export const QuestionGrafic = (): React.ReactNode => {
   return (
@@ -27,5 +20,5 @@ export const QuestionGrafic = (): React.ReactNode => {
         <DropdownMenuItem>Barras Vertical</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
-};
+  )
+}

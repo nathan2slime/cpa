@@ -1,15 +1,9 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 type TSelectType = {
-  setGraphType: (value: string) => void;
-  graphType?: string;
-};
+  setGraphType: (value: string) => void
+  graphType?: string
+}
 
 const SelectTipo = ({ setGraphType, graphType = 'pizza' }: TSelectType) => {
   return (
@@ -22,7 +16,7 @@ const SelectTipo = ({ setGraphType, graphType = 'pizza' }: TSelectType) => {
         <SelectItem value="pizza">Gráficos em pizza</SelectItem>
       </SelectContent>
     </Select>
-  );
-};
+  )
+}
 
-export default SelectTipo;
+export default SelectTipo

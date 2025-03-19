@@ -20,10 +20,10 @@ export type TCourses =
   | 'Superior de Tecnologia em Análise e Desenvolvimento de Sistemas'
   | 'Superior de Tecnologia em Design de Moda'
   | 'Superior de Tecnologia em Estética e Cosmética'
-  | 'Superior de Tecnologia em Radiologia';
+  | 'Superior de Tecnologia em Radiologia'
 
 export type CoursesReq = {
-  id: string;
-  type: 'TECH' | 'HUMAN' | 'HEALTH';
-  name: TCourses;
-};
+  id: string
+  type: 'TECH' | 'HUMAN' | 'HEALTH'
+  name: TCourses
+}

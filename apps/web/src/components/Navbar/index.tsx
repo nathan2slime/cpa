@@ -1,23 +1,18 @@
-'use client';
-import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
-import { useSnapshot } from 'valtio';
+'use client'
+import { ChevronDown } from 'lucide-react'
+import Link from 'next/link'
+import { useSnapshot } from 'valtio'
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
-import { authState } from '@/store/auth.state';
-import { UserData } from '@/types/auth.types';
+import { authState } from '@/store/auth.state'
+import { UserData } from '@/types/auth.types'
 
 export const Navbar = () => {
-  const { data } = useSnapshot(authState);
+  const { data } = useSnapshot(authState)
 
-  const user = (data && data.user) as UserData;
+  const user = (data && data.user) as UserData
 
   return (
     <header className="flex justify-between z-10 fixed items-center gap-4 h-[60px] w-[calc(100%-0px)] bg-card border-b border-border rounded-none p-4">
@@ -32,9 +27,7 @@ export const Navbar = () => {
               <AvatarFallback>US</AvatarFallback>
             </Avatar>
 
-            <p className="text-accent-foreground text-sm font-normal">
-              {user?.login}
-            </p>
+            <p className="text-accent-foreground text-sm font-normal">{user?.login}</p>
 
             <ChevronDown className="ml-4 w-4 text-accent-foreground" />
           </DropdownMenuTrigger>
@@ -44,5 +37,5 @@ export const Navbar = () => {
         </DropdownMenu>
       </span>
     </header>
-  );
-};
+  )
+}

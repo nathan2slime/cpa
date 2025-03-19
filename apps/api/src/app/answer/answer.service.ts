@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Session } from '@prisma/client';
-import { z } from 'zod';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Session } from '@prisma/client'
+import { z } from 'zod'
 
-import { CreateAnswerDto } from '~/app/answer/answer.dto';
-import { PrismaService } from '~/database/prisma.service';
+import { CreateAnswerDto } from '~/app/answer/answer.dto'
+import { PrismaService } from '~/database/prisma.service'
 
 @Injectable()
 export class AnswerService {
@@ -13,90 +13,89 @@ export class AnswerService {
     const isAnswered = await this.prisma.answer.findFirst({
       where: {
         eventId,
-        userId: session.userId,
-      },
-    });
+        userId: session.userId
+      }
+    })
 
-    if (!!isAnswered)
-      throw new HttpException('Evento já repondido', HttpStatus.CONFLICT);
+    if (isAnswered) throw new HttpException('Evento já repondido', HttpStatus.CONFLICT)
 
     const event = await this.prisma.event.findUnique({
       where: {
-        id: eventId,
+        id: eventId
       },
       select: {
         form: {
           select: {
-            id: true,
-          },
-        },
-      },
-    });
+            id: true
+          }
+        }
+      }
+    })
 
     const answer = await this.prisma.answer.create({
       data: {
         event: {
           connect: {
-            id: eventId,
-          },
+            id: eventId
+          }
         },
         form: {
           connect: {
-            id: event.form.id,
-          },
+            id: event.form.id
+          }
         },
         user: {
           connect: {
-            id: session.userId,
-          },
-        },
-      },
-    });
+            id: session.userId
+          }
+        }
+      }
+    })
 
     await Promise.all(
-      data.map(async (qa) => {
-        const schema = z.string().cuid();
+      data.map(async qa => {
+        const schema = z.string().cuid()
 
-        const isQuestionOption = schema.safeParse(qa.value).success;
+        const isQuestionOption = schema.safeParse(qa.value).success
 
         isQuestionOption
           ? await this.prisma.questionAnswer.create({
               data: {
                 option: {
                   connect: {
-                    id: qa.value,
-                  },
+                    id: qa.value
+                  }
                 },
                 answer: {
                   connect: {
-                    id: answer.id,
-                  },
+                    id: answer.id
+                  }
                 },
                 question: {
                   connect: {
-                    id: qa.questionId,
-                  },
-                },
-              },
+                    id: qa.questionId
+                  }
+                }
+              }
             })
           : await this.prisma.questionAnswer.create({
               data: {
                 value: qa.value,
                 answer: {
                   connect: {
-                    id: answer.id,
-                  },
+                    id: answer.id
+                  }
                 },
                 question: {
                   connect: {
-                    id: qa.questionId,
-                  },
-                },
-              },
-            });
-      }),
-    );
+                    id: qa.questionId
+                  }
+                }
+              }
+            })
+      })
+    )
 
-    return { success: true };
+    return { success: true }
   }
 }

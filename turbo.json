@@ -1,10 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".env"],
-  "pipeline": {
+  "globalPassThroughEnv": ["*"],
+  "ui": "stream",
+  "tasks": {
     "build": {
       "cache": false,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^generate"],
       "env": ["NEXT_PUBLIC_*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
@@ -14,20 +15,20 @@
     "seed": {
       "cache": false
     },
-    "prod": {
-      "cache": false
-    },
     "dev": {
       "cache": false
     },
-    "generate": {
+    "db:generate": {
       "cache": false
     },
-    "migrate:dev": {
+    "db:push": {
+      "cache": false
+    },
+    "db:migrate:dev": {
       "interactive": true,
       "cache": false
     },
-    "migrate:deploy": {
+    "db:migrate:deploy": {
       "cache": false
     }
   }

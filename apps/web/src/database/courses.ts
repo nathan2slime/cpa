@@ -1,4 +1,4 @@
-import { TCourses } from '@/types/courseType';
+import { TCourses } from '@/types/courseType'
 
 export const courses: Array<TCourses> = [
   'Todos',
@@ -22,5 +22,5 @@ export const courses: Array<TCourses> = [
   'Superior de Tecnologia em Análise e Desenvolvimento de Sistemas',
   'Superior de Tecnologia em Design de Moda',
   'Superior de Tecnologia em Estética e Cosmética',
-  'Superior de Tecnologia em Radiologia',
-];
+  'Superior de Tecnologia em Radiologia'
+]

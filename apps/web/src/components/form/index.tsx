@@ -1,70 +1,61 @@
-'use client';
+'use client'
 
-import { useFieldArray, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage } from '@/components/ui/avatar';
-import { Question } from '@/components/question';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Question } from '@/components/question'
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useFieldArray, useForm } from 'react-hook-form'
 
-import { database } from '@/database';
-import { FormProps } from './model';
-import { AvatarFallback } from '@radix-ui/react-avatar';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '@/services/firebaseConfig';
+import { database } from '@/database'
+import { db } from '@/services/firebaseConfig'
+import { AvatarFallback } from '@radix-ui/react-avatar'
+import { addDoc, collection } from 'firebase/firestore'
+import { FormProps } from './model'
 
 // enviar para o banco de dados
 const handleFormSubmit = async (data: Record<string, any>) => {
   const response = await addDoc(collection(db, 'answers'), {
-    ...data,
-  });
+    ...data
+  })
 
-  console.log('Document written with ID: ', response.id);
-};
+  console.log('Document written with ID: ', response.id)
+}
 
 export const Form = ({ id }: FormProps) => {
-  const payload = database[id];
+  const payload = database[id]
 
   const {
     formState: { isValid },
     watch,
-    control,
+    control
   } = useForm({
     mode: 'all',
-    resolver: zodResolver(payload.schema),
-  });
+    resolver: zodResolver(payload.schema)
+  })
 
   const { append, remove } = useFieldArray({
     name: 'data',
-    control,
-  });
+    control
+  })
 
-  const form = watch();
+  const form = watch()
 
   //useEffect(() => {
   //  console.log(form);
   //}, [form]);
 
   const onChangeQuestion = (e: string) => {
-    const [question, answer] = e.split('-').map((e) => parseInt(e));
+    const [question, answer] = e.split('-').map(e => Number.parseInt(e))
 
-    const item = (form.data || []).find(
-      (e: Record<string, number>) => e.question == question,
-    );
+    const item = (form.data || []).find((e: Record<string, number>) => e.question === question)
 
-    if (!!item) {
-      remove(item);
+    if (item) {
+      remove(item)
     }
 
-    append({ question, answer });
-  };
+    append({ question, answer })
+  }
 
   return (
     <div className="w-full h-full bg-[#fffbf7] p-4 md:p-8">
@@ -88,31 +79,18 @@ export const Form = ({ id }: FormProps) => {
           </DropdownMenu>
 
           <div className="h-[70px] w-full md:w-fit bg-white border border-zinc-400 rounded-lg flex items-center justify-center md:justify-start gap-2 p-4 md:p-8">
-            <h1 className="text-xl md:text-2xl font-bold tracking-wide text-zinc-900">
-              {payload.title}
-            </h1>
+            <h1 className="text-xl md:text-2xl font-bold tracking-wide text-zinc-900">{payload.title}</h1>
           </div>
         </div>
 
         {payload.data.map((question, index) => (
-          <Question
-            key={'question_' + index}
-            data={question}
-            position={index}
-            onChange={onChangeQuestion}
-          />
+          <Question key={`question_${index}`} data={question} position={index} onChange={onChangeQuestion} />
         ))}
 
-        <Button
-          className="w-full mt-5 max-w-[180px] tracking-wider"
-          size="lg"
-          disabled={!isValid}
-          color="primary"
-          onClick={() => handleFormSubmit(form)}
-        >
+        <Button className="w-full mt-5 max-w-[180px] tracking-wider" size="lg" disabled={!isValid} color="primary" onClick={() => handleFormSubmit(form)}>
           Enviar
         </Button>
       </div>
     </div>
-  );
-};
+  )
+}

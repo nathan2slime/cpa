@@ -1,7 +1,7 @@
-import { Sidebar } from '@/components/core/sidebar';
-import { Navbar } from '@/components/Navbar';
+import { Navbar } from '@/components/Navbar'
+import { Sidebar } from '@/components/core/sidebar'
 
-import { AppChildren } from '@/types';
+import { AppChildren } from '@/types'
 
 export const AppLayout = ({ children }: AppChildren) => {
   return (
@@ -13,5 +13,5 @@ export const AppLayout = ({ children }: AppChildren) => {
         <div className="w-full h-full p-4">{children}</div>
       </div>
     </main>
-  );
-};
+  )
+}

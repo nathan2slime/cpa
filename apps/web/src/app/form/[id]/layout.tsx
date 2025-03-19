@@ -1,27 +1,27 @@
-'use client';
+'use client'
 
-import { Sidebar } from '@/components/core/sidebar';
+import { Sidebar } from '@/components/core/sidebar'
 
-import { AppChildren } from '@/types';
-import React, { useEffect, useState } from 'react';
-import { HeaderForm } from '@/app/form/[id]/components/HeaderForm';
-import { useParams } from 'next/navigation';
-import { api } from '@/api';
+import { api } from '@/api'
+import { HeaderForm } from '@/app/form/[id]/components/HeaderForm'
+import { AppChildren } from '@/types'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export default ({ children }: Readonly<AppChildren>) => {
-  const params = useParams();
-  const id = params.id as string;
+  const params = useParams()
+  const id = params.id as string
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState('')
 
   const getDataForm = async () => {
-    const { data } = await api.get(`/api/form/show/${id}`);
-    setTitle(data.title);
-  };
+    const { data } = await api.get(`/api/form/show/${id}`)
+    setTitle(data.title)
+  }
 
   useEffect(() => {
-    getDataForm();
-  }, [id]);
+    getDataForm()
+  }, [id])
 
   return (
     <main className="w-full h-full">
@@ -33,5 +33,5 @@ export default ({ children }: Readonly<AppChildren>) => {
         <div className="w-full h-full p-4">{children}</div>
       </div>
     </main>
-  );
-};
+  )
+}

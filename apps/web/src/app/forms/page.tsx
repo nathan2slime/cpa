@@ -1,68 +1,56 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import { api } from '@/api';
-import { FormReq, FormResponse } from '@/types/form';
+import { api } from '@/api'
+import { Button } from '@/components/ui/button'
+import { FormReq, FormResponse } from '@/types/form'
+import { useEffect, useState } from 'react'
 
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { formatDistanceToNow } from 'date-fns';
-import { useRouter } from 'next/navigation';
-import { ptBR } from 'date-fns/locale';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { formatDistanceToNow } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { useRouter } from 'next/navigation'
 
-import { PaginationComponent } from '@/components/PaginationComponent';
-import { orderBy } from 'lodash';
+import { PaginationComponent } from '@/components/PaginationComponent'
 
 function Forms() {
   // Simula os formulários criados
-  const router = useRouter();
-  const [forms, setForms] = useState<FormReq[]>();
-  const [shouldFetch, setShouldFetch] = useState<boolean>(true);
+  const router = useRouter()
+  const [forms, setForms] = useState<FormReq[]>()
+  const [shouldFetch, setShouldFetch] = useState<boolean>(true)
 
   const deleteForm = async (id: string) => {
-    await api.delete(`/api/form/remove/${id}`);
-    setShouldFetch(!shouldFetch);
-  };
+    await api.delete(`/api/form/remove/${id}`)
+    setShouldFetch(!shouldFetch)
+  }
 
-  const [page, setPage] = useState<number>(1);
+  const [page, setPage] = useState<number>(1)
 
-  const [totalForms, setTotalForms] = useState<number>(0);
+  const [totalForms, setTotalForms] = useState<number>(0)
 
   //limite por pagina de formularios q serão pegos
-  const perPage = 5;
+  const perPage = 5
 
   //quantidade de paginas totais arredondadas
-  const pagesRounded = Math.ceil(totalForms / perPage);
+  const pagesRounded = Math.ceil(totalForms / perPage)
 
   //criar um formulário e redireciona para o mesmo
   const createForm = async () => {
-    const res = await api.post(`/api/form/create`, {
-      title: 'Rascunho',
-    });
-    router.push('/form/' + res.data.id);
-  };
+    const res = await api.post('/api/form/create', {
+      title: 'Rascunho'
+    })
+    router.push(`/form/${res.data.id}`)
+  }
 
   const getForms = async () => {
-    const { data } = await api.get<FormResponse>(
-      `/api/form/search?page=${page}&perPage=${perPage}&sortField=updatedAt&sortOrder=desc`,
-    );
+    const { data } = await api.get<FormResponse>(`/api/form/search?page=${page}&perPage=${perPage}&sortField=updatedAt&sortOrder=desc`)
 
-    setForms(data.data);
-    setTotalForms(data.total);
-  };
+    setForms(data.data)
+    setTotalForms(data.total)
+  }
 
   useEffect(() => {
-    getForms();
-  }, [page, shouldFetch]);
+    getForms()
+  }, [page, shouldFetch])
 
   return (
     <>
@@ -78,20 +66,12 @@ function Forms() {
 
           <div className="border w-full rounded-xl">
             {forms?.length === 0 && (
-              <p className={'p-5'}>
-                Sem formulários criados {page > 0 && 'ou itens na paginação'},
-                crie um formulario no botão acima "Criar novo formulário".
-              </p>
+              <p className={'p-5'}>Sem formulários criados {page > 0 && 'ou itens na paginação'}, crie um formulario no botão acima "Criar novo formulário".</p>
             )}
             {forms && (
               <div>
-                {forms.map((form) => (
-                  <div
-                    key={form.id}
-                    className={
-                      'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl'
-                    }
-                  >
+                {forms.map(form => (
+                  <div key={form.id} className={'flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl'}>
                     <div className={'flex gap-3 items-center'}>
                       <p className={'font-semibold'}>{form.title}</p>
                       <p className={'text-gray-500 text-sm'}>
@@ -99,15 +79,12 @@ function Forms() {
                           form &&
                           formatDistanceToNow(new Date(form.updatedAt), {
                             addSuffix: true,
-                            locale: ptBR,
+                            locale: ptBR
                           })}
                       </p>
                     </div>
                     <div className={'flex gap-2 items-center'}>
-                      <Button
-                        variant="outline"
-                        onClick={() => router.push('/form/' + form.id)}
-                      >
+                      <Button variant="outline" onClick={() => router.push(`/form/${form.id}`)}>
                         Editar
                       </Button>
                       <Dialog>
@@ -116,20 +93,13 @@ function Forms() {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>
-                              Tem certeza que deseja excluir esse formulário?
-                            </DialogTitle>
-                            <DialogDescription>
-                              Você não poderá reverter essa ação.
-                            </DialogDescription>
+                            <DialogTitle>Tem certeza que deseja excluir esse formulário?</DialogTitle>
+                            <DialogDescription>Você não poderá reverter essa ação.</DialogDescription>
                           </DialogHeader>
                           <DialogFooter>
                             <div className={'flex justify-end gap-3'}>
                               <DialogClose asChild>
-                                <Button
-                                  onClick={() => deleteForm(form.id)}
-                                  variant="destructive"
-                                >
+                                <Button onClick={() => deleteForm(form.id)} variant="destructive">
                                   Sim, apagar
                                 </Button>
                               </DialogClose>
@@ -151,7 +121,7 @@ function Forms() {
         <PaginationComponent setPage={setPage} totalPages={pagesRounded} />
       </main>
     </>
-  );
+  )
 }
 
-export default Forms;
+export default Forms

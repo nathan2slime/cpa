@@ -1,12 +1,12 @@
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { Request } from 'express';
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { PassportStrategy } from '@nestjs/passport'
+import { Request } from 'express'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 
-import { env } from '~/env';
-import { AUTH_COOKIE } from '~/constants';
-import { SessionService } from '~/app/session/session.service';
-import { JwtAuthPayload } from '~/types/auth.types';
+import { SessionService } from '~/app/session/session.service'
+import { AUTH_COOKIE } from '~/constants'
+import { env } from '~/env'
+import { JwtAuthPayload } from '~/types/auth.types'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -16,23 +16,23 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           if (req) {
-            const data = req.cookies[AUTH_COOKIE];
+            const data = req.cookies[AUTH_COOKIE]
 
-            if (data && data.accessToken) return data.accessToken;
+            if (data && data.accessToken) return data.accessToken
           }
 
-          return null;
-        },
+          return null
+        }
       ]),
-      secretOrKey: env.SECRET_KEY,
-    });
+      secretOrKey: env.SECRET_KEY
+    })
   }
 
   async validate(payload: JwtAuthPayload) {
-    const session = await this.sessionService.findById(payload.sessionId);
+    const session = await this.sessionService.findById(payload.sessionId)
 
-    if (session) return session;
+    if (session) return session
 
-    throw new UnauthorizedException();
+    throw new UnauthorizedException()
   }
 }

@@ -1,12 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 
-import { PrismaService } from '~/database/prisma.service';
-import {
-  CreateQuestionDto,
-  QueryQuestionDto,
-  UpdateQuestionDto,
-} from '~/app/question/question.dto';
+import { CreateQuestionDto, QueryQuestionDto, UpdateQuestionDto } from '~/app/question/question.dto'
+import { PrismaService } from '~/database/prisma.service'
 
 @Injectable()
 export class QuestionService {
@@ -14,30 +10,27 @@ export class QuestionService {
 
   async create({ form, ...data }: CreateQuestionDto) {
     return this.prisma.question.create({
-      data: { ...data, form: { connect: { id: form } } },
-    });
+      data: { ...data, form: { connect: { id: form } } }
+    })
   }
 
   async remove(where: Prisma.QuestionWhereUniqueInput) {
     return this.prisma.question.update({
       where,
-      data: { deletedAt: new Date() },
-    });
+      data: { deletedAt: new Date() }
+    })
   }
 
-  async update(
-    where: Prisma.QuestionWhereUniqueInput,
-    data: UpdateQuestionDto,
-  ) {
+  async update(where: Prisma.QuestionWhereUniqueInput, data: UpdateQuestionDto) {
     return this.prisma.question.update({
       where,
-      data,
-    });
+      data
+    })
   }
 
   async show({ form }: QueryQuestionDto) {
     return this.prisma.question.findMany({
-      where: { deletedAt: null, form: { id: form } },
-    });
+      where: { deletedAt: null, form: { id: form } }
+    })
   }
 }

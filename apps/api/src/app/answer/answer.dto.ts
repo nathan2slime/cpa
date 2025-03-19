@@ -1,24 +1,24 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty } from 'class-validator'
 
 export class QuestionAnswer {
   @ApiProperty()
   @IsNotEmpty()
-  value: string;
+  value: string
 
   @ApiProperty()
   @IsNotEmpty()
-  questionId: string;
+  questionId: string
 }
 
 export class CreateAnswerDto {
   @IsNotEmpty()
   @ApiProperty()
-  eventId: string;
+  eventId: string
 
   @ApiProperty({
-    type: [QuestionAnswer],
+    type: [QuestionAnswer]
   })
   @IsNotEmpty()
-  data: QuestionAnswer[];
+  data: QuestionAnswer[]
 }

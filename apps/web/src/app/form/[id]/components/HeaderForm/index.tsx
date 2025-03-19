@@ -1,67 +1,54 @@
-'use client';
-import React, { useEffect, useState } from 'react';
-import { Input } from '@/components/ui/input';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Avatar } from '@/components/ui/avatar';
-import {
-  FileText,
-  StarIcon,
-  Palette,
-  EyeIcon,
-  EllipsisIcon,
-  Printer,
-  ChevronDown,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { useSnapshot } from 'valtio';
-import { authState } from '@/store/auth.state';
-import { UserData } from '@/types/auth.types';
-import { api } from '@/api';
+'use client'
+import { api } from '@/api'
+import { AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { authState } from '@/store/auth.state'
+import { UserData } from '@/types/auth.types'
+import { ChevronDown, EllipsisIcon, Palette, Printer, StarIcon } from 'lucide-react'
+import Link from 'next/link'
+import React, { useEffect, useState } from 'react'
+import { useSnapshot } from 'valtio'
 
 export const HeaderForm = ({
   titleForm,
-  idForm,
+  idForm
 }: {
-  titleForm: string;
-  idForm: string;
+  titleForm: string
+  idForm: string
 }) => {
-  const { data } = useSnapshot(authState);
+  const { data } = useSnapshot(authState)
 
-  const user = (data && data.user) as UserData;
+  const user = (data && data.user) as UserData
 
-  const [title, setTitle] = useState(titleForm);
-  const [favorite, setFavorite] = useState(false);
+  const [title, setTitle] = useState(titleForm)
+  const [favorite, setFavorite] = useState(false)
 
   const putTitle = async () => {
-    title == '' && setTitle('Rascunho');
+    title === '' && setTitle('Rascunho')
 
     await api.patch(`/api/form/update/${idForm}`, {
-      title: title == '' ? 'Rascunho' : title,
-    });
-  };
+      title: title === '' ? 'Rascunho' : title
+    })
+  }
 
   useEffect(() => {
-    setTitle(titleForm);
-  }, [titleForm]);
+    setTitle(titleForm)
+  }, [titleForm])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
+    setTitle(e.target.value)
+  }
 
   const handleOpenModalTheme = () => {
-    console.log('Open modal theme');
-  };
+    console.log('Open modal theme')
+  }
 
   const handleEnviarClick = () => {
-    console.log('Enviar');
-  };
+    console.log('Enviar')
+  }
 
   return (
     <header className="fixed top-0 left-0 z-50 flex justify-between items-center gap-4 h-[60px] w-full p-4 bg-white border-b border-b-gray-200">
@@ -70,26 +57,11 @@ export const HeaderForm = ({
           <h4 className="font-bold tracking-wide">UniFacema</h4>
         </Link>
 
-        <Input
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-          onBlur={putTitle}
-          className="w-min"
-          placeholder="Formulário sem nome"
-        />
+        <Input type="text" value={title} onChange={handleTitleChange} onBlur={putTitle} className="w-min" placeholder="Formulário sem nome" />
 
         {/* Botão de favoritar */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setFavorite(!favorite)}
-        >
-          <StarIcon
-            size={20}
-            color={favorite ? 'orange' : 'gray'}
-            strokeWidth={2}
-          />
+        <Button variant="ghost" size="icon" onClick={() => setFavorite(!favorite)}>
+          <StarIcon size={20} color={favorite ? 'orange' : 'gray'} strokeWidth={2} />
         </Button>
       </div>
 
@@ -105,10 +77,7 @@ export const HeaderForm = ({
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem className="md:hidden">
-                <Button
-                  onClick={handleEnviarClick}
-                  className="bg-green-400 hover:bg-green-500 text-white w-full"
-                >
+                <Button onClick={handleEnviarClick} className="bg-green-400 hover:bg-green-500 text-white w-full">
                   Enviar
                 </Button>
               </DropdownMenuItem>
@@ -129,9 +98,7 @@ export const HeaderForm = ({
                 <AvatarFallback>US</AvatarFallback>
               </Avatar>
 
-              <p className="text-accent-foreground text-sm font-normal">
-                {user?.login}
-              </p>
+              <p className="text-accent-foreground text-sm font-normal">{user?.login}</p>
 
               <ChevronDown className="ml-4 w-4 text-accent-foreground" />
             </DropdownMenuTrigger>
@@ -142,5 +109,5 @@ export const HeaderForm = ({
         </span>
       </div>
     </header>
-  );
-};
+  )
+}

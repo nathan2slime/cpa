@@ -1,4 +1,4 @@
-import * as yup from 'yup';
+import * as yup from 'yup'
 
 export const eventFormSchema = yup.object().shape({
   title: yup.string().required('Título é obrigatório'),
@@ -7,6 +7,5 @@ export const eventFormSchema = yup.object().shape({
   responsible: yup.string().required('Responsável é obrigatório'),
   startDate: yup.date().required('Data de início é obrigatória'),
   endDate: yup.date().required('Data de término é obrigatória'),
-  form: yup.string().required('Formulário é obrigatório'),
-});
-
+  form: yup.string().required('Formulário é obrigatório')
+})
