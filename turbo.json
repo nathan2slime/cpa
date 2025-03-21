@@ -5,7 +5,7 @@
   "tasks": {
     "build": {
       "cache": false,
-      "dependsOn": ["^generate"],
+      "dependsOn": ["^db:generate"],
       "env": ["NEXT_PUBLIC_*"],
       "outputs": [".next/**", "!.next/cache/**"]
     },
@@ -29,6 +29,9 @@
       "cache": false
     },
     "db:migrate:deploy": {
+      "cache": false
+    },
+    "studio": {
       "cache": false
     }
   }

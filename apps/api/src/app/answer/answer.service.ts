@@ -1,5 +1,5 @@
+import { Session } from '@cpa/database'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Session } from '@prisma/client'
 import { z } from 'zod'
 
 import { CreateAnswerDto } from '~/app/answer/answer.dto'

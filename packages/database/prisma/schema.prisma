@@ -1,10 +1,13 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../dist"
+  previewFeatures = ["prismaSchemaFolder"]
+  binaryTargets   = ["debian-openssl-1.1.x", "linux-musl-openssl-3.0.x", "darwin", "darwin-arm64", "debian-openssl-3.0.x", "windows"]
 }
 
 enum CourseType {
@@ -53,9 +56,9 @@ model User {
 }
 
 model Course {
-  id             String           @id @default(uuid())
-  type           CourseType
-  name           String
+  id          String        @id @default(uuid())
+  type        CourseType
+  name        String
   courseEvent CourseEvent[]
 
   createdAt DateTime  @default(now())
@@ -69,14 +72,14 @@ model Event {
   description String
   responsible String
 
-  form      Form      @relation(fields: [formId], references: [id])
-  formId    String
+  form   Form   @relation(fields: [formId], references: [id])
+  formId String
 
   startDate DateTime?
   endDate   DateTime?
 
   courses CourseEvent[]
-  answers   Answer[]
+  answers Answer[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -89,7 +92,7 @@ model CourseEvent {
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
 
-  event   Event @relation(fields: [eventId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id])
   eventId String
 
   createdAt DateTime  @default(now())
@@ -102,12 +105,12 @@ model Form {
   title String
 
   questions Question[]
-  answers  Answer[]
+  answers   Answer[]
 
-  createdAt DateTime   @default(now())
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  updatedAt DateTime?  @updatedAt
-  event  Event[]
+  updatedAt DateTime? @updatedAt
+  event     Event[]
 }
 
 model QuestionOption {
@@ -144,18 +147,18 @@ model Question {
 model Answer {
   id String @id @default(uuid())
 
-  user     User     @relation(fields: [userId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
 
   userId         String
   questionAnswer QuestionAnswer[]
 
-  createdAt  DateTime  @default(now())
-  deletedAt  DateTime?
-  updatedAt  DateTime? @updatedAt
-  form       Form?     @relation(fields: [formId], references: [id])
-  formId     String?
-  eventId String
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
+  form      Form?     @relation(fields: [formId], references: [id])
+  formId    String?
+  eventId   String
 }
 
 model QuestionAnswer {

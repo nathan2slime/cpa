@@ -1,15 +1,15 @@
+import { Session } from '@cpa/database'
 import { Body, Controller, Get, HttpStatus, Patch, Post, Req, Res, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Session } from '@prisma/client'
 import { Request, Response } from 'express'
 
 import { SignInDto } from '~/app/auth/auth.dto'
 import { AuthService } from '~/app/auth/auth.service'
 import { AUTH_COOKIE } from '~/constants'
 
+import { env } from '@cpa/env'
 import { JwtAuthGuard } from '~/app/auth/auth.guard'
-import { env } from '~/env'
 
 @Controller('auth')
 @ApiTags('Auth')

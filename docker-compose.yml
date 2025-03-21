@@ -3,11 +3,11 @@ services:
     build:
       context: .
       dockerfile: ./apps/web/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:5400
     restart: always
     ports:
       - "3000:3000"
-    env_file:
-      - ./.env.production
   api:
     build:
       context: .

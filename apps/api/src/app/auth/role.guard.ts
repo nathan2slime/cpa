@@ -1,6 +1,6 @@
+import { Role, Session, User } from '@cpa/database'
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
-import { Role, Session, User } from '@prisma/client'
 
 import { Roles } from '~/app/auth/auth.decorator'
 

@@ -4,12 +4,8 @@ import { z } from 'zod'
 
 export const env = createEnv({
   server: {
-    API_URL: z.string().url(),
-    REDIS_URL: z.string().url(),
-    REDIS_PASSWORD: z.string().min(1),
     DATABASE_URL: z.string().url(),
     SESSION_KEY: z.string().min(1),
-    AUTH_COOKIE: z.string().min(1),
     ACCESS_TOKEN_EXPIRES_IN: z.string().default('7d'),
     REFRESH_TOKEN_EXPIRES_IN: z.string().default('30d'),
     CLIENT_URL: z.string().url(),
@@ -23,8 +19,6 @@ export const env = createEnv({
     CLIENT_URL: process.env.CLIENT_URL,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NODE_ENV: process.env.NODE_ENV,
-    AUTH_COOKIE: process.env.AUTH_COOKIE,
-    API_URL: process.env.API_URL,
     DATABASE_URL: process.env.DATABASE_URL,
     REDIS_URL: process.env.REDIS_URL,
     SESSION_KEY: process.env.SESSION_KEY,

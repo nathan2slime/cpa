@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 
+import { env } from '@cpa/env'
 import { ACCESS_TOKEN_EXPIRES_IN, REFRESH_TOKEN_EXPIRES_IN } from '~/constants'
 import { PrismaService } from '~/database/prisma.service'
 import { exclude } from '~/database/utils'
-import { env } from '~/env'
 import { JwtAuthPayload } from '~/types/auth.types'
 
 @Injectable()
@@ -28,11 +28,11 @@ export class SessionService {
     const payload = { userId, sessionId: session.id }
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: env.SECRET_KEY,
+      secret: env.SESSION_KEY,
       expiresIn: ACCESS_TOKEN_EXPIRES_IN
     })
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: env.SECRET_KEY,
+      secret: env.SESSION_KEY,
       expiresIn: REFRESH_TOKEN_EXPIRES_IN
     })
 
@@ -65,7 +65,7 @@ export class SessionService {
     const accessToken = await this.jwtService.signAsync(
       { sessionId: payload.sessionId, userId: payload.userId },
       {
-        secret: env.SECRET_KEY,
+        secret: env.SESSION_KEY,
         expiresIn: ACCESS_TOKEN_EXPIRES_IN
       }
     )

@@ -1,6 +1,6 @@
+import { Role } from '@cpa/database'
 import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { Role } from '@prisma/client'
 import { Response } from 'express'
 
 import { PaginationDto } from '~/app/app.dto'

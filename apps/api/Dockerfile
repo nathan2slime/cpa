@@ -19,7 +19,7 @@ COPY . /app
 WORKDIR /app
 RUN pnpm i turbo --g
 COPY . .
-RUN turbo prune @kwa/api --docker
+RUN turbo prune @cpa/api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -34,8 +34,8 @@ COPY --from=builder /app/out/full/ .
 
 ENV NODE_ENV production
 
-RUN pnpm turbo build --filter=@kwa/database
-RUN pnpm turbo build --filter=@kwa/api
+RUN pnpm turbo db:generate --filter=@cpa/database
+RUN pnpm turbo build --filter=@cpa/api
 
 FROM base AS runner
 WORKDIR /app

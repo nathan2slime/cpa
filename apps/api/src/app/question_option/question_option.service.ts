@@ -1,5 +1,5 @@
+import { Prisma, QuestionType } from '@cpa/database'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Prisma, QuestionType } from '@prisma/client'
 
 import { CreateQuestionOptionDto, QueryQuestionOptionDto, UpdateQuestionOptionDto } from '~/app/question_option/question_option.dto'
 import { PrismaService } from '~/database/prisma.service'

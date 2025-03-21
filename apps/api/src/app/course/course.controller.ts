@@ -1,6 +1,6 @@
+import { Role } from '@cpa/database'
 import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Res, UseGuards } from '@nestjs/common'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
-import { Role } from '@prisma/client'
 import { Response } from 'express'
 
 import { Roles } from '~/app/auth/auth.decorator'

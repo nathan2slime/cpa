@@ -3,9 +3,9 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Request } from 'express'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
+import { env } from '@cpa/env'
 import { SessionService } from '~/app/session/session.service'
 import { AUTH_COOKIE } from '~/constants'
-import { env } from '~/env'
 import { JwtAuthPayload } from '~/types/auth.types'
 
 @Injectable()
@@ -24,7 +24,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
         }
       ]),
       ignoreExpiration: true,
-      secretOrKey: env.SECRET_KEY
+      secretOrKey: env.SESSION_KEY
     })
   }
 

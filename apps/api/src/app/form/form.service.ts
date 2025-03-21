@@ -1,5 +1,5 @@
+import { Prisma, Session } from '@cpa/database'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { Prisma, Session } from '@prisma/client'
 
 import { PaginationDto } from '~/app/app.dto'
 import { CreateFormDto, UpdateFormDto } from '~/app/form/form.dto'

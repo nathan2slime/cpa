@@ -2,6 +2,7 @@
   "extends": "@cpa/tsconfig/base.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "moduleResolution": "nodenext",
     "outDir": "dist"
   }
 }

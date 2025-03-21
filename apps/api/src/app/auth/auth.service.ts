@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
-import { compare } from 'bcrypt'
+import { compare } from 'bcryptjs'
 
-import { Session } from '@prisma/client'
+import { Session } from '@cpa/database'
 import { SessionService } from '~/app/session/session.service'
 import { UserService } from '~/app/user/user.service'
 import { INVALID_CREDENTIALS, USER_NOT_FOUND } from '~/errors'

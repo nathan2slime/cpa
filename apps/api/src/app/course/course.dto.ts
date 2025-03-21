@@ -1,5 +1,5 @@
+import { CourseType } from '@cpa/database'
 import { ApiProperty } from '@nestjs/swagger'
-import { CourseType } from '@prisma/client'
 import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator'
 
 export class CreateCourseDto {
