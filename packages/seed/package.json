@@ -1,0 +1,21 @@
+{
+  "name": "@cpa/seed",
+  "version": "1.0.0",
+  "main": "index.mjs",
+  "scripts": {
+    "dev": "node .",
+    "start": "node ."
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@cpa/database": "workspace:*",
+    "@cpa/env": "workspace:*",
+    "bcryptjs": "^2.4.3",
+    "bunyan": "^1.8.15",
+    "pino": "^9.3.2"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.11",
+    "@types/bcryptjs": "^2.4.6"
+  }
+}

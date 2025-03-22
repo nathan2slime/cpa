@@ -9,6 +9,7 @@
     "build": "NODE_ENV=production dotenv -- turbo run build",
     "lint": "biome check",
     "format": "biome format --write",
+    "db:seed": "dotenv -- turbo run dev --filter=@cpa/seed",
     "db:migrate:dev": "dotenv -- turbo run db:migrate:dev --ui=tui",
     "studio": "dotenv -- turbo run studio",
     "db:migrate:deploy": "dotenv -- turbo run db:migrate:deploy",
