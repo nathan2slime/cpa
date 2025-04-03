@@ -1,22 +1,23 @@
 import axios, { AxiosError } from 'axios'
+import { cookies } from 'next/headers'
 
 export const api = axios.create({
-  withCredentials: true,
-  baseURL: process.env.NEXT_PUBLIC_API_URL
+  baseURL: new URL('api', process.env.NEXT_PUBLIC_API_SERVER_URL).toString(),
+  withCredentials: true
 })
 
-const isServer = typeof window === 'undefined'
+api.interceptors.request.use(async req => {
+  const cookie = await cookies()
+
+  req.headers.Cookie = cookie.toString()
+  req.withCredentials = true
+
+  return req
+})
 
 api.interceptors.response.use(
-  response => {
-    if (isServer) {
-    }
-
-    return response
-  },
-  (error: AxiosError) => {
-    console.log(error)
-
-    return Promise.resolve(null)
+  response => response,
+  (_error: AxiosError) => {
+    return Promise.resolve({ data: null })
   }
 )
