@@ -1,21 +1,13 @@
-"use server"
-
-import { getAnswerQuery } from "../../../../api/queries/get-answer-query";
+import ReportDashboard from "@/components/report-dashboard";
+import { getAnswersQuery } from "../../../../api/queries/get-answer.query";
 
 type Param = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
-const ReportPage = async ({ params }: Param) => {
-  const { id } = await params;
+export default async function ReportPage({ params }: Param) {
+  const { id } = params;
+  const data = await getAnswersQuery(id);
 
-  const data = await getAnswerQuery(id);
-
-  if (data) {
-    return <div>{JSON.stringify(data)}</div>;
-  }
-
-  return <div></div>;
-};
-
-export default ReportPage;
+  return <ReportDashboard data={data} />;
+}

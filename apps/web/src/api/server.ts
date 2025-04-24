@@ -1,23 +1,23 @@
-import axios, { AxiosError } from 'axios'
-import { cookies } from 'next/headers'
+import axios, { AxiosError } from "axios";
+import { cookies } from "next/headers";
 
 export const api = axios.create({
-  baseURL: new URL('api', process.env.NEXT_PUBLIC_API_SERVER_URL).toString(),
-  withCredentials: true
-})
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+  withCredentials: true,
+});
 
-api.interceptors.request.use(async req => {
-  const cookie = await cookies()
+api.interceptors.request.use(async (req) => {
+  const cookie = await cookies();
 
-  req.headers.Cookie = cookie.toString()
-  req.withCredentials = true
+  req.headers.Cookie = cookie.toString();
+  req.withCredentials = true;
 
-  return req
-})
+  return req;
+});
 
 api.interceptors.response.use(
-  response => response,
+  (response) => response,
   (_error: AxiosError) => {
-    return Promise.resolve({ data: null })
+    return Promise.resolve({ data: null });
   }
-)
+);

@@ -1,5 +1,5 @@
 const Index = () => {
-  return <div />
-}
+  return <div />;
+};
 
-export default Index
+export default Index;

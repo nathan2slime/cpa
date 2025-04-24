@@ -10,6 +10,21 @@ export class AnswerService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getByEvent(id: string) {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      select: {
+        form: {
+          include: {
+            questions: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
     const answers = await this.prisma.answer.findMany({
       where: { eventId: id, deletedAt: null },
       omit: {
@@ -25,20 +40,25 @@ export class AnswerService {
             userId: true,
           },
         },
-        question: true,
       },
     });
 
-    const options = await this.prisma.questionOption.findMany({
-      where: {
-        id: { in: questionAnswers.map((qa) => qa.value).filter(Boolean) },
-      },
+    const questions = await this.prisma.question.findMany({
+      where: { id: { in: questionAnswers.map((qa) => qa.questionId) } },
     });
 
-    return questionAnswers.map((qa) => ({
-      ...qa,
-      option: options.find((opt) => opt.id === qa.value) || null,
-    }));
+    const questionOptions = await this.prisma.questionOption.findMany({
+      where: { id: { in: questionAnswers.map((qa) => qa.value) } },
+    });
+
+    return {
+      form: event.form,
+      answers: questionAnswers.map((qa) => ({
+        ...qa,
+        question: questions.find((q) => q.id === qa.questionId),
+        option: questionOptions.find((opt) => opt.id === qa.value),
+      })),
+    };
   }
 
   async create({ data, eventId }: CreateAnswerDto, session: Session) {
