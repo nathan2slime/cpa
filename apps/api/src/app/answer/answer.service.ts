@@ -16,8 +16,15 @@ export class AnswerService {
         form: {
           include: {
             questions: {
+              where: {
+                deletedAt: null,
+              },
               include: {
-                options: true,
+                options: {
+                  where: {
+                    deletedAt: null,
+                  },
+                },
               },
             },
           },

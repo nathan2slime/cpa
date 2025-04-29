@@ -88,7 +88,7 @@ function Forms() {
                         Editar
                       </Button>
                       <Dialog>
-                        <DialogTrigger>
+                        <DialogTrigger asChild>
                           <Button variant="destructive">Excluir</Button>
                         </DialogTrigger>
                         <DialogContent>

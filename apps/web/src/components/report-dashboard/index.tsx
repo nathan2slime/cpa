@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import QuestionCard from "@/components/question-card";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -9,10 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronUp, FileText, PieChartIcon } from "lucide-react";
-import QuestionCard from "@/components/question-card";
 import type { Answers } from "@/types/report.type";
+import {
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  PieChartIcon
+} from "lucide-react";
+import { useState } from "react";
 
 type ReportDashboardProps = {
   data: {
@@ -45,8 +50,8 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
   const totalResponses =
     data.answers.length > 0
       ? data.answers.reduce((acc, curr) => {
-          const existingIds = acc.map((a) => a.id);
-          if (!existingIds.includes(curr.id)) {
+          const existingIds = acc.map((a) => a.answerId);
+          if (!existingIds.includes(curr.answerId)) {
             return [...acc, curr];
           }
           return acc;

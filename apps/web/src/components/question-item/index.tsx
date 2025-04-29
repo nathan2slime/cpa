@@ -47,7 +47,6 @@ export function QuestionItem({
     duplicateQuestion,
   } = useQuestionManager({ formId });
 
-  // Fetch options when component mounts or refreshes
   useEffect(() => {
     const fetchOptions = async () => {
       if (type === "CHOOSE") {
@@ -60,13 +59,11 @@ export function QuestionItem({
     fetchOptions();
   }, [id, title, type, getOptions]);
 
-  // Handle question title update
   const handleTitleUpdate = async () => {
     await updateQuestionTitle(id, questionTitle);
     onRefresh();
   };
 
-  // Handle question deletion
   const handleDeleteQuestion = async () => {
     setIsLoading(true);
     await deleteQuestion(id);
@@ -74,7 +71,6 @@ export function QuestionItem({
     setIsLoading(false);
   };
 
-  // Handle option creation
   const handleCreateOption = async () => {
     setIsLoading(true);
     await createOption(id);
@@ -83,10 +79,8 @@ export function QuestionItem({
     setIsLoading(false);
   };
 
-  // Handle option update
   const handleOptionUpdate = async (optionId: string, title: string) => {
     await updateOption(optionId, title);
-    // Update local state to avoid refetching
     setOptions((prev) =>
       prev.map((option) =>
         option.id === optionId ? { ...option, title } : option
@@ -94,7 +88,6 @@ export function QuestionItem({
     );
   };
 
-  // Handle option deletion
   const handleDeleteOption = async (optionId: string) => {
     setIsLoading(true);
     await deleteOption(optionId);
@@ -103,7 +96,6 @@ export function QuestionItem({
     setIsLoading(false);
   };
 
-  // Handle question duplication
   const handleDuplicateQuestion = async () => {
     setIsLoading(true);
     await duplicateQuestion(id, type);

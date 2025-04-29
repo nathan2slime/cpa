@@ -15,8 +15,8 @@ import { Separator } from "@/components/ui/separator";
 import { AlertCircle, FileText, ListChecks, Plus, Loader2 } from "lucide-react";
 import { useQuestionManager } from "@/hooks/use-question-manager";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { QuestionItem } from "@/components/question-item";
 import { useParams } from "next/navigation";
+import { QuestionItem } from "@/components/question-item";
 
 export default function QuestionForm() {
   const { id: formId } = useParams() as { id: string };
@@ -30,7 +30,6 @@ export default function QuestionForm() {
     fetchQuestions();
   }, [fetchQuestions]);
 
-  // Handle creating a new question
   const handleCreateQuestion = async (type: "TEXT" | "CHOOSE") => {
     setIsCreating(true);
     await createQuestion(type);
@@ -163,7 +162,6 @@ export default function QuestionForm() {
                           />
                         ) : (
                           <div className="ml-8 mt-2 space-y-2">
-                            {/* We would normally fetch options here, but for preview we'll use placeholders */}
                             <div className="flex items-center">
                               <input
                                 type="radio"
