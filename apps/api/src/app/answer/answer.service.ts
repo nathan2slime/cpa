@@ -11,60 +11,34 @@ export class AnswerService {
 
   async getByEvent(id: string) {
     const event = await this.prisma.event.findUnique({
-      where: { id },
-      select: {
-        form: {
-          include: {
-            questions: {
-              where: {
-                deletedAt: null,
-              },
-              include: {
-                options: {
-                  where: {
-                    deletedAt: null,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    const answers = await this.prisma.answer.findMany({
-      where: { eventId: id, deletedAt: null },
-      omit: {
-        userId: true,
-      },
-    });
-
-    const questionAnswers = await this.prisma.questionAnswer.findMany({
-      where: { answerId: { in: answers.map((a) => a.id) } },
+      where: { id, deletedAt: null },
       include: {
-        answer: {
-          omit: {
-            userId: true,
-          },
-        },
+        form: true,
       },
     });
 
     const questions = await this.prisma.question.findMany({
-      where: { id: { in: questionAnswers.map((qa) => qa.questionId) } },
-    });
-
-    const questionOptions = await this.prisma.questionOption.findMany({
-      where: { id: { in: questionAnswers.map((qa) => qa.value) } },
+      where: {
+        formId: event.form.id,
+        deletedAt: null,
+      },
+      include: {
+        options: {
+          where: {
+            deletedAt: null,
+          },
+        },
+        questionAnswer: {
+          where: {
+            deletedAt: null,
+          },
+        },
+      },
     });
 
     return {
       form: event.form,
-      answers: questionAnswers.map((qa) => ({
-        ...qa,
-        question: questions.find((q) => q.id === qa.questionId),
-        option: questionOptions.find((opt) => opt.id === qa.value),
-      })),
+      question: questions,
     };
   }
 

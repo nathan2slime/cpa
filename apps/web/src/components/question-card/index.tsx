@@ -8,36 +8,63 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
-import type { Answers } from "@/types/report.type";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
+import type { Question } from "@/types/report.type";
 
 type QuestionCardProps = {
-  question: {
-    id: string;
-    title: string;
-    options: {
-      id: string;
-      title: string;
-    }[];
-  };
-  answers: Answers[];
+  question: Question;
 };
 
-export default function QuestionCard({ question, answers }: QuestionCardProps) {
+export default function QuestionCard({ question }: QuestionCardProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const answers = question.questionAnswer || [];
+
+  const COLORS = [
+    "hsl(var(--chart-1))",
+    "hsl(var(--chart-2))",
+    "hsl(var(--chart-3))",
+    "hsl(var(--chart-4))",
+    "hsl(var(--chart-5))",
+    "hsl(var(--chart-6))",
+    "hsl(var(--chart-7))",
+    "hsl(var(--chart-8))",
+  ];
 
   const generateChartData = () => {
     const optionCountMap: Record<string, number> = {};
 
+    question.options.forEach((option) => {
+      optionCountMap[option.id] = 0;
+    });
+
     answers.forEach((answer) => {
-      const optionId = answer.option?.id;
-      if (optionId) {
-        optionCountMap[optionId] = (optionCountMap[optionId] || 0) + 1;
+      if (answer.questionOptionId) {
+        optionCountMap[answer.questionOptionId] += 1;
+      }
+      else if (answer.value) {
+        const matchingOption = question.options.find(
+          (option) => option.id === answer.value
+        );
+        if (matchingOption) {
+          optionCountMap[matchingOption.id] += 1;
+        }
       }
     });
 
-    const totalAnswers = answers.length;
+    const totalAnswers = Object.values(optionCountMap).reduce(
+      (sum, count) => sum + count,
+      0
+    );
 
     return question.options.map((option) => {
       const count = optionCountMap[option.id] || 0;
@@ -54,25 +81,46 @@ export default function QuestionCard({ question, answers }: QuestionCardProps) {
 
   const chartData = generateChartData();
 
-  const COLORS = [
-    "hsl(var(--chart-1))",
-    "hsl(var(--chart-2))",
-    "hsl(var(--chart-3))",
-    "hsl(var(--chart-4))",
-    "hsl(var(--chart-5))",
-    "hsl(var(--chart-6))",
-    "hsl(var(--chart-7))",
-    "hsl(var(--chart-8))",
-  ];
-
   const onPieEnter = (_: any, index: number) => {
     setActiveIndex(index);
   };
 
-  if (!answers || answers.length === 0) {
+  if (!answers.length) {
     return (
       <div className="text-center py-8 text-muted-foreground">
         Sem dados disponíveis para esta questão.
+      </div>
+    );
+  }
+
+  if (question.type === "TEXT") {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardContent className="p-4 space-y-2 max-h-[400px] overflow-auto">
+            {answers.map((answer, index) => (
+              <div
+                key={index}
+                className="text-sm border-b last:border-none"
+              >
+                {answer.value || (
+                  <span className="text-muted-foreground">Resposta vazia</span>
+                )}
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (
+    question.type === "CHOOSE" &&
+    (!question.options || question.options.length === 0)
+  ) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        Esta questão não possui opções definidas.
       </div>
     );
   }
@@ -112,6 +160,7 @@ export default function QuestionCard({ question, answers }: QuestionCardProps) {
                       dataKey="value"
                       activeIndex={activeIndex}
                       onMouseEnter={onPieEnter}
+                      nameKey="name"
                     >
                       {chartData.map((entry, index) => (
                         <Cell
@@ -125,7 +174,7 @@ export default function QuestionCard({ question, answers }: QuestionCardProps) {
                     <ChartTooltip
                       content={
                         <ChartTooltipContent
-                          labelFormatter={(label: string) => `${label}`}
+                          labelFormatter={(label: string) => label}
                           formatter={(value: any) => [
                             `${value} respostas`,
                             "Quantidade",
@@ -202,10 +251,13 @@ export default function QuestionCard({ question, answers }: QuestionCardProps) {
                     dataKey="name"
                     width={150}
                     tick={{ fontSize: 12 }}
+                    tickFormatter={(value) =>
+                      value.length > 20 ? `${value.substring(0, 20)}...` : value
+                    }
                   />
                   <Tooltip
                     formatter={(value) => [`${value} respostas`, "Quantidade"]}
-                    labelFormatter={(label) => `${label}`}
+                    labelFormatter={(label) => label}
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {chartData.map((entry, index) => (

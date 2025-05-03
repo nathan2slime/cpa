@@ -1,66 +1,46 @@
-export interface Report {
-  form: Form;
-  answers: Answers[];
-}
-
-export interface Form {
+export type Form = {
   id: string;
   title: string;
   createdAt: string;
-  deletedAt: any;
   updatedAt: string;
-  questions: Question[];
-}
+  deletedAt: string | null;
+};
 
-export interface Question {
+export type QuestionOption = {
   id: string;
   title: string;
-  type: string;
-  formId: string;
+  questionId: string;
   createdAt: string;
-  deletedAt: any;
   updatedAt: string;
-  options: Option[];
-}
+  deletedAt: string | null;
+};
 
-export interface Answers {
+export type QuestionAnswer = {
   id: string;
   value: string;
-  questionOptionId: any;
+  questionOptionId: string | null;
   questionId: string;
   answerId: string;
   createdAt: string;
-  deletedAt: any;
   updatedAt: string;
-  answer: Answer;
-  question: Question;
-  option: Option;
-}
+  deletedAt: string | null;
+};
 
-export interface Answer {
-  id: string;
-  createdAt: string;
-  deletedAt: any;
-  updatedAt: string;
-  formId: string;
-  eventId: string;
-}
+export type QuestionType = "TEXT" | "CHOOSE";
 
-export interface Question {
+export type Question = {
   id: string;
   title: string;
-  type: string;
+  type: QuestionType;
   formId: string;
   createdAt: string;
-  deletedAt: any;
   updatedAt: string;
-}
+  deletedAt: string | null;
+  options: QuestionOption[];
+  questionAnswer: QuestionAnswer[];
+};
 
-export interface Option {
-  id: string;
-  title: string;
-  questionId: string;
-  createdAt: string;
-  deletedAt: any;
-  updatedAt: string;
-}
+export type ReportResponse = {
+  form: Form;
+  question: Question[];
+};

@@ -10,32 +10,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Answers } from "@/types/report.type";
+import type { ReportResponse } from "@/types/report.type";
 import {
   ChevronDown,
   ChevronUp,
   FileText,
-  PieChartIcon
+  MessageSquare,
+  PieChartIcon,
 } from "lucide-react";
 import { useState } from "react";
 
 type ReportDashboardProps = {
-  data: {
-    form: {
-      id: string;
-      title: string;
-      description?: string;
-      questions: {
-        id: string;
-        title: string;
-        options: {
-          id: string;
-          title: string;
-        }[];
-      }[];
-    };
-    answers: Answers[];
-  };
+  data: ReportResponse;
 };
 
 export default function ReportDashboard({ data }: ReportDashboardProps) {
@@ -43,19 +29,11 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
     Record<string, boolean>
   >({});
 
-  const answerByQuestion = (questionId: string) => {
-    return data.answers.filter((answer) => answer.questionId === questionId);
-  };
-
   const totalResponses =
-    data.answers.length > 0
-      ? data.answers.reduce((acc, curr) => {
-          const existingIds = acc.map((a) => a.answerId);
-          if (!existingIds.includes(curr.answerId)) {
-            return [...acc, curr];
-          }
-          return acc;
-        }, [] as Answers[]).length
+    data.question.length > 0
+      ? data.question
+          .flatMap((q) => q.questionAnswer.map((a) => a.answerId))
+          .filter((value, index, self) => self.indexOf(value) === index).length
       : 0;
 
   const toggleQuestion = (questionId: string) => {
@@ -73,11 +51,6 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
             <h1 className="text-3xl font-bold tracking-tight">
               {data.form.title}
             </h1>
-            {data.form.description && (
-              <p className="text-muted-foreground mt-1">
-                {data.form.description}
-              </p>
-            )}
           </div>
           <Badge variant="outline" className="px-3 py-1 text-sm">
             <FileText className="mr-1 h-4 w-4" />
@@ -99,7 +72,7 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
           </TabsList>
 
           <TabsContent value="visual" className="space-y-6">
-            {data.form.questions.map((question) => (
+            {data.question.map((question) => (
               <Card key={question.id} className="overflow-hidden">
                 <CardHeader
                   className="cursor-pointer"
@@ -114,8 +87,8 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
                     )}
                   </div>
                   <CardDescription>
-                    {answerByQuestion(question.id).length}{" "}
-                    {answerByQuestion(question.id).length === 1
+                    {question.questionAnswer.length}{" "}
+                    {question.questionAnswer.length === 1
                       ? "resposta"
                       : "respostas"}
                   </CardDescription>
@@ -124,10 +97,7 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
                 {(expandedQuestions[question.id] ||
                   expandedQuestions[question.id] === undefined) && (
                   <CardContent>
-                    <QuestionCard
-                      question={question}
-                      answers={answerByQuestion(question.id)}
-                    />
+                    <QuestionCard question={question} />
                   </CardContent>
                 )}
               </Card>
@@ -144,44 +114,82 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
-                  {data.form.questions.map((question) => (
+                  {data.question.map((question) => (
                     <div key={question.id} className="space-y-4">
-                      <h3 className="text-lg font-medium">{question.title}</h3>
-                      <div className="grid gap-2">
-                        {question.options.map((option) => {
-                          const count = answerByQuestion(question.id).filter(
-                            (a) => a.option?.id === option.id
-                          ).length;
-                          const percentage =
-                            answerByQuestion(question.id).length > 0
-                              ? (
-                                  (count /
-                                    answerByQuestion(question.id).length) *
-                                  100
-                                ).toFixed(1)
-                              : 0;
-
-                          return (
-                            <div
-                              key={option.id}
-                              className="flex justify-between items-center"
-                            >
-                              <span>{option.title}</span>
-                              <div className="flex items-center gap-2">
-                                <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                  <div
-                                    className="h-full bg-primary"
-                                    style={{ width: `${percentage}%` }}
-                                  />
-                                </div>
-                                <span className="text-sm text-muted-foreground min-w-[80px] text-right">
-                                  {count} ({percentage}%)
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg font-medium">
+                          {question.title}
+                        </h3>
+                        {question.type === "TEXT" && (
+                          <Badge variant="outline" className="bg-muted">
+                            <MessageSquare className="h-3 w-3 mr-1" />
+                            Questão de texto
+                          </Badge>
+                        )}
                       </div>
+
+                      {question.type === "TEXT" ? (
+                        <div className="space-y-2 max-h-[300px] overflow-y-auto border rounded-md p-3">
+                          {question.questionAnswer.length > 0 ? (
+                            <div className="text-muted-foreground italic">
+                              {question.questionAnswer.length} {question.questionAnswer.length === 1 ? "resposta" : "respostas"}
+                            </div>
+                          ) : (
+                            <div className="text-muted-foreground italic">
+                              Sem respostas
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="grid gap-2">
+                          {question.options.map((option) => {
+                            const count = question.questionAnswer.filter(
+                              (a) =>
+                                a.questionOptionId === option.id ||
+                                a.value === option.id
+                            ).length;
+
+                            const totalAnswers = question.options.reduce(
+                              (total, opt) => {
+                                return (
+                                  total +
+                                  question.questionAnswer.filter(
+                                    (a) =>
+                                      a.questionOptionId === opt.id ||
+                                      a.value === opt.id
+                                  ).length
+                                );
+                              },
+                              0
+                            );
+
+                            const percentage =
+                              totalAnswers > 0
+                                ? ((count / totalAnswers) * 100).toFixed(1)
+                                : "0.0";
+
+                            return (
+                              <div
+                                key={option.id}
+                                className="flex justify-between items-center"
+                              >
+                                <span>{option.title}</span>
+                                <div className="flex items-center gap-2">
+                                  <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                      className="h-full bg-primary"
+                                      style={{ width: `${percentage}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm text-muted-foreground min-w-[80px] text-right">
+                                    {count} ({percentage}%)
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

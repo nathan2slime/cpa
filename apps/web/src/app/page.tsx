@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import { useSnapshot } from "valtio";
 
 const Index = () => {
-  const { logged, loading } = useSnapshot(authState);
+  const { logged, loading, data } = useSnapshot(authState);
 
-  if (!loading && logged) {
+  if (!loading && logged && data?.user.roles.includes("admin")) {
     redirect("/dashboard");
   }
 
