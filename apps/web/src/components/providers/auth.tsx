@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }: AppChildren) => {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { logged, loading, data } = useSnapshot(authState);
+  const { logged, loading } = useSnapshot(authState);
 
   useEffect(() => {
     onLoadAuth();

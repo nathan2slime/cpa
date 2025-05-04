@@ -1,16 +1,16 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { getOptionsQuery } from "../../api/queries/get-options.query";
-import { updateQuestionTitleMutation } from "../../api/mutations/update-question-title.mutation";
-import { deleteQuestionMutation } from "../../api/mutations/delete-question.mutation";
-import { createOptionMutation } from "../../api/mutations/create-option.mutation";
-import { updateOptionMutation } from "../../api/mutations/update-option.mutation";
-import { deleteOptionMutation } from "../../api/mutations/delete-option.mutation";
-import { createQuestionMutation } from "../../api/mutations/create-question.mutation";
-import { duplicateQuestionMutation } from "../../api/mutations/duplicate-question.mutation";
-import { getQuestionsQuery } from "../../api/queries/get-questions.query";
-import { getFormQuery } from "../../api/queries/get-form.query";
+import { getOptionsQuery } from "../app/api/queries/get-options.query";
+import { updateQuestionTitleMutation } from "../app/api/mutations/update-question-title.mutation";
+import { deleteQuestionMutation } from "../app/api/mutations/delete-question.mutation";
+import { createOptionMutation } from "../app/api/mutations/create-option.mutation";
+import { updateOptionMutation } from "../app/api/mutations/update-option.mutation";
+import { deleteOptionMutation } from "../app/api/mutations/delete-option.mutation";
+import { createQuestionMutation } from "../app/api/mutations/create-question.mutation";
+import { duplicateQuestionMutation } from "../app/api/mutations/duplicate-question.mutation";
+import { getQuestionsQuery } from "../app/api/queries/get-questions.query";
+import { getFormQuery } from "../app/api/queries/get-form.query";
 import { FormType } from "@/types/form";
 
 export type QuestionData = {
