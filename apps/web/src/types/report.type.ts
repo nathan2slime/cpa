@@ -1,0 +1,46 @@
+export type Form = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+};
+
+export type QuestionOption = {
+  id: string;
+  title: string;
+  questionId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+};
+
+export type QuestionAnswer = {
+  id: string;
+  value: string;
+  questionOptionId: string | null;
+  questionId: string;
+  answerId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+};
+
+export type QuestionType = "TEXT" | "CHOOSE";
+
+export type Question = {
+  id: string;
+  title: string;
+  type: QuestionType;
+  formId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  options: QuestionOption[];
+  questionAnswer: QuestionAnswer[];
+};
+
+export type ReportResponse = {
+  form: Form;
+  question: Question[];
+};

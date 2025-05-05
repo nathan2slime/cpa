@@ -2,11 +2,14 @@
   "name": "app",
   "version": "0.0.1",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "start": "dotenv -- turbo run start",
-    "dev": "NODE_ENV=development dotenv -- turbo run dev",
-    "build": "NODE_ENV=production dotenv -- turbo run build",
+    "dev": "cross-env NODE_ENV=development dotenv -- turbo run dev",
+    "build": "cross-env NODE_ENV=production dotenv -- turbo run build",
     "lint": "biome check",
     "format": "biome format --write",
     "db:seed": "dotenv -- turbo run dev --filter=@cpa/seed",
@@ -51,5 +54,8 @@
     "hoistingLimits": "none"
   },
   "license": "MIT",
-  "packageManager": "pnpm@10.5.2"
+  "packageManager": "pnpm@10.5.2",
+  "dependencies": {
+    "cross-env": "^7.0.3"
+  }
 }
