@@ -176,8 +176,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
                         <ChartTooltipContent
                           labelFormatter={(label: string) => label}
                           formatter={(value: any) => [
-                            `${value} respostas`,
-                            "Quantidade",
+                            `${value} selecionaram esse opção`,
                           ]}
                         />
                       }

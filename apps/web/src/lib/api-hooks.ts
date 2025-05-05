@@ -6,7 +6,6 @@ import type { EventForm, EventReq } from "@/types/event.types"
 import type { FormReq } from "@/types/form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-// Event queries
 export function useEvent(id: string) {
   return useQuery({
     queryKey: ["event", id],
@@ -17,7 +16,6 @@ export function useEvent(id: string) {
   })
 }
 
-// Courses queries
 export function useCourses() {
   return useQuery({
     queryKey: ["courses"],
@@ -28,7 +26,6 @@ export function useCourses() {
   })
 }
 
-// Form queries
 export function useForm(id: string | undefined) {
   return useQuery({
     queryKey: ["form", id],
@@ -37,7 +34,7 @@ export function useForm(id: string | undefined) {
       const { data } = await api.get<FormReq>(`api/form/show/${id}`)
       return data
     },
-    enabled: !!id, // Only run the query if we have an ID
+    enabled: !!id,
   })
 }
 
@@ -48,12 +45,10 @@ export function useSearchForms(query: string) {
       const { data } = await api.get(`/api/form/search?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`)
       return data.data as FormReq[]
     },
-    // Don't refetch on window focus for search results
     refetchOnWindowFocus: false,
   })
 }
 
-// Event mutations
 export function useUpdateEvent() {
   const queryClient = useQueryClient()
 
@@ -63,9 +58,22 @@ export function useUpdateEvent() {
       return response.data
     },
     onSuccess: (_, variables) => {
-      // Invalidate relevant queries after successful update
       queryClient.invalidateQueries({ queryKey: ["event", variables.id] })
-      queryClient.invalidateQueries({ queryKey: ["events"] }) // If you have a list of events
+      queryClient.invalidateQueries({ queryKey: ["events"] })
+    },
+  })
+}
+
+export function useCreateEvent() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (data: EventForm) => {
+      const response = await api.post("api/event/create", data)
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] })
     },
   })
 }

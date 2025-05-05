@@ -44,7 +44,6 @@ export function useQuestionManager({ formId }: Props) {
     }
   }
 
-  // Fetch all questions
   const fetchQuestions = useCallback(async () => {
     try {
       setLoading(true);
@@ -61,12 +60,10 @@ export function useQuestionManager({ formId }: Props) {
     }
   }, [formId]);
 
-  // Get options for a specific question
   const getOptions = useCallback(async (questionId: string) => {
     return await getOptionsQuery(questionId);
   }, []);
 
-  // Update question title
   const updateQuestionTitle = useCallback(
     async (questionId: string, title: string) => {
       const result = await updateQuestionTitleMutation(questionId, title);
@@ -75,7 +72,6 @@ export function useQuestionManager({ formId }: Props) {
     []
   );
 
-  // Delete question
   const deleteQuestion = useCallback(
     async (questionId: string) => {
       const result = await deleteQuestionMutation(questionId);
@@ -88,25 +84,21 @@ export function useQuestionManager({ formId }: Props) {
     [fetchQuestions]
   );
 
-  // Create a new option
   const createOption = useCallback(async (questionId: string) => {
     const result = await createOptionMutation(questionId);
     return !!result;
   }, []);
 
-  // Update option
   const updateOption = useCallback(async (optionId: string, title: string) => {
     const result = await updateOptionMutation(optionId, title);
     return !!result;
   }, []);
 
-  // Delete option
   const deleteOption = useCallback(async (optionId: string) => {
     const result = await deleteOptionMutation(optionId);
     return !!result;
   }, []);
 
-  // Create a new question
   const createQuestion = useCallback(
     async (type: "TEXT" | "CHOOSE") => {
       const data = await createQuestionMutation(type, formId);
@@ -119,7 +111,6 @@ export function useQuestionManager({ formId }: Props) {
     [fetchQuestions, formId]
   );
 
-  // Duplicate a question with its options
   const duplicateQuestion = useCallback(
     async (questionId: string, type: "TEXT" | "CHOOSE") => {
       const data = await duplicateQuestionMutation(questionId);

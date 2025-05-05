@@ -1,11 +1,12 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
 import { useState } from "react"
+import { X, Check, ChevronsUpDown } from "lucide-react"
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 import type { Control } from "react-hook-form"
 import type { EventForm } from "@/types/event.types"
 import type { CoursesReq } from "@/types/courseType"
@@ -25,87 +26,93 @@ export function EventCourseSelector({
   onAddCourse,
   onRemoveCourse,
 }: EventCourseSelectorProps) {
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("")
+  const [open, setOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
-  const handleSelectChange = (value: string) => {
-    setSelectedCourseId(value)
-  }
+  const filteredCourses = searchQuery
+    ? courses.filter((course) => course.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : courses
 
-  const handleAddCourse = () => {
-    if (selectedCourseId) {
-      onAddCourse(selectedCourseId)
-      setSelectedCourseId("")
-    }
-  }
-
-  // Filter out courses that are already selected
-  const availableCourses = courses.filter((course) => !selectedCourseIds.includes(course.id))
-
-  // Get selected course objects
   const selectedCourses = selectedCourseIds
     .map((id) => courses.find((course) => course.id === id))
     .filter(Boolean) as CoursesReq[]
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium">Associated Courses</h2>
+      <h2 className="text-lg font-medium">Cursos</h2>
 
       <FormField
         control={control}
         name="courses"
         render={() => (
-          <FormItem>
-            <FormLabel>Courses</FormLabel>
-            <div className="flex gap-2">
-              <FormControl>
-                <Select value={selectedCourseId} onValueChange={handleSelectChange}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a course" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableCourses.length === 0 ? (
-                      <SelectItem value="none" disabled>
-                        No courses available
-                      </SelectItem>
-                    ) : (
-                      availableCourses.map((course) => (
-                        <SelectItem key={course.id} value={course.id}>
-                          {course.name}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <Button type="button" onClick={handleAddCourse} disabled={!selectedCourseId}>
-                Add
-              </Button>
-            </div>
+          <FormItem className="space-y-4">
+            <FormLabel>Adicionar Cursos</FormLabel>
+            <FormControl>
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+                    Selecione um curso
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Buscar curso..." onValueChange={setSearchQuery} />
+                    <CommandList>
+                      <CommandEmpty>Nenhum curso encontrado.</CommandEmpty>
+                      <CommandGroup>
+                        {filteredCourses.map((course) => (
+                          <CommandItem
+                            key={course.id}
+                            value={course.id}
+                            onSelect={() => {
+                              onAddCourse(course.id)
+                              setOpen(false)
+                            }}
+                            disabled={selectedCourseIds.includes(course.id)}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                selectedCourseIds.includes(course.id) ? "opacity-100" : "opacity-0",
+                              )}
+                            />
+                            {course.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </FormControl>
             <FormMessage />
+
+            {selectedCourses.length > 0 && (
+              <div className="mt-2">
+                <FormLabel>Cursos Selecionados</FormLabel>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {selectedCourses.map((course) => (
+                    <li
+                      key={course.id}
+                      className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-sm"
+                    >
+                      {course.name}
+                      <button
+                        type="button"
+                        onClick={() => onRemoveCourse(course.id)}
+                        className="text-red-500 hover:text-red-700 ml-1"
+                      >
+                        <X size={16} />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </FormItem>
         )}
       />
-
-      {selectedCourses.length > 0 && (
-        <div className="mt-4">
-          <p className="text-sm font-medium mb-2">Selected Courses:</p>
-          <div className="flex flex-wrap gap-2">
-            {selectedCourses.map((course) => (
-              <Badge key={course.id} variant="secondary" className="px-3 py-1">
-                {course.name}
-                <button
-                  type="button"
-                  onClick={() => onRemoveCourse(course.id)}
-                  className="ml-2 text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-3 w-3" />
-                  <span className="sr-only">Remove {course.name}</span>
-                </button>
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }
