@@ -1,10 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty } from 'class-validator'
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class CreateQuestionOptionDto {
   @ApiProperty()
   @IsNotEmpty()
-  question: string
+  question: string;
 
   // @ApiProperty()
   // @IsNotEmpty()
@@ -13,13 +13,13 @@ export class CreateQuestionOptionDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  title: string
+  title: string;
 }
 
 export class QueryQuestionOptionDto {
   @ApiProperty()
   @IsNotEmpty()
-  question: string
+  question: string;
 }
 
 export class UpdateQuestionOptionDto {
@@ -29,6 +29,10 @@ export class UpdateQuestionOptionDto {
   // weight: number;
 
   @ApiProperty()
-  @IsNotEmpty()
-  title: string
+  @IsOptional()
+  title: string;
+
+  @ApiProperty()
+  @IsOptional()
+  order: number;
 }
