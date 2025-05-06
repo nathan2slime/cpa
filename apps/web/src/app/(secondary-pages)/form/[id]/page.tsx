@@ -37,7 +37,7 @@ export default function QuestionForm() {
   };
 
   return (
-    <div className="container mx-auto py-6 max-w-4xl">
+    <div className="max-w-4xl">
       <Card className="border-gray-200 shadow-sm">
         <CardHeader>
           <CardTitle className="text-2xl">{form?.title}</CardTitle>
