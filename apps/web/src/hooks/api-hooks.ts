@@ -5,8 +5,7 @@ import type { CoursesReq } from "@/types/courseType";
 import type {
   EventForm,
   EventFormPaginationResponse,
-  EventFormResponse,
-  EventReq,
+  EventReq
 } from "@/types/event.types";
 import type { FormReq, FormResponse } from "@/types/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

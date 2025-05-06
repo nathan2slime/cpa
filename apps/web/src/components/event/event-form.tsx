@@ -13,7 +13,7 @@ import {
   useEvent,
   useForm,
   useUpdateEvent,
-} from "@/lib/api-hooks";
+} from "@/hooks/api-hooks";
 import { eventFormSchema } from "@/schemas/eventForm";
 import type { EventForm as EventFormType } from "@/types/event.types";
 import { yupResolver } from "@hookform/resolvers/yup";

@@ -18,7 +18,7 @@ import Link from "next/link";
 import { QrCodeModal } from "@/components/qr-code-modal";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useDeleteEvent } from "@/lib/api-hooks";
+import { useDeleteEvent } from "@/hooks/api-hooks";
 
 type EventsProps = {
   events: EventFormResponse[];

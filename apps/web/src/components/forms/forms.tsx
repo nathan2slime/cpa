@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useCreateForm, useDeleteForm } from "@/lib/api-hooks";
+import { useCreateForm, useDeleteForm } from "@/hooks/api-hooks";
 import { FormReq } from "@/types/form";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";

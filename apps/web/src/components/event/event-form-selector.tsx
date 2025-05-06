@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { useSearchForms } from "@/lib/api-hooks"
+import { useSearchForms } from "@/hooks/api-hooks"
 import type { Control } from "react-hook-form"
 import type { EventForm } from "@/types/event.types"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
