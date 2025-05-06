@@ -19,7 +19,7 @@ enum CourseType {
 enum QuestionType {
   TEXT
   CHOOSE
-  //CHOOSE_AND_TEXT questão de sim, porque. Implementação posterior 
+  CHOOSE_AND_TEXT
 }
 
 enum Role {

@@ -33,18 +33,17 @@ const ShowEvents = ({ events }: EventsProps) => {
       <div className={"justify-between w-full flex px-5 items-center"}>
         <p className={"font-semibold text-xl"}>Gerenciar Eventos</p>
         <Link href={"/new-event"}>
-          <Button>Criar novo Evento</Button>
+          <Button>Criar novo</Button>
         </Link>
       </div>
 
       <div className={"p-5 w-full h-full"}>
-        <p className={"font-semibold mb-3"}>Eventos recentes</p>
+        <p className={"font-semibold mb-3"}>Recentes</p>
 
         <div className={"border w-full rounded-xl"}>
           {events.length === 0 && (
             <p className={"p-5"}>
-              Sem eventos criados. Crie um evento no botão acima "Criar novo
-              evento".
+              Sem eventos criados. Crie um evento no botão acima "Criar novo".
             </p>
           )}
           {events.map((event) => (

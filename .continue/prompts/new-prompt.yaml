@@ -1,0 +1,7 @@
+name: New prompt
+version: 0.0.1
+schema: v1
+prompts:
+  - name: Language
+    description: What language use in the conversation?
+    prompt: Please write in Portuguese Brasil, but the code must be in English.

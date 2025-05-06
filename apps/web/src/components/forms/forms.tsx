@@ -37,18 +37,18 @@ export default function ShowForms({ forms }: FormsProps) {
             })
           }
         >
-          Criar novo formulário
+          Criar novo
         </Button>
       </div>
 
       <div className="p-5 w-full h-full">
-        <p className="font-semibold mb-3">Formulários recentes</p>
+        <p className="font-semibold mb-3">Recentes</p>
 
         <div className="border w-full rounded-xl">
           {forms.length === 0 ? (
             <p className="p-5">
               Sem formulários criados. Crie um formulário no botão acima "Criar
-              novo formulário".
+              novo".
             </p>
           ) : (
             forms.map((form) => (

@@ -1,6 +1,7 @@
 import { api } from "@/api/index"
+import { QuestionTypeEnum } from "@/types/question"
 
-export const createQuestionMutation = async (type: "TEXT" | "CHOOSE", formId: string) => {
+export const createQuestionMutation = async (type: QuestionTypeEnum, formId: string) => {
   try {
     const res = await api.post("/api/question/create", {
       title: "Questão",

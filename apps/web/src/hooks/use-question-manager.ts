@@ -12,11 +12,12 @@ import { duplicateQuestionMutation } from "../api/mutations/duplicate-question.m
 import { getQuestionsQuery } from "../api/queries/get-questions.query";
 import { getFormQuery } from "../api/queries/get-form.query";
 import { FormType } from "@/types/form";
+import { QuestionTypeEnum } from "@/types/question";
 
 export type QuestionData = {
   id: string;
   title: string;
-  type: "TEXT" | "CHOOSE";
+  type: QuestionTypeEnum;
 };
 
 type Props = {
@@ -31,18 +32,18 @@ export function useQuestionManager({ formId }: Props) {
 
   useEffect(() => {
     if (formId) {
-      fetchForm()
+      fetchForm();
     }
   }, [formId]);
 
   const fetchForm = async () => {
-    setLoading(true)
+    setLoading(true);
     const data = await getFormQuery(formId);
     if (data) {
-      setForm(data)
-      setError(null)
+      setForm(data);
+      setError(null);
     }
-  }
+  };
 
   const fetchQuestions = useCallback(async () => {
     try {
@@ -100,7 +101,7 @@ export function useQuestionManager({ formId }: Props) {
   }, []);
 
   const createQuestion = useCallback(
-    async (type: "TEXT" | "CHOOSE") => {
+    async (type: QuestionTypeEnum) => {
       const data = await createQuestionMutation(type, formId);
       if (data) {
         await fetchQuestions();
@@ -112,7 +113,7 @@ export function useQuestionManager({ formId }: Props) {
   );
 
   const duplicateQuestion = useCallback(
-    async (questionId: string, type: "TEXT" | "CHOOSE") => {
+    async (questionId: string, type: QuestionTypeEnum) => {
       const data = await duplicateQuestionMutation(questionId);
       if (data) {
         await fetchQuestions();
