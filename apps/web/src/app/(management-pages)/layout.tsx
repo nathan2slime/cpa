@@ -10,7 +10,7 @@ export default ({ children }: Readonly<AppChildren>) => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 p-4">
-      <div>
+      <div className="xl:min-w-[800px]">
         <Button
           variant="outline"
           onClick={() => router.back()}

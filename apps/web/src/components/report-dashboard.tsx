@@ -44,7 +44,7 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
   };
 
   return (
-    <main className="container mx-auto py-8 px-4 max-w-7xl">
+    <main className=" mx-auto py-8 max-w-7xl">
       <div className="grid gap-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
