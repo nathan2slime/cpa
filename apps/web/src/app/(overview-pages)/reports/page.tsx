@@ -1,4 +1,4 @@
-import { getEventsQuery } from "@/app/api/queries/get-events.query";
+import { getEventsQuery } from "@/api/queries/get-events.query";
 import Reports from "@/components/reports-list";
 
 export default async function ReportsPage() {

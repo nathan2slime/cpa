@@ -17,6 +17,6 @@
     "prisma": "^6.0.1"
   },
   "devDependencies": {
-    "@prisma/client": "^6.0.1"
+    "@prisma/client": "^6.5.0"
   }
 }

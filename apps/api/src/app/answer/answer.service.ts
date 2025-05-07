@@ -1,9 +1,7 @@
 import { Session } from "@cpa/database";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { z } from "zod";
-
-import { CreateAnswerDto } from "~/app/answer/answer.dto";
 import { PrismaService } from "~/database/prisma.service";
+import { CreateAnswerDto } from "~/app/answer/answer.dto";
 
 @Injectable()
 export class AnswerService {
@@ -17,22 +15,18 @@ export class AnswerService {
       },
     });
 
+    if (!event || !event.form) {
+      throw new HttpException("Evento ou formulário não encontrado", HttpStatus.NOT_FOUND);
+    }
+
     const questions = await this.prisma.question.findMany({
       where: {
         formId: event.form.id,
         deletedAt: null,
       },
       include: {
-        options: {
-          where: {
-            deletedAt: null,
-          },
-        },
-        questionAnswer: {
-          where: {
-            deletedAt: null,
-          },
-        },
+        options: { where: { deletedAt: null } },
+        questionAnswer: { where: { deletedAt: null } },
       },
     });
 
@@ -50,107 +44,86 @@ export class AnswerService {
       },
     });
 
-    if (isAnswered)
-      throw new HttpException("Evento já repondido", HttpStatus.CONFLICT);
+    if (isAnswered) {
+      throw new HttpException("Evento já respondido", HttpStatus.CONFLICT);
+    }
 
     const event = await this.prisma.event.findUnique({
-      where: {
-        id: eventId,
-      },
+      where: { id: eventId },
       select: {
-        form: {
-          select: {
-            id: true,
-          },
-        },
+        form: { select: { id: true } },
       },
     });
 
+    if (!event) {
+      throw new HttpException("Evento não encontrado", HttpStatus.NOT_FOUND);
+    }
+
     const answer = await this.prisma.answer.create({
       data: {
-        event: {
-          connect: {
-            id: eventId,
-          },
-        },
-        form: {
-          connect: {
-            id: event.form.id,
-          },
-        },
-        user: {
-          connect: {
-            id: session.userId,
-          },
-        },
+        event: { connect: { id: eventId } },
+        form: { connect: { id: event.form.id } },
+        user: { connect: { id: session.userId } },
       },
     });
 
     await Promise.all(
       data.map(async (qa) => {
-        const schema = z.string().cuid();
-        const isQuestionOption = schema.safeParse(qa.value).success;
-
-        // Primeiro verificar se a questão existe
         const question = await this.prisma.question.findUnique({
           where: { id: qa.questionId },
           include: { options: true },
         });
 
         if (!question) {
-          throw new HttpException(
-            "Questão não encontrada",
-            HttpStatus.NOT_FOUND
-          );
+          throw new HttpException("Questão não encontrada", HttpStatus.NOT_FOUND);
         }
 
-        if (isQuestionOption) {
-          const validOption = question.options.some(
-            (opt) => opt.id === qa.value
-          );
-          if (!validOption) {
+        const hasOption = qa.optionId && question.options.some(opt => opt.id === qa.optionId);
+        const hasText = qa.value && qa.value.trim().length > 0;
+
+        if (question.type === "CHOOSE_AND_TEXT") {
+          if (!hasOption && !hasText) {
             throw new HttpException(
-              "Opção inválida para esta questão",
+              "É necessário escolher uma opção e/ou justificar",
               HttpStatus.BAD_REQUEST
             );
           }
 
           return this.prisma.questionAnswer.create({
             data: {
-              option: {
-                connect: {
-                  id: qa.value,
-                },
-              },
-              answer: {
-                connect: {
-                  id: answer.id,
-                },
-              },
-              question: {
-                connect: {
-                  id: qa.questionId,
-                },
-              },
-            },
-          });
-        } else {
-          return this.prisma.questionAnswer.create({
-            data: {
-              value: qa.value,
-              answer: {
-                connect: {
-                  id: answer.id,
-                },
-              },
-              question: {
-                connect: {
-                  id: qa.questionId,
-                },
-              },
+              value: hasText ? qa.value : null,
+              option: hasOption ? { connect: { id: qa.optionId } } : undefined,
+              question: { connect: { id: qa.questionId } },
+              answer: { connect: { id: answer.id } },
             },
           });
         }
+
+        if (question.type === "CHOOSE") {
+          if (!hasOption) {
+            throw new HttpException("Opção inválida", HttpStatus.BAD_REQUEST);
+          }
+
+          return this.prisma.questionAnswer.create({
+            data: {
+              option: { connect: { id: qa.optionId } },
+              question: { connect: { id: qa.questionId } },
+              answer: { connect: { id: answer.id } },
+            },
+          });
+        }
+
+        if (!hasText) {
+          throw new HttpException("Texto da resposta é obrigatório", HttpStatus.BAD_REQUEST);
+        }
+
+        return this.prisma.questionAnswer.create({
+          data: {
+            value: qa.value,
+            question: { connect: { id: qa.questionId } },
+            answer: { connect: { id: answer.id } },
+          },
+        });
       })
     );
 

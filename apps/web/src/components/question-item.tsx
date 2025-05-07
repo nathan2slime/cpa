@@ -13,13 +13,14 @@ import {
 } from "@/components/ui/tooltip";
 import { useQuestionManager } from "@/hooks/use-question-manager";
 import type { OptionsTypes } from "@/types/options.types";
+import { QuestionTypeEnum } from "@/types/question";
 import { CirclePlus, Copy, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export type QuestionItemProps = {
   id: string;
   title: string;
-  type: "TEXT" | "CHOOSE";
+  type: QuestionTypeEnum;
   index: number;
   onRefresh: () => void;
   formId: string;
@@ -49,7 +50,7 @@ export function QuestionItem({
 
   useEffect(() => {
     const fetchOptions = async () => {
-      if (type === "CHOOSE") {
+      if (type === "CHOOSE" || type === "CHOOSE_AND_TEXT") {
         const optionsData = await getOptions(id);
         setOptions(optionsData);
       }
@@ -123,13 +124,22 @@ export function QuestionItem({
                 placeholder="Título da questão"
               />
               <Badge
-                variant={type === "TEXT" ? "secondary" : "default"}
-                className="ml-2"
+                variant={
+                  type === "TEXT"
+                    ? "secondary"
+                    : type === "CHOOSE"
+                      ? "default"
+                      : "outline"
+                }
+                className="ml-2 whitespace-nowrap"
               >
-                {type === "TEXT" ? "Texto" : "Escolha"}
+                {type === "TEXT"
+                  ? "Texto"
+                  : type === "CHOOSE"
+                    ? "Escolha"
+                    : "Escolha e Texto"}
               </Badge>
             </div>
-
             {type === "TEXT" && (
               <div className="ml-11">
                 <Textarea
@@ -140,7 +150,7 @@ export function QuestionItem({
               </div>
             )}
 
-            {type === "CHOOSE" && (
+            {(type === "CHOOSE" || type === "CHOOSE_AND_TEXT") && (
               <div className="ml-11 space-y-2">
                 {options.map((option) => (
                   <div key={option.id} className="flex items-center gap-2">
@@ -173,7 +183,6 @@ export function QuestionItem({
                     </TooltipProvider>
                   </div>
                 ))}
-
                 <Button
                   variant="outline"
                   size="sm"
@@ -184,6 +193,16 @@ export function QuestionItem({
                   <CirclePlus size={16} className="mr-2" />
                   Adicionar opção
                 </Button>
+
+                {type === "CHOOSE_AND_TEXT" && (
+                  <div className="mt-4">
+                    <Textarea
+                      placeholder="O usuário irá digitar a resposta aqui..."
+                      disabled
+                      className="bg-gray-50 resize-none h-24"
+                    />
+                  </div>
+                )}
               </div>
             )}
           </div>

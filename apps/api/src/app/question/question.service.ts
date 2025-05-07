@@ -13,14 +13,26 @@ export class QuestionService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create({ form, ...data }: CreateQuestionDto) {
+    const ordemQuestion = await this.prisma.question.count({
+      where: { deletedAt: null, form: { id: form } },
+    });
+
     return this.prisma.question.create({
-      data: { ...data, form: { connect: { id: form } } },
+      data: {
+        ...data,
+        order: ordemQuestion,
+        form: { connect: { id: form } },
+      },
     });
   }
 
   async duplicate(questionId: string) {
     const question = await this.prisma.question.findUnique({
       where: { id: questionId },
+    });
+
+    const questionOrder = await this.prisma.question.count({
+      where: { deletedAt: null, form: { id: question.formId } },
     });
 
     if (!question)
@@ -31,6 +43,7 @@ export class QuestionService {
       data: {
         title: question.title,
         type: question.type,
+        order: questionOrder,
         form: { connect: { id: question.formId } },
       },
     });
@@ -75,6 +88,9 @@ export class QuestionService {
   async show({ form }: QueryQuestionDto) {
     return this.prisma.question.findMany({
       where: { deletedAt: null, form: { id: form } },
+      orderBy: {
+        order: "asc",
+      },
     });
   }
 }

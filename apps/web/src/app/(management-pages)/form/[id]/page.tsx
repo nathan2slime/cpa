@@ -17,6 +17,7 @@ import { useQuestionManager } from "@/hooks/use-question-manager";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useParams } from "next/navigation";
 import { QuestionItem } from "@/components/question-item";
+import { QuestionTypeEnum } from "@/types/question";
 
 export default function QuestionForm() {
   const { id: formId } = useParams() as { id: string };
@@ -30,14 +31,14 @@ export default function QuestionForm() {
     fetchQuestions();
   }, [fetchQuestions]);
 
-  const handleCreateQuestion = async (type: "TEXT" | "CHOOSE") => {
+  const handleCreateQuestion = async (type: QuestionTypeEnum) => {
     setIsCreating(true);
     await createQuestion(type);
     setIsCreating(false);
   };
 
   return (
-    <div className="container mx-auto py-6 max-w-4xl">
+    <div className="max-w-4xl">
       <Card className="border-gray-200 shadow-sm">
         <CardHeader>
           <CardTitle className="text-2xl">{form?.title}</CardTitle>
@@ -61,8 +62,10 @@ export default function QuestionForm() {
                 </h3>
                 <div className="flex gap-2">
                   <Button
-                    variant="outline"
-                    onClick={() => handleCreateQuestion("TEXT")}
+                    variant="secondary"
+                    onClick={() =>
+                      handleCreateQuestion("TEXT" as QuestionTypeEnum)
+                    }
                     disabled={isCreating || loading}
                   >
                     {isCreating ? (
@@ -73,7 +76,9 @@ export default function QuestionForm() {
                     Adicionar Texto
                   </Button>
                   <Button
-                    onClick={() => handleCreateQuestion("CHOOSE")}
+                    onClick={() =>
+                      handleCreateQuestion("CHOOSE" as QuestionTypeEnum)
+                    }
                     disabled={isCreating || loading}
                   >
                     {isCreating ? (
@@ -83,9 +88,24 @@ export default function QuestionForm() {
                     )}
                     Adicionar Escolha
                   </Button>
+                  <Button
+                    variant={"outline"}
+                    onClick={() =>
+                      handleCreateQuestion(
+                        "CHOOSE_AND_TEXT" as QuestionTypeEnum
+                      )
+                    }
+                    disabled={isCreating || loading}
+                  >
+                    {isCreating ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <ListChecks className="mr-2 h-4 w-4" />
+                    )}
+                    Adicionar Escolha e Texto
+                  </Button>
                 </div>
               </div>
-
               <Separator className="my-4" />
 
               {error && (
@@ -120,7 +140,7 @@ export default function QuestionForm() {
                       key={question.id}
                       id={question.id}
                       title={question.title}
-                      type={question.type as "TEXT" | "CHOOSE"}
+                      type={question.type as QuestionTypeEnum}
                       index={index + 1}
                       onRefresh={fetchQuestions}
                     />
@@ -156,10 +176,32 @@ export default function QuestionForm() {
                         </div>
 
                         {question.type === "TEXT" ? (
-                          <Textarea
-                            placeholder="Digite sua resposta aqui..."
-                            className="mt-2 ml-8"
-                          />
+                          <Textarea placeholder="Digite sua resposta aqui..." />
+                        ) : question.type === "CHOOSE" ? (
+                          <div className="ml-8 mt-2 space-y-2">
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                id={`option-${index}-1`}
+                                name={`question-${index}`}
+                                className="mr-2"
+                              />
+                              <label htmlFor={`option-${index}-1`}>
+                                Opção 1
+                              </label>
+                            </div>
+                            <div className="flex items-center">
+                              <input
+                                type="radio"
+                                id={`option-${index}-2`}
+                                name={`question-${index}`}
+                                className="mr-2"
+                              />
+                              <label htmlFor={`option-${index}-2`}>
+                                Opção 2
+                              </label>
+                            </div>
+                          </div>
                         ) : (
                           <div className="ml-8 mt-2 space-y-2">
                             <div className="flex items-center">
@@ -184,6 +226,7 @@ export default function QuestionForm() {
                                 Opção 2
                               </label>
                             </div>
+                            <Textarea placeholder="Digite sua resposta aqui..." />
                           </div>
                         )}
                       </div>

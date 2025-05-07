@@ -19,7 +19,7 @@ const Reports = ({ events }: Props) => {
         </div>
 
         <div className={"p-5 w-full h-full"}>
-          <p className={"font-semibold mb-3"}>Eventos recentes</p>
+          <p className={"font-semibold mb-3"}>Recentes</p>
 
           <div className={"border w-full rounded-xl"}>
             {events?.map((event: EventFormResponse) => (

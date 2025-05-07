@@ -19,6 +19,7 @@ enum CourseType {
 enum QuestionType {
   TEXT
   CHOOSE
+  CHOOSE_AND_TEXT
 }
 
 enum Role {
@@ -37,6 +38,20 @@ model Session {
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
+  updatedAt DateTime? @updatedAt
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String @unique
+
+  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId String?
+
+  form   Form?   @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String?
+
+  createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
 
@@ -80,6 +95,7 @@ model Event {
 
   courses CourseEvent[]
   answers Answer[]
+  tags    Tag[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -106,17 +122,20 @@ model Form {
 
   questions Question[]
   answers   Answer[]
+  event     Event[]
+  Tag       Tag[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
-  event     Event[]
 }
 
 model QuestionOption {
   id String @id @default(uuid())
 
-  title          String
+  title String
+  order Int    @default(0)
+
   // weight         Int
   question       Question?        @relation(fields: [questionId], references: [id])
   questionId     String?
@@ -134,6 +153,7 @@ model Question {
   type QuestionType @default(TEXT)
 
   options QuestionOption[]
+  order   Int              @default(0)
 
   form           Form?            @relation(fields: [formId], references: [id])
   formId         String?

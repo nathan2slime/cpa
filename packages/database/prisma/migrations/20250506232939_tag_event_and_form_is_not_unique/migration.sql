@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Tag" ALTER COLUMN "eventId" DROP NOT NULL,
+ALTER COLUMN "formId" DROP NOT NULL;
