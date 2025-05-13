@@ -62,7 +62,7 @@ export class FormController {
     return res.status(HttpStatus.OK).json(data)
   }
 
-  @Get('search')
+  @Get('show')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   async search(@Res() res: Response, @Query() query: PaginationDto) {

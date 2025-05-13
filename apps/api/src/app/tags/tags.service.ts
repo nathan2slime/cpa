@@ -13,7 +13,7 @@ export class TagsService {
       },
     });
   }
-  
+
   async showByForm(id: string) {
     return await this.prisma.tag.findMany({
       where: {

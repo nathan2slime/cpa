@@ -27,7 +27,7 @@ export default function ShowForms({ forms }: FormsProps) {
   const { mutate: deleteForm } = useDeleteForm();
 
   return (
-    <main className="w-full h-full flex flex-col justify-start items-start">
+    <main className="flex flex-col justify-start items-start">
       <div className="justify-between w-full flex px-5 items-center">
         <p className="font-semibold text-xl">Gerenciar Formulários</p>
         <Button
