@@ -6,6 +6,22 @@ import { PrismaService } from "~/database/prisma.service";
 export class TagsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async showByEvent(id: string) {
+    return await this.prisma.tag.findMany({
+      where: {
+        eventId: id,
+      },
+    });
+  }
+
+  async showByForm(id: string) {
+    return await this.prisma.tag.findMany({
+      where: {
+        formId: id,
+      },
+    });
+  }
+
   async create(tag: CreateTagDTO) {
     const tagsAlreadyExists = await this.prisma.tag.findUnique({
       where: { name: tag.name },

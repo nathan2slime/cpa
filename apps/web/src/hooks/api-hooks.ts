@@ -5,10 +5,15 @@ import type { CoursesReq } from "@/types/courseType";
 import type {
   EventForm,
   EventFormPaginationResponse,
-  EventReq
+  EventReq,
 } from "@/types/event.types";
 import type { FormReq, FormResponse } from "@/types/form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export function useEvent(id: string) {
   return useQuery({
@@ -20,24 +25,28 @@ export function useEvent(id: string) {
   });
 }
 
-export function useEvents() {
+export function useEvents(page: number) {
   return useQuery({
-    queryKey: ["events"],
+    queryKey: ["events", page],
     queryFn: async () => {
-      const { data } =
-        await api.get<EventFormPaginationResponse>("/api/event/show");
+      const { data } = await api.get<EventFormPaginationResponse>(
+        "/api/event/show?page=" + page
+      );
       return data;
     },
   });
 }
 
-export function useForms() {
+export function useForms(page: number) {
   return useQuery({
-    queryKey: ["forms"],
+    queryKey: ["forms", page],
     queryFn: async () => {
-      const { data } = await api.get<FormResponse>("/api/form/search");
+      const { data } = await api.get<FormResponse>(
+        "/api/form/show?page=" + page
+      );
       return data;
     },
+    behavior: keepPreviousData(undefined),
   });
 }
 
