@@ -7,6 +7,24 @@ import { CreateAnswerDto } from "~/app/answer/answer.dto";
 export class AnswerService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getAnswered(eventId: string, userId: string) {
+    const answered = await this.prisma.answer.findFirst({
+      where: {
+        eventId: eventId,
+        userId: userId,
+      },
+    });
+
+    console.log(answered, eventId, userId);
+
+    if (answered) {
+      throw new HttpException(
+        "Você já respondeu a esta evento",
+        HttpStatus.CONFLICT
+      );
+    }
+  }
+
   async getByEvent(id: string) {
     const event = await this.prisma.event.findUnique({
       where: { id, deletedAt: null },
@@ -16,7 +34,10 @@ export class AnswerService {
     });
 
     if (!event || !event.form) {
-      throw new HttpException("Evento ou formulário não encontrado", HttpStatus.NOT_FOUND);
+      throw new HttpException(
+        "Evento ou formulário não encontrado",
+        HttpStatus.NOT_FOUND
+      );
     }
 
     const questions = await this.prisma.question.findMany({
@@ -75,10 +96,14 @@ export class AnswerService {
         });
 
         if (!question) {
-          throw new HttpException("Questão não encontrada", HttpStatus.NOT_FOUND);
+          throw new HttpException(
+            "Questão não encontrada",
+            HttpStatus.NOT_FOUND
+          );
         }
 
-        const hasOption = qa.optionId && question.options.some(opt => opt.id === qa.optionId);
+        const hasOption =
+          qa.optionId && question.options.some((opt) => opt.id === qa.optionId);
         const hasText = qa.value && qa.value.trim().length > 0;
 
         if (question.type === "CHOOSE_AND_TEXT") {
@@ -114,7 +139,10 @@ export class AnswerService {
         }
 
         if (!hasText) {
-          throw new HttpException("Texto da resposta é obrigatório", HttpStatus.BAD_REQUEST);
+          throw new HttpException(
+            "Texto da resposta é obrigatório",
+            HttpStatus.BAD_REQUEST
+          );
         }
 
         return this.prisma.questionAnswer.create({

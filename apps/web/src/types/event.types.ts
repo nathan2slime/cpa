@@ -1,3 +1,5 @@
+import { FormType } from "@/types/form"
+
 export type EventForm = {
   id?: string
   updatedAt?: Date
@@ -36,6 +38,7 @@ export type EventFormPaginationResponse = {
 
 export type EventReq = {
   id?: string
+  form: FormType
   updatedAt?: Date
   deletedAt?: Date
   createdAt?: Date

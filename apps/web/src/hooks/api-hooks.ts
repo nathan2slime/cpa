@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/api";
+import { AnswerType } from "@/types/answer.types";
 import type { CoursesReq } from "@/types/courseType";
 import type {
   EventForm,
@@ -14,6 +15,19 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+export const useAnswered = (eventId?: string) => {
+  return useQuery({
+    queryKey: ["answered", eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const response = await api.get(`/api/answer/answered/${eventId}`);
+      return response.status;
+    },
+    retry: false,
+  });
+};
 
 export function useEvent(id: string) {
   return useQuery({
@@ -47,6 +61,19 @@ export function useForms(page: number) {
       return data;
     },
     behavior: keepPreviousData(undefined),
+  });
+}
+
+export function useCreateAnswer() {
+  return useMutation({
+    mutationFn: async (data: AnswerType) => {
+      const response = await api.post("/api/answer/create", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Suas respostas foram enviadas com sucesso!");
+      window.location.reload();
+    },
   });
 }
 

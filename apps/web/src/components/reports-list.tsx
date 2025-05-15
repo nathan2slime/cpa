@@ -11,6 +11,7 @@ type Props = {
 };
 
 const Reports = ({ events }: Props) => {
+
   return (
     <>
       <main className="w-full h-full flex flex-col justify-start items-start">
@@ -52,7 +53,7 @@ const Reports = ({ events }: Props) => {
               </div>
             ))}
             {events.length === 0 && (
-              <p className={"p-5"}>Sem Eventos criados</p>
+              <p className={"p-5"}>Sem eventos, reveja a paginação para ver os eventos mais recentes.</p>
             )}
           </div>
         </div>

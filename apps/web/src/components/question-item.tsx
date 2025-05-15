@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useQuestionManager } from "@/hooks/use-question-manager";
-import type { OptionsTypes } from "@/types/options.types";
+import type { OptionType } from "@/types/options.types";
 import { QuestionTypeEnum } from "@/types/question";
 import { CirclePlus, Copy, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -35,7 +35,7 @@ export function QuestionItem({
   onRefresh,
 }: QuestionItemProps) {
   const [questionTitle, setQuestionTitle] = useState(title);
-  const [options, setOptions] = useState<OptionsTypes[]>([]);
+  const [options, setOptions] = useState<OptionType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
