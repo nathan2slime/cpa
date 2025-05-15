@@ -50,7 +50,7 @@ export const PaginationComponent = ({
                 }}
                 isActive={isCurrentPage(+page)}
               >
-                {page}
+                {String(page)}
               </PaginationLink>
             </PaginationItem>
           );

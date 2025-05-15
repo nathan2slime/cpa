@@ -29,7 +29,7 @@ const generatePages = (page: number, totalPages: number) => {
   }
 
   if (current === total - 2) {
-    return [1, 2, R, total -3, total - 2, total - 1, total]; 
+    return [1, 2, R, total - 3, total - 2, total - 1, total];
   }
 
   return [1, R, current - 1, current, current + 1, R, total - 1, total];

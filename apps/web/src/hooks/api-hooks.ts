@@ -104,7 +104,7 @@ export function useSearchForms(query: string) {
     queryKey: ["forms", "search", query],
     queryFn: async () => {
       const { data } = await api.get(
-        `/api/form/search?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
+        `/api/form/show?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
       );
       return data.data as FormReq[];
     },
@@ -150,6 +150,22 @@ export function useCreateForm() {
       return res.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms"] });
+    },
+  });
+}
+
+export function useUpdateForm() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: FormReq) => {
+      const { id, title } = data;
+      const response = await api.patch(`api/form/update/${id}`, { title });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["form", variables.id] });
       queryClient.invalidateQueries({ queryKey: ["forms"] });
     },
   });
