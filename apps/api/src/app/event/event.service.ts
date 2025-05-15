@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable } from "@nestjs/common";
 
-import { PaginationDto } from '~/app/app.dto'
-import { CreateEventDto, UpdateEventDto } from '~/app/event/event.dto'
-import { PrismaService } from '~/database/prisma.service'
+import { PaginationDto } from "~/app/app.dto";
+import { CreateEventDto, UpdateEventDto } from "~/app/event/event.dto";
+import { PrismaService } from "~/database/prisma.service";
 
 @Injectable()
 export class EventService {
@@ -12,71 +12,93 @@ export class EventService {
     const event = await this.prisma.event.create({
       data: {
         ...data,
-        form: { connect: { id: form } }
-      }
-    })
+        form: { connect: { id: form } },
+      },
+    });
 
     await Promise.all(
-      courses.map(async e =>
+      courses.map(async (e) =>
         this.prisma.courseEvent.create({
           data: {
             event: {
               connect: {
-                id: event.id
-              }
+                id: event.id,
+              },
             },
             course: {
               connect: {
-                id: e
-              }
-            }
-          }
+                id: e,
+              },
+            },
+          },
         })
       )
-    )
+    );
 
-    return event
+    return event;
   }
 
   async getById(id: string) {
     const event = await this.prisma.event.findUnique({
       where: {
         id,
-        deletedAt: null
+        deletedAt: null,
       },
       include: {
+        form: {
+          include: {
+            questions: {
+              where: {
+                deletedAt: null,
+              },
+              include: {
+                options: {
+                  where: {
+                    deletedAt: null,
+                  },
+                },
+              },
+            },
+          },
+        },
         courses: {
           include: {
             course: {
               select: {
-                id: true
-              }
-            }
-          }
-        }
-      }
-    })
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
 
-    const courseIds = event?.courses.map(course => course.course.id) || []
+    const courseIds = event?.courses.map((course) => course.course.id) || [];
 
     return {
       ...event,
-      courses: courseIds
-    }
+      courses: courseIds,
+    };
   }
 
-  async paginate({ perPage, query, page, sortField, sortOrder }: PaginationDto) {
+  async paginate({
+    perPage,
+    query,
+    page,
+    sortField,
+    sortOrder,
+  }: PaginationDto) {
     const where = query
       ? {
           title: {
-            contains: query
+            contains: query,
           },
-          deletedAt: null
+          deletedAt: null,
         }
       : {
-          deletedAt: null
-        }
-    const total = await this.prisma.event.count({ where })
+          deletedAt: null,
+        };
+    const total = await this.prisma.event.count({ where });
 
     const data = await this.prisma.event.findMany({
       take: perPage,
@@ -85,33 +107,33 @@ export class EventService {
       orderBy: sortField
         ? [{ [sortField]: sortOrder }]
         : {
-            createdAt: 'asc'
-          }
-    })
+            createdAt: "asc",
+          },
+    });
 
-    const pages = Math.ceil(total / perPage)
+    const pages = Math.ceil(total / perPage);
 
     return {
       total,
       data,
       pages,
       perPage,
-      page
-    }
+      page,
+    };
   }
 
   async getAll() {
-    return this.prisma.event.findMany({ where: { deletedAt: null } })
+    return this.prisma.event.findMany({ where: { deletedAt: null } });
   }
 
   async remove(id: string) {
-    await this.prisma.courseEvent.deleteMany({ where: { eventId: id } })
+    await this.prisma.courseEvent.deleteMany({ where: { eventId: id } });
 
     return this.prisma.event.delete({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
   async update(id: string, { courses = [], form, ...data }: UpdateEventDto) {
@@ -120,27 +142,27 @@ export class EventService {
         ...data,
         form: {
           connect: {
-            id: form
-          }
-        }
+            id: form,
+          },
+        },
       },
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
 
     await this.prisma.courseEvent.deleteMany({
       where: {
         event: {
-          id
-        }
-      }
-    })
+          id,
+        },
+      },
+    });
 
     await this.prisma.courseEvent.createMany({
-      data: courses.map(course => ({ courseId: course, eventId: id }))
-    })
+      data: courses.map((course) => ({ courseId: course, eventId: id })),
+    });
 
-    return this.prisma.event.findUnique({ where: { id } })
+    return this.prisma.event.findUnique({ where: { id } });
   }
 }

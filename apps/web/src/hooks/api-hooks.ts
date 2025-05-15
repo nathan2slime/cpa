@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@/api";
+import { AnswerType } from "@/types/answer.types";
 import type { CoursesReq } from "@/types/courseType";
 import type {
   EventForm,
@@ -14,6 +15,19 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+
+export const useAnswered = (eventId?: string) => {
+  return useQuery({
+    queryKey: ["answered", eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const response = await api.get(`/api/answer/answered/${eventId}`);
+      return response.status;
+    },
+    retry: false,
+  });
+};
 
 export function useEvent(id: string) {
   return useQuery({
@@ -50,6 +64,19 @@ export function useForms(page: number) {
   });
 }
 
+export function useCreateAnswer() {
+  return useMutation({
+    mutationFn: async (data: AnswerType) => {
+      const response = await api.post("/api/answer/create", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Suas respostas foram enviadas com sucesso!");
+      window.location.reload();
+    },
+  });
+}
+
 export function useCourses() {
   return useQuery({
     queryKey: ["courses"],
@@ -77,7 +104,7 @@ export function useSearchForms(query: string) {
     queryKey: ["forms", "search", query],
     queryFn: async () => {
       const { data } = await api.get(
-        `/api/form/search?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
+        `/api/form/show?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
       );
       return data.data as FormReq[];
     },
@@ -123,6 +150,22 @@ export function useCreateForm() {
       return res.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms"] });
+    },
+  });
+}
+
+export function useUpdateForm() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: FormReq) => {
+      const { id, title } = data;
+      const response = await api.patch(`api/form/update/${id}`, { title });
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["form", variables.id] });
       queryClient.invalidateQueries({ queryKey: ["forms"] });
     },
   });

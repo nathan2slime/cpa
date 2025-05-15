@@ -132,7 +132,10 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
                         <div className="space-y-2 max-h-[300px] overflow-y-auto border rounded-md p-3">
                           {question.questionAnswer.length > 0 ? (
                             <div className="text-muted-foreground italic">
-                              {question.questionAnswer.length} {question.questionAnswer.length === 1 ? "resposta" : "respostas"}
+                              {question.questionAnswer.length}{" "}
+                              {question.questionAnswer.length === 1
+                                ? "resposta"
+                                : "respostas"}
                             </div>
                           ) : (
                             <div className="text-muted-foreground italic">

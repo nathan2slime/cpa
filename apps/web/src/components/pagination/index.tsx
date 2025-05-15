@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { usePagination } from "./usePagination";
 
 import {
@@ -9,7 +7,7 @@ import {
   PaginationItem,
   PaginationLink,
 } from "@/components/ui/pagination";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export type PaginationProps = {
   total: number;
@@ -27,8 +25,6 @@ export const PaginationComponent = ({
     limit,
     total,
   });
-
-  console.log( total)
 
   const router = useRouter();
   const pathname = usePathname();
@@ -54,7 +50,7 @@ export const PaginationComponent = ({
                 }}
                 isActive={isCurrentPage(+page)}
               >
-                {page}
+                {String(page)}
               </PaginationLink>
             </PaginationItem>
           );

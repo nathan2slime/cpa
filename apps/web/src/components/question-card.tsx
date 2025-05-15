@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,6 +20,8 @@ import {
   Tooltip,
 } from "recharts";
 import type { Question } from "@/types/report.type";
+import * as htmlToImage from "html-to-image";
+import { Button } from "@/components/ui/button";
 
 type QuestionCardProps = {
   question: Question;
@@ -27,18 +29,38 @@ type QuestionCardProps = {
 
 export default function QuestionCard({ question }: QuestionCardProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState<"pie" | "bar">("pie");
   const answers = question.questionAnswer || [];
 
   const COLORS = [
-    "hsl(var(--chart-1))",
-    "hsl(var(--chart-2))",
-    "hsl(var(--chart-3))",
-    "hsl(var(--chart-4))",
-    "hsl(var(--chart-5))",
-    "hsl(var(--chart-6))",
-    "hsl(var(--chart-7))",
-    "hsl(var(--chart-8))",
+    "hsl(45, 90%, 55%)",
+    "hsl(210, 70%, 50%)",
+    "hsl(260, 70%, 60%)",
+    "hsl(15, 90%, 55%)",
+    "hsl(90, 65%, 50%)",
+    "hsl(30, 90%, 60%)",
+    "hsl(120, 70%, 50%)",
+    "hsl(340, 65%, 47%)",
   ];
+
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  async function handleDownload() {
+    if (!chartRef.current) return;
+
+    try {
+      const dataUrl = await htmlToImage.toPng(chartRef.current, {
+        cacheBust: true,
+        backgroundColor: "#fff",
+      });
+      const link = document.createElement("a");
+      link.download = `question-${question.id}-${activeTab}-chart.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (error) {
+      console.error("Erro ao gerar a imagem:", error);
+    }
+  }
 
   const generateChartData = () => {
     const optionCountMap: Record<string, number> = {};
@@ -50,8 +72,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
     answers.forEach((answer) => {
       if (answer.questionOptionId) {
         optionCountMap[answer.questionOptionId] += 1;
-      }
-      else if (answer.value) {
+      } else if (answer.value) {
         const matchingOption = question.options.find(
           (option) => option.id === answer.value
         );
@@ -99,10 +120,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
         <Card>
           <CardContent className="p-4 space-y-2 max-h-[400px] overflow-auto">
             {answers.map((answer, index) => (
-              <div
-                key={index}
-                className="text-sm border-b last:border-none"
-              >
+              <div key={index} className="text-sm border-b last:border-none">
                 {answer.value || (
                   <span className="text-muted-foreground">Resposta vazia</span>
                 )}
@@ -127,16 +145,27 @@ export default function QuestionCard({ question }: QuestionCardProps) {
 
   return (
     <div className="space-y-4">
-      <Tabs defaultValue="pie">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as "pie" | "bar")}
+      >
         <TabsList className="mb-4">
           <TabsTrigger value="pie">Gráfico de Pizza</TabsTrigger>
           <TabsTrigger value="bar">Gráfico de Barras</TabsTrigger>
         </TabsList>
 
+        <div className="flex justify-end">
+          <Button onClick={handleDownload}>Baixar imagem</Button>
+        </div>
+
         <TabsContent value="pie">
-          <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
+          <div
+            className="flex flex-col md:flex-row gap-6 items-center justify-center"
+            ref={chartRef}
+          >
             <div className="w-full md:w-1/2 h-[300px]">
               <ChartContainer
+                className="h-full w-full"
                 config={Object.fromEntries([
                   ["value", { label: "Respostas" }],
                   ...question.options.map((option, index) => [
@@ -225,7 +254,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
         </TabsContent>
 
         <TabsContent value="bar">
-          <div className="h-full w-full overflow-y-auto">
+          <div className="h-full w-full overflow-y-auto" ref={chartRef}>
             <ChartContainer
               config={Object.fromEntries([
                 ["value", { label: "Respostas" }],

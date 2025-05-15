@@ -1,4 +1,4 @@
-import { OptionsTypes } from "./options.types";
+import { OptionType } from "./options.types";
 
 export enum QuestionTypeEnum {
   CHOOSE = "CHOOSE",
@@ -14,5 +14,5 @@ export type QuestionType = {
   createdAt: string;
   deletedAt: string | null;
   updatedAt: string;
-  options?: OptionsTypes[];
+  options?: OptionType[];
 };

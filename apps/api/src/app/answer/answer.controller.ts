@@ -35,6 +35,18 @@ export class AnswerController {
     return res.status(HttpStatus.CREATED).json(data);
   }
 
+  @Get("/answered/:id")
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.USER, Role.ADMIN])
+  async getAnswered(
+    @Res() res: Response,
+    @Req() req: Request,
+    @Param("id") id: string
+  ) {
+    await this.answerService.getAnswered(id, req.user.userId);
+    return res.status(HttpStatus.OK).send();
+  }
+
   @Get("event/show/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
