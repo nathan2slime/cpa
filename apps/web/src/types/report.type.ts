@@ -26,7 +26,7 @@ export type QuestionAnswer = {
   deletedAt: string | null;
 };
 
-export type QuestionType = "TEXT" | "CHOOSE";
+export type QuestionType = "TEXT" | "CHOOSE" | "CHOOSE_AND_TEXT";
 
 export type Question = {
   id: string;

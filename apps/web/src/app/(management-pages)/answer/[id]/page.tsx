@@ -10,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -38,7 +37,6 @@ const Answer = () => {
   } = useForm<FormAnswers>();
 
   if (status.data !== 200) return <AlreadyAnswered />;
-
   const form = event?.form;
   if (!form) return null;
 
@@ -60,48 +58,41 @@ const Answer = () => {
 
       switch (question.type) {
         case QuestionTypeEnum.CHOOSE:
-          const selectedOptionId = formValues[qId];
-          if (!selectedOptionId)
+          if (!formValues[qId])
             return alert("Por favor, responda todas as perguntas.");
           answers.data.push({
             questionId: qId,
-            optionId: selectedOptionId,
+            optionId: formValues[qId],
             value: "",
           });
           break;
 
         case QuestionTypeEnum.TEXT:
-          const textValue = formValues[qId];
-          if (!textValue?.trim())
+          if (!formValues[qId]?.trim())
             return alert("Por favor, responda todas as perguntas.");
           answers.data.push({
             questionId: qId,
             optionId: "",
-            value: textValue,
+            value: formValues[qId],
           });
           break;
 
-        case QuestionTypeEnum.CHOOSE_AND_TEXT:
-          const selectedOptions = formValues[`${qId}_options`] || [];
+        case QuestionTypeEnum.CHOOSE_AND_TEXT: {
+          const selectedOption = formValues[`${qId}_options`] || "";
           const text = formValues[`${qId}_text`] || "";
-          if (selectedOptions.length === 0 && !text.trim()) {
+
+          if (!selectedOption && !text.trim()) {
             return alert("Por favor, responda todas as perguntas.");
           }
-          for (const optId of selectedOptions) {
-            answers.data.push({
-              questionId: qId,
-              optionId: optId,
-              value: "",
-            });
-          }
-          if (text.trim()) {
-            answers.data.push({
-              questionId: qId,
-              optionId: "",
-              value: text,
-            });
-          }
+
+          answers.data.push({
+            questionId: qId,
+            optionId: selectedOption || "",
+            value: text.trim() || "",
+          });
+
           break;
+        }
       }
     }
 
@@ -153,40 +144,26 @@ const Answer = () => {
             <Controller
               name={`${question.id}_options`}
               control={control}
-              defaultValue={[]}
-              render={({ field }) => {
-                const handleCheck = (checked: boolean, value: string) => {
-                  if (checked) {
-                    field.onChange([...field.value, value]);
-                  } else {
-                    field.onChange(
-                      field.value.filter((v: string) => v !== value)
-                    );
-                  }
-                };
-
-                return (
-                  <div className="space-y-2">
-                    {question.options?.map((option: OptionType) => (
-                      <div
-                        key={option.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={option.id}
-                          checked={field.value?.includes(option.id)}
-                          onCheckedChange={(checked) =>
-                            handleCheck(Boolean(checked), option.id)
-                          }
-                        />
-                        <label htmlFor={option.id} className="text-sm">
-                          {option.title}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                );
-              }}
+              defaultValue=""
+              render={({ field }) => (
+                <RadioGroup
+                  className="space-y-2"
+                  onValueChange={field.onChange}
+                  value={field.value}
+                >
+                  {question.options?.map((option: OptionType) => (
+                    <div
+                      key={option.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <RadioGroupItem value={option.id} id={option.id} />
+                      <label htmlFor={option.id} className="text-sm">
+                        {option.title}
+                      </label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              )}
             />
             <Controller
               name={`${question.id}_text`}

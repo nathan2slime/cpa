@@ -39,6 +39,8 @@ export class TagsService {
     return this.prisma.tag.create({
       data: {
         name: tag.name,
+        eventId: tag.event || null,
+        formId: tag.form || null,
       },
     });
   }

@@ -1,36 +1,22 @@
-"use client";
+"use client"
 
-import { useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
-import type { Question } from "@/types/report.type";
-import * as htmlToImage from "html-to-image";
-import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts"
+import type { Question } from "@/types/report.type"
+import * as htmlToImage from "html-to-image"
+import { Button } from "@/components/ui/button"
 
 type QuestionCardProps = {
-  question: Question;
-};
+  question: Question
+}
 
 export default function QuestionCard({ question }: QuestionCardProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<"pie" | "bar">("pie");
-  const answers = question.questionAnswer || [];
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [activeTab, setActiveTab] = useState<"pie" | "bar">("pie")
+  const answers = question.questionAnswer || []
 
   const COLORS = [
     "hsl(45, 90%, 55%)",
@@ -41,77 +27,68 @@ export default function QuestionCard({ question }: QuestionCardProps) {
     "hsl(30, 90%, 60%)",
     "hsl(120, 70%, 50%)",
     "hsl(340, 65%, 47%)",
-  ];
+  ]
 
-  const chartRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<HTMLDivElement>(null)
 
   async function handleDownload() {
-    if (!chartRef.current) return;
+    if (!chartRef.current) return
 
     try {
       const dataUrl = await htmlToImage.toPng(chartRef.current, {
         cacheBust: true,
         backgroundColor: "#fff",
-      });
-      const link = document.createElement("a");
-      link.download = `question-${question.id}-${activeTab}-chart.png`;
-      link.href = dataUrl;
-      link.click();
+      })
+      const link = document.createElement("a")
+      link.download = `question-${question.id}-${activeTab}-chart.png`
+      link.href = dataUrl
+      link.click()
     } catch (error) {
-      console.error("Erro ao gerar a imagem:", error);
+      console.error("Erro ao gerar a imagem:", error)
     }
   }
 
   const generateChartData = () => {
-    const optionCountMap: Record<string, number> = {};
+    const optionCountMap: Record<string, number> = {}
 
     question.options.forEach((option) => {
-      optionCountMap[option.id] = 0;
-    });
+      optionCountMap[option.id] = 0
+    })
 
     answers.forEach((answer) => {
       if (answer.questionOptionId) {
-        optionCountMap[answer.questionOptionId] += 1;
+        optionCountMap[answer.questionOptionId] += 1
       } else if (answer.value) {
-        const matchingOption = question.options.find(
-          (option) => option.id === answer.value
-        );
+        const matchingOption = question.options.find((option) => option.id === answer.value)
         if (matchingOption) {
-          optionCountMap[matchingOption.id] += 1;
+          optionCountMap[matchingOption.id] += 1
         }
       }
-    });
+    })
 
-    const totalAnswers = Object.values(optionCountMap).reduce(
-      (sum, count) => sum + count,
-      0
-    );
+    const totalAnswers = Object.values(optionCountMap).reduce((sum, count) => sum + count, 0)
 
     return question.options.map((option) => {
-      const count = optionCountMap[option.id] || 0;
-      const percentage = totalAnswers > 0 ? (count / totalAnswers) * 100 : 0;
+      const count = optionCountMap[option.id] || 0
+      const percentage = totalAnswers > 0 ? (count / totalAnswers) * 100 : 0
 
       return {
         name: option.title,
         value: count,
         percentage: percentage.toFixed(1),
         id: option.id,
-      };
-    });
-  };
+      }
+    })
+  }
 
-  const chartData = generateChartData();
+  const chartData = generateChartData()
 
   const onPieEnter = (_: any, index: number) => {
-    setActiveIndex(index);
-  };
+    setActiveIndex(index)
+  }
 
   if (!answers.length) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        Sem dados disponíveis para esta questão.
-      </div>
-    );
+    return <div className="text-center py-8 text-muted-foreground">Sem dados disponíveis para esta questão.</div>
   }
 
   if (question.type === "TEXT") {
@@ -121,34 +98,22 @@ export default function QuestionCard({ question }: QuestionCardProps) {
           <CardContent className="p-4 space-y-2 max-h-[400px] overflow-auto">
             {answers.map((answer, index) => (
               <div key={index} className="text-sm border-b last:border-none">
-                {answer.value || (
-                  <span className="text-muted-foreground">Resposta vazia</span>
-                )}
+                {answer.value || <span className="text-muted-foreground">Resposta vazia</span>}
               </div>
             ))}
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
-  if (
-    question.type === "CHOOSE" &&
-    (!question.options || question.options.length === 0)
-  ) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        Esta questão não possui opções definidas.
-      </div>
-    );
+  if (question.type === "CHOOSE" && (!question.options || question.options.length === 0)) {
+    return <div className="text-center py-8 text-muted-foreground">Esta questão não possui opções definidas.</div>
   }
 
   return (
     <div className="space-y-4">
-      <Tabs
-        value={activeTab}
-        onValueChange={(value) => setActiveTab(value as "pie" | "bar")}
-      >
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "pie" | "bar")}>
         <TabsList className="mb-4">
           <TabsTrigger value="pie">Gráfico de Pizza</TabsTrigger>
           <TabsTrigger value="bar">Gráfico de Barras</TabsTrigger>
@@ -161,10 +126,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
         </div>
 
         <TabsContent value="pie">
-          <div
-            className="flex flex-col md:flex-row gap-6 items-center justify-center"
-            ref={chartRef}
-          >
+          <div className="flex flex-col md:flex-row gap-6 items-center justify-center" ref={chartRef}>
             <div className="w-full md:w-1/2 h-[300px]">
               <ChartContainer
                 className="h-full w-full"
@@ -206,9 +168,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
                       content={
                         <ChartTooltipContent
                           labelFormatter={(label: string) => label}
-                          formatter={(value: any) => [
-                            `${value} selecionaram esse opção`,
-                          ]}
+                          formatter={(value: any) => [`${value} selecionaram esse opção`]}
                         />
                       }
                     />
@@ -234,17 +194,11 @@ export default function QuestionCard({ question }: QuestionCardProps) {
                               backgroundColor: COLORS[index % COLORS.length],
                             }}
                           />
-                          <span className="text-sm font-medium truncate max-w-[200px]">
-                            {entry.name}
-                          </span>
+                          <span className="text-sm font-medium truncate max-w-[200px]">{entry.name}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">
-                            {entry.value}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            ({entry.percentage}%)
-                          </span>
+                          <span className="text-sm font-medium">{entry.value}</span>
+                          <span className="text-xs text-muted-foreground">({entry.percentage}%)</span>
                         </div>
                       </li>
                     ))}
@@ -270,20 +224,14 @@ export default function QuestionCard({ question }: QuestionCardProps) {
               ])}
             >
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={chartData}
-                  layout="vertical"
-                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                >
+                <BarChart data={chartData} layout="vertical" margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <XAxis type="number" />
                   <YAxis
                     type="category"
                     dataKey="name"
                     width={150}
                     tick={{ fontSize: 12 }}
-                    tickFormatter={(value) =>
-                      value.length > 20 ? `${value.substring(0, 20)}...` : value
-                    }
+                    tickFormatter={(value) => (value.length > 20 ? `${value.substring(0, 20)}...` : value)}
                   />
                   <Tooltip
                     formatter={(value) => [`${value} respostas`, "Quantidade"]}
@@ -291,10 +239,7 @@ export default function QuestionCard({ question }: QuestionCardProps) {
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {chartData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -303,6 +248,58 @@ export default function QuestionCard({ question }: QuestionCardProps) {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Add text responses for CHOOSE_AND_TEXT type */}
+      {question.type === "CHOOSE_AND_TEXT" && <EnhancedTextResponses question={question} />}
     </div>
-  );
+  )
+}
+
+// Component to display text responses grouped by selected option for CHOOSE_AND_TEXT questions
+function EnhancedTextResponses({ question }: { question: Question }) {
+  // Group responses by the selected option
+  const groupedResponses = question.questionAnswer.reduce<Record<string, any[]>>((acc, answer) => {
+    if (!answer.value || !answer.value.trim()) return acc
+
+    const optionId = answer.questionOptionId || "no-option"
+    if (!acc[optionId]) {
+      acc[optionId] = []
+    }
+    acc[optionId].push(answer)
+    return acc
+  }, {})
+
+  // Check if there are any text responses
+  const hasTextResponses = Object.keys(groupedResponses).length > 0
+
+  if (!hasTextResponses) return null
+
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <h3 className="text-lg font-medium mb-4">Respostas de texto</h3>
+        <div className="space-y-6">
+          {Object.entries(groupedResponses).map(([optionId, answers]) => {
+            const optionTitle =
+              optionId === "no-option"
+                ? "Sem opção selecionada"
+                : question.options.find((opt) => opt.id === optionId)?.title || "Opção desconhecida"
+
+            return (
+              <div key={optionId} className="space-y-2">
+                <h4 className="font-medium text-primary">{optionTitle}</h4>
+                <div className="pl-4 border-l-2 border-muted space-y-2">
+                  {answers.map((answer, idx) => (
+                    <div key={idx} className="text-sm py-1">
+                      {answer.value}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  )
 }

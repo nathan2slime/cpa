@@ -1,5 +1,5 @@
 import { getAnswersQuery } from "@/api/queries/get-answer.query";
-import ReportDashboard from "@/components/report-dashboard";
+import ReportDashboard from "@/components/report/report-dashboard";
 
 type Param = {
   params: { id: string };

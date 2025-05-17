@@ -9,6 +9,7 @@ import type {
   EventReq,
 } from "@/types/event.types";
 import type { FormReq, FormResponse } from "@/types/form";
+import { TagType } from "@/types/tag.type";
 import {
   keepPreviousData,
   useMutation,
@@ -17,17 +18,7 @@ import {
 } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
-export const useAnswered = (eventId?: string) => {
-  return useQuery({
-    queryKey: ["answered", eventId],
-    queryFn: async () => {
-      if (!eventId) return null;
-      const response = await api.get(`/api/answer/answered/${eventId}`);
-      return response.status;
-    },
-    retry: false,
-  });
-};
+//eventos
 
 export function useEvent(id: string) {
   return useQuery({
@@ -44,71 +35,35 @@ export function useEvents(page: number) {
     queryKey: ["events", page],
     queryFn: async () => {
       const { data } = await api.get<EventFormPaginationResponse>(
-        "/api/event/show?page=" + page
+        `/api/event/show?page=${page}`
       );
       return data;
     },
   });
 }
 
-export function useForms(page: number) {
+export const useEventTags = (id: string) => {
   return useQuery({
-    queryKey: ["forms", page],
+    queryKey: ["tags", id],
     queryFn: async () => {
-      const { data } = await api.get<FormResponse>(
-        "/api/form/show?page=" + page
-      );
-      return data;
-    },
-    behavior: keepPreviousData(undefined),
-  });
-}
-
-export function useCreateAnswer() {
-  return useMutation({
-    mutationFn: async (data: AnswerType) => {
-      const response = await api.post("/api/answer/create", data);
-      return response.data;
-    },
-    onSuccess: () => {
-      toast.success("Suas respostas foram enviadas com sucesso!");
-      window.location.reload();
-    },
-  });
-}
-
-export function useCourses() {
-  return useQuery({
-    queryKey: ["courses"],
-    queryFn: async () => {
-      const { data } = await api.get<CoursesReq[]>("api/course/show");
-      return data;
-    },
-  });
-}
-
-export function useForm(id: string | undefined) {
-  return useQuery({
-    queryKey: ["form", id],
-    queryFn: async () => {
-      if (!id) return null;
-      const { data } = await api.get<FormReq>(`api/form/show/${id}`);
+      const { data } = await api.get<TagType[]>(`/api/tags/show/event/${id}`);
       return data;
     },
     enabled: !!id,
   });
-}
+};
 
-export function useSearchForms(query: string) {
-  return useQuery({
-    queryKey: ["forms", "search", query],
-    queryFn: async () => {
-      const { data } = await api.get(
-        `/api/form/show?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
-      );
-      return data.data as FormReq[];
+export function useCreateEvent() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: EventForm) => {
+      const response = await api.post("api/event/create", data);
+      return response.data;
     },
-    refetchOnWindowFocus: false,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
   });
 }
 
@@ -127,17 +82,68 @@ export function useUpdateEvent() {
   });
 }
 
-export function useCreateEvent() {
+export function useDeleteEvent() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: EventForm) => {
-      const response = await api.post("api/event/create", data);
-      return response.data;
+    mutationFn: async (id: string) => {
+      const res = await api.delete(`/api/event/delete/${id}`);
+      return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
+  });
+}
+
+//Formulários
+
+export function useForms(page: number) {
+  return useQuery({
+    queryKey: ["forms", page],
+    queryFn: async () => {
+      const { data } = await api.get<FormResponse>(
+        `/api/form/show?page=${page}`
+      );
+      return data;
+    },
+    behavior: keepPreviousData(undefined),
+  });
+}
+
+export function useForm(id: string | undefined) {
+  return useQuery({
+    queryKey: ["form", id],
+    queryFn: async () => {
+      if (!id) return null;
+      const { data } = await api.get<FormReq>(`api/form/show/${id}`);
+      return data;
+    },
+    enabled: !!id,
+  });
+}
+
+export const useFormTags = (id: string) => {
+  return useQuery({
+    queryKey: ["tags", id],
+    queryFn: async () => {
+      const { data } = await api.get<TagType[]>(`/api/tags/show/form/${id}`);
+      return data;
+    },
+    enabled: !!id,
+  });
+};
+
+export function useSearchForms(query: string) {
+  return useQuery({
+    queryKey: ["forms", "search", query],
+    queryFn: async () => {
+      const { data } = await api.get(
+        `/api/form/show?perPage=5&sortOrder=desc${query ? `&query=${query}` : ""}`
+      );
+      return data.data as FormReq[];
+    },
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -184,16 +190,64 @@ export function useDeleteForm() {
   });
 }
 
-export function useDeleteEvent() {
+//outros
+
+export function useCreateAnswer() {
+  return useMutation({
+    mutationFn: async (data: AnswerType) => {
+      const response = await api.post("/api/answer/create", data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Suas respostas foram enviadas com sucesso!");
+      window.location.reload();
+    },
+  });
+}
+
+export const useAnswered = (eventId?: string) => {
+  return useQuery({
+    queryKey: ["answered", eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const response = await api.get(`/api/answer/answered/${eventId}`);
+      return response.status;
+    },
+    retry: false,
+  });
+};
+
+export const useCreateTag = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await api.delete(`/api/event/delete/${id}`);
-      return res.data;
+    mutationKey: ["create-tag"],
+    mutationFn: async (data: TagType) => {
+      const response = await api.post("/api/tags/create", data);
+      return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["events"] });
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tags"] }),
+  });
+};
+
+export const useDeleteTag = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["delete-tag"],
+    mutationFn: async (id: string) => {
+      await api.delete(`/api/tags/remove/${id}`);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tags"] }),
+  });
+};
+
+export function useCourses() {
+  return useQuery({
+    queryKey: ["courses"],
+    queryFn: async () => {
+      const { data } = await api.get<CoursesReq[]>("api/course/show");
+      return data;
     },
   });
 }

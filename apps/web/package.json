@@ -50,7 +50,8 @@
     "tailwindcss": "^3.3.0",
     "tailwindcss-animate": "^1.0.7",
     "valtio": "^1.13.2",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",

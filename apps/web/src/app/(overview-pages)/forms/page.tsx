@@ -15,7 +15,7 @@ export default function Forms() {
       <PaginationComponent
         total={forms?.total || 0}
         current={forms?.page || 0}
-        limit={forms?.total || 0}
+        limit={forms?.perPage || 0}
       />
     </div>
   );
