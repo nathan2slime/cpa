@@ -1,13 +1,12 @@
-import { getAnswersQuery } from "@/api/queries/get-answer.query";
+"use client";
+
 import ReportDashboard from "@/components/report/report-dashboard";
+import { useAnswers } from "@/hooks/api-hooks";
+import { useParams } from "next/navigation";
 
-type Param = {
-  params: { id: string };
-};
+export default function ReportPage() {
+  const id = useParams().id;
+  const { data: answers } = useAnswers(id as string);
 
-export default async function ReportPage({ params }: Param) {
-  const { id } = params;
-  const data = await getAnswersQuery(id);
-
-  return <ReportDashboard data={data} />;
+  if (answers) return <ReportDashboard data={answers} />;
 }

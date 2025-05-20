@@ -16,7 +16,7 @@ import {
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
-import { NameTagPaginationDto } from "~/app/app.dto";
+import { PaginateWithNameTagDto } from "~/app/app.dto";
 import { Roles } from "~/app/auth/auth.decorator";
 import { JwtAuthGuard } from "~/app/auth/auth.guard";
 import { RoleGuard } from "~/app/auth/role.guard";
@@ -86,7 +86,7 @@ export class FormController {
   @Get("show")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async search(@Res() res: Response, @Query() query: NameTagPaginationDto) {
+  async search(@Res() res: Response, @Query() query: PaginateWithNameTagDto) {
     const data = await this.formService.paginate(query);
 
     return res.status(HttpStatus.OK).json(data);

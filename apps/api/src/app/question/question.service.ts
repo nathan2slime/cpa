@@ -4,6 +4,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import {
   CreateQuestionDto,
   QueryQuestionDto,
+  ReorderQuestionDto,
   UpdateQuestionDto,
 } from "~/app/question/question.dto";
 import { PrismaService } from "~/database/prisma.service";
@@ -24,6 +25,19 @@ export class QuestionService {
         form: { connect: { id: form } },
       },
     });
+  }
+
+  async reorderQuestions(data: ReorderQuestionDto[]) {
+    const updates = data.map((item, i) =>
+      this.prisma.question.update({
+        where: { id: item.id },
+        data: { order: i },
+      })
+    );
+
+    await this.prisma.$transaction(updates);
+
+    return { message: "Ordem das questões atualizada com sucesso." };
   }
 
   async duplicate(questionId: string) {

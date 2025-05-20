@@ -7,6 +7,8 @@ import type { ReportResponse } from "@/types/report.type";
 import { ReportHeader } from "@/components/report/report-header";
 import { VisualTab } from "@/components/report/visual-tab";
 import { DataTab } from "@/components/report/data-tab";
+import { FiltersContent } from "@/components/filters";
+import { FilterByCourse } from "@/components/filters/by-course";
 
 type ReportDashboardProps = {
   data: ReportResponse;
@@ -37,6 +39,10 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
     <main className="max-w-7xl">
       <div className="grid gap-6">
         <ReportHeader title={data.form.title} totalResponses={totalResponses} />
+
+        <FiltersContent>
+          <FilterByCourse courses={data.courses} />
+        </FiltersContent>
 
         <Tabs defaultValue="visual" className="w-full">
           <TabsList className="mb-6">

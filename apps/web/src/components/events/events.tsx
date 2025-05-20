@@ -1,9 +1,9 @@
 "use client";
 
 import { EventCard } from "@/components/events/event-card";
-import { FiltersContent } from "@/components/filter";
-import { FilterByName } from "@/components/filter/by-name";
-import { FilterTag } from "@/components/filter/by-tag";
+import { FiltersContent } from "@/components/filters";
+import { FilterByName } from "@/components/filters/by-name";
+import { FilterTag } from "@/components/filters/by-tag";
 import { Button } from "@/components/ui/button";
 import { useAllTagsEvent } from "@/hooks/api-hooks";
 import { EventFormResponse } from "@/types/event.types";

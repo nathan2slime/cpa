@@ -1,3 +1,5 @@
+import { CoursesReq } from "@/types/courseType";
+
 export type Form = {
   id: string;
   title: string;
@@ -38,9 +40,11 @@ export type Question = {
   deletedAt: string | null;
   options: QuestionOption[];
   questionAnswer: QuestionAnswer[];
+  order: number;
 };
 
 export type ReportResponse = {
   form: Form;
   question: Question[];
+  courses: CoursesReq[];
 };

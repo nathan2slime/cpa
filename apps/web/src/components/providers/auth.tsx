@@ -7,6 +7,7 @@ import { useSnapshot } from "valtio";
 import { authService } from "@/services/auth.services";
 import { authState } from "@/store/auth.state";
 import { AppChildren } from "@/types";
+import { RouteProvider } from "@/components/providers/route-provider";
 
 export const AuthProvider = ({ children }: AppChildren) => {
   const pathname = usePathname();
@@ -42,5 +43,9 @@ export const AuthProvider = ({ children }: AppChildren) => {
     authState.loading = false;
   };
 
-  return <>{loading ? <div /> : children}</>;
+  return (
+    <>
+      <RouteProvider>{children}</RouteProvider>
+    </>
+  );
 };

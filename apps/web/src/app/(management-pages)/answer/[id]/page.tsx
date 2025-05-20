@@ -13,10 +13,10 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 
-import AlreadyAnswered from "@/components/already-answered";
-import { useAnswered, useCreateAnswer, useEvent } from "@/hooks/api-hooks";
+import { useCanAnswer, useCreateAnswer, useEvent } from "@/hooks/api-hooks";
 import { OptionType } from "@/types/options.types";
 import { QuestionType, QuestionTypeEnum } from "@/types/question";
+import FormErrorMessage from "@/components/form-error-message";
 
 type FormAnswers = {
   [questionId: string]: any;
@@ -26,7 +26,7 @@ const Answer = () => {
   const { id } = useParams();
   const eventId = typeof id === "string" ? id : undefined;
 
-  const status = useAnswered(eventId);
+  const { data: status } = useCanAnswer(eventId);
   const { data: event } = useEvent(eventId as string);
   const mutation = useCreateAnswer();
 
@@ -36,7 +36,10 @@ const Answer = () => {
     formState: { errors },
   } = useForm<FormAnswers>();
 
-  if (status.data !== 200) return <AlreadyAnswered />;
+  if (status && status !== 200) return <FormErrorMessage status={status} />;
+
+  console.log(status);
+
   const form = event?.form;
   if (!form) return null;
 

@@ -21,6 +21,7 @@ import { RoleGuard } from "~/app/auth/role.guard";
 import {
   CreateQuestionDto,
   QueryQuestionDto,
+  ReorderQuestionDto,
   UpdateQuestionDto,
 } from "~/app/question/question.dto";
 import { QuestionService } from "~/app/question/question.service";
@@ -55,6 +56,11 @@ export class QuestionController {
     await this.questionService.remove({ id });
 
     return res.status(HttpStatus.OK).send();
+  }
+
+  @Patch("reorder")
+  async reorder(@Body() body: ReorderQuestionDto[]) {
+    return this.questionService.reorderQuestions(body);
   }
 
   @Patch("update/:id")

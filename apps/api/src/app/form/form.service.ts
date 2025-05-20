@@ -1,7 +1,7 @@
 import { Prisma, Session } from "@cpa/database";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
-import { NameTagPaginationDto } from "~/app/app.dto";
+import { PaginateWithNameTagDto } from "~/app/app.dto";
 import { CreateFormDto, UpdateFormDto } from "~/app/form/form.dto";
 import { PrismaService } from "~/database/prisma.service";
 
@@ -94,7 +94,7 @@ export class FormService {
     sortField,
     sortOrder,
     tag,
-  }: NameTagPaginationDto) {
+  }: PaginateWithNameTagDto) {
     const where = {
       deletedAt: null,
       ...(query && {

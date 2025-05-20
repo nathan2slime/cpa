@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -12,7 +13,7 @@ import {
 import { ApiTags } from "@nestjs/swagger";
 import { Request, Response } from "express";
 import { Role } from "@cpa/database";
-import { CreateAnswerDto } from "~/app/answer/answer.dto";
+import { CreateAnswerDto, FilterByCourseDto } from "~/app/answer/answer.dto";
 import { AnswerService } from "~/app/answer/answer.service";
 import { Roles } from "~/app/auth/auth.decorator";
 import { RoleGuard } from "~/app/auth/role.guard";
@@ -35,22 +36,25 @@ export class AnswerController {
     return res.status(HttpStatus.CREATED).json(data);
   }
 
-  @Get("/answered/:id")
+  @Get("/canAnswer/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.USER, Role.ADMIN])
   async getAnswered(
-    @Res() res: Response,
+    @Res() _: Response,
     @Req() req: Request,
     @Param("id") id: string
   ) {
-    await this.answerService.getAnswered(id, req.user.userId);
-    return res.status(HttpStatus.OK).send();
+    await this.answerService.getCanAnswer(id, req.user.userId);
+    return { status: 200 };
   }
 
   @Get("event/show/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
-  async getByEvent(@Param("id") id: string) {
-    return this.answerService.getByEvent(id);
+  async getByEvent(
+    @Param("id") id: string,
+    @Query() filter: FilterByCourseDto
+  ) {
+    return this.answerService.getByEvent(id, filter);
   }
 }

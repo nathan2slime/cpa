@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { PaginationComponent } from "@/components/pagination";
 import Reports from "@/components/reports-list";

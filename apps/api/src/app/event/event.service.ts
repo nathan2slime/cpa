@@ -1,8 +1,11 @@
 import { Prisma } from "@cpa/database";
 import { Injectable } from "@nestjs/common";
 
-import { NameTagPaginationDto } from "~/app/app.dto";
-import { CreateEventDto, UpdateEventDto } from "~/app/event/event.dto";
+import {
+  CreateEventDto,
+  PaginateWithCourseDto,
+  UpdateEventDto,
+} from "~/app/event/event.dto";
 import { PrismaService } from "~/database/prisma.service";
 
 @Injectable()
@@ -89,13 +92,26 @@ export class EventService {
     sortField,
     sortOrder,
     tag,
-  }: NameTagPaginationDto) {
+    course,
+  }: PaginateWithCourseDto) {
     const where: Prisma.EventWhereInput = {
       deletedAt: null,
       ...(query && {
         title: {
           contains: query,
           mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(course && {
+        courses: {
+          some: {
+            course: {
+              id: {
+                equals: course,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+          },
         },
       }),
       ...(tag && {

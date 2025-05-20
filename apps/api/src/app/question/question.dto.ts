@@ -1,6 +1,7 @@
 import { QuestionType } from "@cpa/database";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
+import { IsUUID, IsInt, Min } from "class-validator";
 
 export class CreateQuestionDto {
   @ApiProperty()
@@ -30,5 +31,16 @@ export class UpdateQuestionDto {
 
   @ApiProperty()
   @IsOptional()
+  order: number;
+}
+
+export class ReorderQuestionDto {
+  @ApiProperty()
+  @IsUUID()
+  id: string;
+
+  @ApiProperty()
+  @IsInt()
+  @Min(0)
   order: number;
 }
