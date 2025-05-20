@@ -41,20 +41,6 @@ model Session {
   updatedAt DateTime? @updatedAt
 }
 
-model Tag {
-  id   String @id @default(uuid())
-  name String @unique
-
-  event   Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  eventId String?
-
-  form   Form?   @relation(fields: [formId], references: [id], onDelete: Cascade)
-  formId String?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-}
-
 model User {
   id       String    @id @default(uuid())
   password String
@@ -64,6 +50,8 @@ model User {
   sessions Session[]
   roles    Role[]    @default([USER])
   answers  Answer[]
+  courseId String?   @unique
+  course   Course?   @relation(fields: [courseId], references: [id])
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -79,6 +67,44 @@ model Course {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
+  User      User?
+}
+
+model Tag {
+  id   String @id @default(uuid())
+  name String @unique
+
+  events TagOnEvent[]
+  forms  TagOnForm[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model TagOnEvent {
+  id      String @id @default(uuid())
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId   String
+  event   Event  @relation(fields: [eventId], references: [id])
+  eventId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@unique([tagId, eventId])
+}
+
+model TagOnForm {
+  id     String @id @default(uuid())
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId  String
+  form   Form   @relation(fields: [formId], references: [id])
+  formId String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@unique([tagId, formId])
 }
 
 model Event {
@@ -95,11 +121,11 @@ model Event {
 
   courses CourseEvent[]
   answers Answer[]
-  tags    Tag[]
 
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-  updatedAt DateTime? @updatedAt
+  createdAt  DateTime     @default(now())
+  deletedAt  DateTime?
+  updatedAt  DateTime?    @updatedAt
+  TagOnEvent TagOnEvent[]
 }
 
 model CourseEvent {
@@ -123,11 +149,11 @@ model Form {
   questions Question[]
   answers   Answer[]
   event     Event[]
-  Tag       Tag[]
 
-  createdAt DateTime  @default(now())
+  createdAt DateTime    @default(now())
   deletedAt DateTime?
-  updatedAt DateTime? @updatedAt
+  updatedAt DateTime?   @updatedAt
+  TagOnForm TagOnForm[]
 }
 
 model QuestionOption {
@@ -136,7 +162,6 @@ model QuestionOption {
   title String
   order Int    @default(0)
 
-  // weight         Int
   question       Question?        @relation(fields: [questionId], references: [id])
   questionId     String?
   questionAnswer QuestionAnswer[]

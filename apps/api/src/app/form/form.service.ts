@@ -1,7 +1,7 @@
 import { Prisma, Session } from "@cpa/database";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
-import { PaginationDto } from "~/app/app.dto";
+import { NameTagPaginationDto } from "~/app/app.dto";
 import { CreateFormDto, UpdateFormDto } from "~/app/form/form.dto";
 import { PrismaService } from "~/database/prisma.service";
 
@@ -93,17 +93,30 @@ export class FormService {
     page,
     sortField,
     sortOrder,
-  }: PaginationDto) {
-    const where = query
-      ? {
-          title: {
-            contains: query,
+    tag,
+  }: NameTagPaginationDto) {
+    const where = {
+      deletedAt: null,
+      ...(query && {
+        title: {
+          contains: query,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(tag && {
+        TagOnForm: {
+          some: {
+            tag: {
+              name: {
+                equals: tag,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
           },
-          deletedAt: null,
-        }
-      : {
-          deletedAt: null,
-        };
+        },
+      }),
+    };
+
     const total = await this.prisma.form.count({ where });
 
     const data = await this.prisma.form.findMany({

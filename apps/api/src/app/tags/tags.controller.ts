@@ -18,6 +18,16 @@ export class TagsController {
     return await this.tagsService.remove(id);
   }
 
+  @Get("show/form")
+  async showFormTags() {
+    return await this.tagsService.showFormTags();
+  }
+
+  @Get("show/event")
+  async showEventTags() {
+    return await this.tagsService.showEventTags();
+  }
+
   @Get("show/event/:id")
   async showByEvent(@Param("id") id: string) {
     return await this.tagsService.showByEvent(id);

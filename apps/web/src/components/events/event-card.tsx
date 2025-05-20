@@ -28,7 +28,7 @@ type Props = {
 export const EventCard = ({ event, operations = true, children }: Props) => {
   const router = useRouter();
   const { mutate: deleteEvent } = useDeleteEvent();
-  const { data: tags } = useEventTags(event.id!);
+  const { data: tags = [] } = useEventTags(event.id!);
 
   return (
     <>
@@ -50,13 +50,15 @@ export const EventCard = ({ event, operations = true, children }: Props) => {
             </p>
           </div>
 
-          <div className="flex gap-2 w-full">
-            {tags?.map((tag) => (
-              <Badge className="w-fit" variant="secondary" key={tag.id}>
-                {tag.name}
-              </Badge>
-            ))}
-          </div>
+          {tags.length > 0 && (
+            <div className="flex gap-2 w-full">
+              {tags?.map((tag) => (
+                <Badge className="w-fit" variant="secondary" key={tag.id}>
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className={"flex gap-2 items-center"}>

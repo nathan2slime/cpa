@@ -1,8 +1,11 @@
 "use client";
 
+import { FiltersContent } from "@/components/filter";
+import { FilterByName } from "@/components/filter/by-name";
+import { FilterTag } from "@/components/filter/by-tag";
 import { FormCard } from "@/components/forms/form-card";
 import { Button } from "@/components/ui/button";
-import { useCreateForm } from "@/hooks/api-hooks";
+import { useAllTagsForm, useCreateForm } from "@/hooks/api-hooks";
 import { FormReq } from "@/types/form";
 
 import { useRouter } from "next/navigation";
@@ -14,10 +17,11 @@ type FormsProps = {
 export default function ShowForms({ forms }: FormsProps) {
   const router = useRouter();
   const { mutate: createForm } = useCreateForm();
+  const { data: tags = [] } = useAllTagsForm();
 
   return (
-    <main className="flex flex-col justify-start items-start">
-      <div className="justify-between w-full flex px-5 items-center">
+    <main className="flex flex-col justify-start items-start px-5 gap-3">
+      <div className="justify-between w-full flex items-center">
         <p className="font-semibold text-xl">Gerenciar Formulários</p>
         <Button
           onClick={() =>
@@ -30,7 +34,12 @@ export default function ShowForms({ forms }: FormsProps) {
         </Button>
       </div>
 
-      <div className="p-5 w-full h-full">
+      <FiltersContent>
+        <FilterByName />
+        <FilterTag tags={tags} />
+      </FiltersContent>
+
+      <div className="w-full h-full">
         <p className="font-semibold mb-3">Recentes</p>
 
         <div className="border w-full rounded-xl">

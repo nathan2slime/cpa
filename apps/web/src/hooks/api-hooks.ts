@@ -16,6 +16,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 
 //eventos
@@ -31,11 +32,20 @@ export function useEvent(id: string) {
 }
 
 export function useEvents(page: number) {
+  const searchParams = useSearchParams();
+  const tag = searchParams.get("tag");
+  const name = searchParams.get("name");
+
   return useQuery({
-    queryKey: ["events", page],
+    queryKey: ["events", page, name, tag],
     queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set("page", String(page));
+      if (tag) params.set("tag", tag);
+      if (name) params.set("query", name);
+
       const { data } = await api.get<EventFormPaginationResponse>(
-        `/api/event/show?page=${page}`
+        `/api/event/show?${params.toString()}`
       );
       return data;
     },
@@ -99,11 +109,20 @@ export function useDeleteEvent() {
 //Formulários
 
 export function useForms(page: number) {
+  const searchParams = useSearchParams();
+  const tag = searchParams.get("tag");
+  const name = searchParams.get("name");
+
   return useQuery({
-    queryKey: ["forms", page],
+    queryKey: ["forms", page, name],
     queryFn: async () => {
+      const params = new URLSearchParams();
+      params.set("page", String(page));
+      if (tag) params.set("tag", tag);
+      if (name) params.set("query", name);
+
       const { data } = await api.get<FormResponse>(
-        `/api/form/show?page=${page}`
+        `/api/form/show?${params.toString()}`
       );
       return data;
     },
@@ -241,6 +260,26 @@ export const useDeleteTag = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["tags"] }),
   });
 };
+
+export function useAllTagsForm() {
+  return useQuery({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const { data } = await api.get<TagType[]>("api/tags/show/form");
+      return data;
+    },
+  });
+}
+
+export function useAllTagsEvent() {
+  return useQuery({
+    queryKey: ["tags"],
+    queryFn: async () => {
+      const { data } = await api.get<TagType[]>("api/tags/show/event");
+      return data;
+    },
+  });
+}
 
 export function useCourses() {
   return useQuery({

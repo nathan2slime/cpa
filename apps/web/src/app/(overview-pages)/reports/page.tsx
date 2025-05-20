@@ -15,7 +15,7 @@ export default function ReportsPage() {
       <PaginationComponent
         total={events?.total || 0}
         current={events?.page || 0}
-        limit={events?.pages || 0}
+        limit={events?.perPage || 0}
       />
     </div>
   );

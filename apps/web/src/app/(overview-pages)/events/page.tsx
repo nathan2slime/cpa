@@ -7,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function EventsPage() {
   const page = useSearchParams().get("page");
-  const { data: events } = useEvents(page ? +page : 1)
+  const { data: events } = useEvents(page ? +page : 1);
 
   return (
     <div className="h-full flex flex-col justify-between">

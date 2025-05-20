@@ -22,7 +22,7 @@ type Props = {
 };
 export const FormCard = ({ form }: Props) => {
   const { mutate: deleteForm } = useDeleteForm();
-  const { data: tags } = useFormTags(form.id!);
+  const { data: tags = [] } = useFormTags(form.id!);
   const router = useRouter();
 
   return (
@@ -42,13 +42,15 @@ export const FormCard = ({ form }: Props) => {
           </p>
         </div>
 
-        <div className="flex gap-2 w-full">
-          {tags?.map((tag) => (
-            <Badge className="w-fit" variant="secondary" key={tag.id}>
-              {tag.name}
-            </Badge>
-          ))}
-        </div>
+        {tags?.length > 0 && (
+          <div className="flex gap-2 w-full">
+            {tags?.map((tag) => (
+              <Badge className="w-fit" variant="secondary" key={tag.id}>
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 items-center">
