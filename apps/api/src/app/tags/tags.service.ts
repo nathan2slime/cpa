@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateTagDTO } from "~/app/tags/tags.dto";
 import { PrismaService } from "~/database/prisma.service";
 
@@ -6,41 +6,94 @@ import { PrismaService } from "~/database/prisma.service";
 export class TagsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async showFormTags() {
+    const tags = await this.prisma.tagOnForm.findMany({
+      include: {
+        tag: true,
+      },
+    });
+
+    const allTags = tags.map((tagForm) => tagForm.tag);
+
+    return Array.from(new Map(allTags.map((tag) => [tag.id, tag])).values());
+  }
+
+  async showEventTags() {
+    const tags = await this.prisma.tagOnEvent.findMany({
+      include: {
+        tag: true,
+      },
+    });
+
+    const allTags = tags.map((tagEvent) => tagEvent.tag);
+
+    return Array.from(new Map(allTags.map((tag) => [tag.id, tag])).values());
+  }
+
   async showByEvent(id: string) {
-    return await this.prisma.tag.findMany({
+    const tagsOnEvent = await this.prisma.tagOnEvent.findMany({
       where: {
         eventId: id,
       },
+      include: {
+        tag: true,
+      },
     });
+
+    return tagsOnEvent.map((tagEvent) => tagEvent.tag);
   }
 
   async showByForm(id: string) {
-    return await this.prisma.tag.findMany({
+    const tagsOnForm = await this.prisma.tagOnForm.findMany({
       where: {
         formId: id,
       },
+      include: {
+        tag: true,
+      },
     });
+
+    return tagsOnForm.map((tagForm) => tagForm.tag);
   }
 
   async create(tag: CreateTagDTO) {
-    const tagsAlreadyExists = await this.prisma.tag.findUnique({
-      where: { name: tag.name },
-    });
+    if (tag.event) {
+      const existingTag = await this.prisma.tag.upsert({
+        where: {
+          name: tag.name,
+        },
+        update: {},
+        create: {
+          name: tag.name,
+        },
+      });
 
-    if (tagsAlreadyExists)
-      throw new HttpException("Essa tag já existe", HttpStatus.CONFLICT);
+      return this.prisma.tagOnEvent.create({
+        data: {
+          tagId: existingTag.id,
+          eventId: tag.event,
+        },
+      });
+    }
 
-    if (!tag.event && !tag.form)
-      throw new HttpException(
-        "Informe um evento ou um form para a tag",
-        HttpStatus.BAD_REQUEST
-      );
+    if (tag.form) {
+      const existingTag = await this.prisma.tag.upsert({
+        where: {
+          name: tag.name,
+        },
+        update: {},
+        create: {
+          name: tag.name,
+        },
+      });
 
-    return this.prisma.tag.create({
-      data: {
-        name: tag.name,
-      },
-    });
+      return this.prisma.tagOnForm.create({
+        data: {
+          tagId: existingTag.id,
+          formId: tag.form,
+        },
+      });
+    }
   }
 
   async remove(id: string) {

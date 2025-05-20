@@ -11,11 +11,11 @@ export default function EventsPage() {
 
   return (
     <div className="h-full flex flex-col justify-between">
-      <ShowEvents events={events?.data || []} />;
+      <ShowEvents events={events?.data || []} />
       <PaginationComponent
         total={events?.total || 0}
         current={events?.page || 0}
-        limit={events?.pages || 0}
+        limit={events?.perPage || 0}
       />
     </div>
   );

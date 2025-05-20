@@ -1,6 +1,7 @@
+import { Prisma } from "@cpa/database";
 import { Injectable } from "@nestjs/common";
 
-import { PaginationDto } from "~/app/app.dto";
+import { NameTagPaginationDto } from "~/app/app.dto";
 import { CreateEventDto, UpdateEventDto } from "~/app/event/event.dto";
 import { PrismaService } from "~/database/prisma.service";
 
@@ -87,18 +88,33 @@ export class EventService {
     page,
     sortField,
     sortOrder,
-  }: PaginationDto) {
-    const where = query
-      ? {
-          title: {
-            contains: query,
+    tag,
+  }: NameTagPaginationDto) {
+    const where: Prisma.EventWhereInput = {
+      deletedAt: null,
+      ...(query && {
+        title: {
+          contains: query,
+          mode: Prisma.QueryMode.insensitive,
+        },
+      }),
+      ...(tag && {
+        TagOnEvent: {
+          some: {
+            tag: {
+              name: {
+                equals: tag,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
           },
-          deletedAt: null,
-        }
-      : {
-          deletedAt: null,
-        };
-    const total = await this.prisma.event.count({ where });
+        },
+      }),
+    };
+
+    const total = await this.prisma.event.count({
+      where,
+    });
 
     const data = await this.prisma.event.findMany({
       take: perPage,
