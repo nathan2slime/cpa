@@ -18,9 +18,12 @@ import { Response } from "express";
 import { Roles } from "~/app/auth/auth.decorator";
 import { JwtAuthGuard } from "~/app/auth/auth.guard";
 import { RoleGuard } from "~/app/auth/role.guard";
-import { CreateEventDto, UpdateEventDto } from "~/app/event/event.dto";
+import {
+  CreateEventDto,
+  PaginateWithCourseDto,
+  UpdateEventDto,
+} from "~/app/event/event.dto";
 import { EventService } from "~/app/event/event.service";
-import { NameTagPaginationDto } from "../app.dto";
 
 @Controller("event")
 @ApiTags("Event")
@@ -37,7 +40,7 @@ export class EventController {
   }
 
   @Get("show")
-  async search(@Res() res: Response, @Query() query: NameTagPaginationDto) {
+  async search(@Res() res: Response, @Query() query: PaginateWithCourseDto) {
     const data = await this.eventService.paginate(query);
 
     return res.status(HttpStatus.OK).json(data);

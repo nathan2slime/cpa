@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import QuestionCard from "@/components/question-card";
 import type { Question } from "@/types/report.type";
+import QuestionCard from "@/components/report/question-card";
 
 type VisualTabProps = {
   questions: Question[];

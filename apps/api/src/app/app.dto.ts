@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { IsOptional, Min } from "class-validator";
+import { IsOptional, IsString, Min } from "class-validator";
 
 import { SortOrder } from "~/types/filter.enum";
 
@@ -35,8 +35,9 @@ export class PaginationDto {
   perPage = 12;
 }
 
-export class NameTagPaginationDto extends PaginationDto {
+export class PaginateWithNameTagDto extends PaginationDto {
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsString()
   tag: string;
 }

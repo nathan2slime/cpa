@@ -1,36 +1,39 @@
-import type { Question } from "@/types/report.type"
+import type { Question } from "@/types/report.type";
 
 type ChartDataProps = {
-  question: Question
-}
+  question: Question;
+};
 
 export function ChartData({ question }: ChartDataProps) {
   const renderChartData = () => {
-    const optionCountMap: Record<string, number> = {}
+    const optionCountMap: Record<string, number> = {};
     question.options.forEach((option) => {
-      optionCountMap[option.id] = 0
-    })
+      optionCountMap[option.id] = 0;
+    });
 
     question.questionAnswer.forEach((answer) => {
       if (answer.questionOptionId) {
-        optionCountMap[answer.questionOptionId] = (optionCountMap[answer.questionOptionId] || 0) + 1
+        optionCountMap[answer.questionOptionId] =
+          (optionCountMap[answer.questionOptionId] || 0) + 1;
       } else if (question.type === "TEXT") {
-        // For TEXT type, we don't count in the chart
       }
-    })
+    });
 
-    const total = Object.values(optionCountMap).reduce((acc, val) => acc + val, 0)
+    const total = Object.values(optionCountMap).reduce(
+      (acc, val) => acc + val,
+      0
+    );
 
     return question.options.map((option) => {
-      const count = optionCountMap[option.id] || 0
-      const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"
+      const count = optionCountMap[option.id] || 0;
+      const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0";
       return {
         ...option,
         count,
         percentage,
-      }
-    })
-  }
+      };
+    });
+  };
 
   return (
     <div className="grid gap-2">
@@ -53,5 +56,5 @@ export function ChartData({ question }: ChartDataProps) {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { getOptionsQuery } from "../api/queries/get-options.query";
-import { updateQuestionTitleMutation } from "../api/mutations/update-question-title.mutation";
-import { deleteQuestionMutation } from "../api/mutations/delete-question.mutation";
-import { createOptionMutation } from "../api/mutations/create-option.mutation";
-import { updateOptionMutation } from "../api/mutations/update-option.mutation";
-import { deleteOptionMutation } from "../api/mutations/delete-option.mutation";
-import { createQuestionMutation } from "../api/mutations/create-question.mutation";
-import { duplicateQuestionMutation } from "../api/mutations/duplicate-question.mutation";
-import { getQuestionsQuery } from "../api/queries/get-questions.query";
-import { getFormQuery } from "../api/queries/get-form.query";
-import { FormType } from "@/types/form";
+import { useCallback, useState, useEffect } from "react";
 import { QuestionTypeEnum } from "@/types/question";
+import { FormType } from "@/types/form";
+import {
+  useCreateQuestion,
+  useUpdateQuestionTitle,
+  useDeleteQuestion,
+  useDuplicateQuestion,
+  useForm,
+  useQuestions,
+  useOptions,
+} from "@/hooks/api-hooks";
+
+type Props = { formId: string };
 
 export type QuestionData = {
   id: string;
@@ -20,123 +21,106 @@ export type QuestionData = {
   type: QuestionTypeEnum;
 };
 
-type Props = {
-  formId: string;
-};
-
 export function useQuestionManager({ formId }: Props) {
-  const [questions, setQuestions] = useState<QuestionData[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { data: form, error: formError } = useForm(formId);
+
+  const {
+    data: questions = [],
+    isLoading: loadingQuestions,
+    refetch: refetchQuestions,
+    error: questionsError,
+  } = useQuestions(formId);
+
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<FormType | null>(null);
 
   useEffect(() => {
-    if (formId) {
-      fetchForm();
-    }
-  }, [formId]);
+    if (formError) setError("Failed to fetch form");
+    else if (questionsError) setError("Failed to fetch questions");
+    else setError(null);
+  }, [formError, questionsError]);
 
-  const fetchForm = async () => {
-    setLoading(true);
-    const data = await getFormQuery(formId);
-    if (data) {
-      setForm(data);
-      setError(null);
-    }
-  };
-
-  const fetchQuestions = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await getQuestionsQuery(formId);
-      if (data) {
-        setQuestions(data);
-        setError(null);
-      }
-    } catch (err) {
-      setError("Failed to fetch questions");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [formId]);
+  const createQuestionMutation = useCreateQuestion();
+  const updateQuestionTitleMutation = useUpdateQuestionTitle();
+  const deleteQuestionMutation = useDeleteQuestion();
+  const duplicateQuestionMutation = useDuplicateQuestion();
 
   const getOptions = useCallback(async (questionId: string) => {
-    return await getOptionsQuery(questionId);
-  }, []);
-
-  const updateQuestionTitle = useCallback(
-    async (questionId: string, title: string) => {
-      const result = await updateQuestionTitleMutation(questionId, title);
-      return !!result;
-    },
-    []
-  );
-
-  const deleteQuestion = useCallback(
-    async (questionId: string) => {
-      const result = await deleteQuestionMutation(questionId);
-      if (result) {
-        await fetchQuestions();
-        return true;
-      }
-      return false;
-    },
-    [fetchQuestions]
-  );
-
-  const createOption = useCallback(async (questionId: string) => {
-    const result = await createOptionMutation(questionId);
-    return !!result;
-  }, []);
-
-  const updateOption = useCallback(async (optionId: string, title: string) => {
-    const result = await updateOptionMutation(optionId, title);
-    return !!result;
-  }, []);
-
-  const deleteOption = useCallback(async (optionId: string) => {
-    const result = await deleteOptionMutation(optionId);
-    return !!result;
+    if (!questionId) return [];
+    return await useOptions(questionId);
   }, []);
 
   const createQuestion = useCallback(
-    async (type: QuestionTypeEnum) => {
-      const data = await createQuestionMutation(type, formId);
-      if (data) {
-        await fetchQuestions();
-        return data.id;
+    async (type: QuestionTypeEnum): Promise<string | null> => {
+      try {
+        const result = await createQuestionMutation.mutateAsync({
+          type,
+          formId,
+        });
+        return result?.id ?? null;
+      } catch {
+        return null;
       }
-      return null;
     },
-    [fetchQuestions, formId]
+    [createQuestionMutation, formId]
+  );
+
+  const updateQuestionTitle = useCallback(
+    async (questionId: string, title: string): Promise<boolean> => {
+      try {
+        const result = await updateQuestionTitleMutation.mutateAsync({
+          questionId,
+          title,
+        });
+        return !!result;
+      } catch {
+        return false;
+      }
+    },
+    [updateQuestionTitleMutation]
+  );
+
+  const deleteQuestion = useCallback(
+    async (questionId: string): Promise<boolean> => {
+      try {
+        const result = await deleteQuestionMutation.mutateAsync(questionId);
+        if (result) {
+          await refetchQuestions();
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
+      }
+    },
+    [deleteQuestionMutation, refetchQuestions]
   );
 
   const duplicateQuestion = useCallback(
-    async (questionId: string, type: QuestionTypeEnum) => {
-      const data = await duplicateQuestionMutation(questionId);
-      if (data) {
-        await fetchQuestions();
-        return data.id;
+    async (questionId: string): Promise<string | null> => {
+      try {
+        const result = await duplicateQuestionMutation.mutateAsync(questionId);
+        if (result) {
+          await refetchQuestions();
+          return result.id;
+        }
+        return null;
+      } catch {
+        return null;
       }
-      return null;
     },
-    [questions, fetchQuestions, formId]
+    [duplicateQuestionMutation, refetchQuestions]
   );
 
   return {
-    form,
+    form: form as FormType | null,
     questions,
-    loading,
+    loading: loadingQuestions,
     error,
-    fetchQuestions,
+    refetchQuestions,
     getOptions,
+    createQuestion,
     updateQuestionTitle,
     deleteQuestion,
-    createOption,
-    updateOption,
-    deleteOption,
-    createQuestion,
     duplicateQuestion,
   };
 }

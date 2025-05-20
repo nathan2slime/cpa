@@ -1,8 +1,8 @@
 "use client";
 
-import { FiltersContent } from "@/components/filter";
-import { FilterByName } from "@/components/filter/by-name";
-import { FilterTag } from "@/components/filter/by-tag";
+import { FiltersContent } from "@/components/filters";
+import { FilterByName } from "@/components/filters/by-name";
+import { FilterTag } from "@/components/filters/by-tag";
 import { FormCard } from "@/components/forms/form-card";
 import { Button } from "@/components/ui/button";
 import { useAllTagsForm, useCreateForm } from "@/hooks/api-hooks";

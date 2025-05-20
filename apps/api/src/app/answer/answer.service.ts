@@ -1,13 +1,13 @@
 import { Session } from "@cpa/database";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "~/database/prisma.service";
-import { CreateAnswerDto } from "~/app/answer/answer.dto";
+import { CreateAnswerDto, FilterByCourseDto } from "~/app/answer/answer.dto";
 
 @Injectable()
 export class AnswerService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getAnswered(eventId: string, userId: string) {
+  async getCanAnswer(eventId: string, userId: string) {
     const answered = await this.prisma.answer.findFirst({
       where: {
         eventId: eventId,
@@ -15,30 +15,78 @@ export class AnswerService {
       },
     });
 
-    console.log(answered, eventId, userId);
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id: eventId,
+      },
+      include: {
+        form: true,
+        courses: true,
+      },
+    });
+
+    if (!event)
+      throw new HttpException("Evento não encontrado", HttpStatus.NOT_FOUND);
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        course: true,
+      },
+    });
+
+    const now = new Date();
+    const start = new Date(event.startDate);
+    const end = new Date(event.endDate);
+
+    if (now < start) {
+      throw new HttpException(
+        "Este formulário não está disponível no momento",
+        423
+      );
+    }
+
+    if (now > end) {
+      throw new HttpException("Este formulário não aceita mais respostas", 423);
+    }
 
     if (answered) {
       throw new HttpException(
-        "Você já respondeu a esta evento",
+        "Você já respondeu a este formulário",
         HttpStatus.CONFLICT
+      );
+    }
+
+    if (!event.courses.some((e) => e.courseId === user.courseId)) {
+      throw new HttpException(
+        "Você não tem permissão para responder a este formulário",
+        HttpStatus.FORBIDDEN
       );
     }
   }
 
-  async getByEvent(id: string) {
-    const event = await this.prisma.event.findUnique({
-      where: { id, deletedAt: null },
+  async getByEvent(id: string, filter: FilterByCourseDto) {
+    const event = await this.prisma.event.findFirst({
+      where: {
+        id,
+        deletedAt: null,
+      },
       include: {
         form: true,
       },
     });
 
-    if (!event || !event.form) {
-      throw new HttpException(
-        "Evento ou formulário não encontrado",
-        HttpStatus.NOT_FOUND
-      );
-    }
+    const courses = await this.prisma.courseEvent.findMany({
+      where: {
+        eventId: id,
+        deletedAt: null,
+      },
+      include: {
+        course: true,
+      },
+    });
 
     const questions = await this.prisma.question.findMany({
       where: {
@@ -47,13 +95,25 @@ export class AnswerService {
       },
       include: {
         options: { where: { deletedAt: null } },
-        questionAnswer: { where: { deletedAt: null } },
+        questionAnswer: {
+          where: {
+            deletedAt: null,
+            ...(filter.course && {
+              answer: {
+                user: {
+                  courseId: filter.course,
+                },
+              },
+            }),
+          },
+        },
       },
     });
 
     return {
       form: event.form,
       question: questions,
+      courses: courses.map((e) => e.course),
     };
   }
 
