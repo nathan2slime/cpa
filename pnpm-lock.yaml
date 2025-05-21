@@ -13,10 +13,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -36,6 +32,9 @@ importers:
       commitizen:
         specifier: ^4.3.1
         version: 4.3.1(@types/node@20.17.24)(typescript@5.8.2)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       cz-conventional-changelog:
         specifier: ^3.3.0
         version: 3.3.0(@types/node@20.17.24)(typescript@5.8.2)
@@ -3673,6 +3672,7 @@ packages:
 
   formidable@2.1.2:
     resolution: {integrity: sha512-CM3GuJ57US06mlpQ47YcunuUZ9jpm8Vx+P2CGt2j7HpgkKZO/DJYQ0Bobim8G6PFQmK5lOqOOdUXboU+h73A4g==}
+    deprecated: 'ACTION REQUIRED: SWITCH TO v3 - v1 and v2 are VULNERABLE! v1 is DEPRECATED FOR OVER 2 YEARS! Use formidable@latest or try formidable-mini for fresh projects'
 
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
