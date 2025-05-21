@@ -1,33 +1,15 @@
+import { Badge } from "@/components/ui/badge";
+import { useEventTags } from "@/hooks/api-hooks";
 import { EventFormResponse } from "@/types/event.types";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { QrCodeModal } from "@/components/qr-code-modal";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { useDeleteEvent, useEventTags } from "@/hooks/api-hooks";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { TagPopover } from "@/components/tag-popover";
 
 type Props = {
   event: EventFormResponse;
-  operations?: boolean;
   children?: React.ReactNode;
 };
 
-export const EventCard = ({ event, operations = true, children }: Props) => {
-  const router = useRouter();
-  const { mutate: deleteEvent } = useDeleteEvent();
+export const EventCard = ({ event, children }: Props) => {
   const { data: tags = [] } = useEventTags(event.id!);
 
   return (
@@ -48,6 +30,17 @@ export const EventCard = ({ event, operations = true, children }: Props) => {
                   locale: ptBR,
                 })}
             </p>
+            <Badge
+              variant={
+                event.status === "em andamento"
+                  ? "default"
+                  : event.status === "agendado"
+                    ? "outline"
+                    : "destructive"
+              }
+            >
+              {event.status}
+            </Badge>
           </div>
 
           {tags.length > 0 && (
@@ -61,57 +54,9 @@ export const EventCard = ({ event, operations = true, children }: Props) => {
           )}
         </div>
 
-        <div className={"flex gap-2 items-center"}>
-          {!operations && children}
-          {operations && (
-            <>
-              <QrCodeModal text={`/answer/${event.id}`} />
-              <TagPopover tags={tags} eventId={event.id} />
-              <Button
-                variant="outline"
-                onClick={() => router.push(`/event/${event.id}`)}
-              >
-                Editar
-              </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="destructive">Excluir</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>
-                      Tem certeza que deseja excluir esse evento?
-                    </DialogTitle>
-                    <DialogDescription>
-                      Você não poderá reverter essa ação.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <div className={"flex justify-end gap-3"}>
-                      <DialogClose asChild>
-                        <Button
-                          onClick={() =>
-                            deleteEvent(event.id!, {
-                              onSuccess: () => {
-                                toast.success("Evento deletado com sucesso!");
-                              },
-                            })
-                          }
-                          variant="destructive"
-                        >
-                          Sim, apagar
-                        </Button>
-                      </DialogClose>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancelar</Button>
-                      </DialogClose>
-                    </div>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </>
-          )}
-        </div>
+        {children && (
+          <div className={"flex gap-2 items-center"}>{children}</div>
+        )}
       </div>
     </>
   );

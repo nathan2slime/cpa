@@ -60,6 +60,12 @@ export class EventController {
     return res.status(HttpStatus.OK).send();
   }
 
+  @Put("toggle-active/:id")
+  async toggleActive(@Param("id") id: string, @Res() res: Response) {
+    const data = await this.eventService.toggleActive(id);
+    return res.status(HttpStatus.OK).json(data);
+  }
+
   @Put("update/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])

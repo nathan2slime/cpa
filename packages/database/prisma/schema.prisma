@@ -108,10 +108,11 @@ model TagOnForm {
 }
 
 model Event {
-  id          String @id @default(uuid())
+  id          String  @id @default(uuid())
   title       String
   description String
   responsible String
+  active      Boolean @default(true)
 
   form   Form   @relation(fields: [formId], references: [id])
   formId String

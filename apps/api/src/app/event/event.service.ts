@@ -1,5 +1,5 @@
 import { Prisma } from "@cpa/database";
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 
 import {
   CreateEventDto,
@@ -93,7 +93,26 @@ export class EventService {
     sortOrder,
     tag,
     course,
+    status,
   }: PaginateWithCourseDto) {
+    const now = new Date();
+    let whereClause = {};
+
+    if (status === "agendado") {
+      whereClause = {
+        startDate: { gt: now },
+      };
+    } else if (status === "andamento") {
+      whereClause = {
+        startDate: { lt: now },
+        endDate: { gt: now },
+      };
+    } else if (status === "encerrado") {
+      whereClause = {
+        endDate: { lt: now },
+      };
+    }
+
     const where: Prisma.EventWhereInput = {
       deletedAt: null,
       ...(query && {
@@ -102,6 +121,7 @@ export class EventService {
           mode: Prisma.QueryMode.insensitive,
         },
       }),
+      ...whereClause,
       ...(course && {
         courses: {
           some: {
@@ -139,7 +159,7 @@ export class EventService {
       orderBy: sortField
         ? [{ [sortField]: sortOrder }]
         : {
-            createdAt: "asc",
+            updatedAt: "asc",
           },
     });
 
@@ -147,7 +167,15 @@ export class EventService {
 
     return {
       total,
-      data,
+      data: data.map((event) => ({
+        ...event,
+        status:
+          event.startDate < now && event.endDate > now
+            ? "em andamento"
+            : event.startDate > now
+            ? "agendado"
+            : "encerrado",
+      })),
       pages,
       perPage,
       page,
@@ -156,6 +184,27 @@ export class EventService {
 
   async getAll() {
     return this.prisma.event.findMany({ where: { deletedAt: null } });
+  }
+
+  async toggleActive(id: string) {
+    const event = await this.prisma.event.findUnique({
+      where: {
+        id,
+        deletedAt: null,
+      },
+    });
+
+    if (!event)
+      throw new HttpException("Event not found", HttpStatus.NOT_FOUND);
+
+    return this.prisma.event.update({
+      data: {
+        active: !event.active,
+      },
+      where: {
+        id,
+      },
+    });
   }
 
   async remove(id: string) {
