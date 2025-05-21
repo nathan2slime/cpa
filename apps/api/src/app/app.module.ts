@@ -4,6 +4,7 @@ import { PassportModule } from "@nestjs/passport";
 import { AnswerModule } from "~/app/answer/answer.module";
 import { AuthModule } from "~/app/auth/auth.module";
 import { CourseModule } from "~/app/course/course.module";
+import { DashboardModule } from "~/app/dashboard/dashboard.module";
 import { EventModule } from "~/app/event/event.module";
 import { FormModule } from "~/app/form/form.module";
 import { HealthModule } from "~/app/health/health.module";
@@ -23,6 +24,7 @@ import { TagsModule } from "~/app/tags/tags.module";
     HealthModule,
     EventModule,
     TagsModule,
+    DashboardModule,
   ],
   controllers: [],
   providers: [],
