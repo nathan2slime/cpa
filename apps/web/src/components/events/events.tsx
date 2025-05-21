@@ -2,10 +2,11 @@
 
 import { EventCard } from "@/components/events/event-card";
 import { FiltersContent } from "@/components/filters";
+import { FilterByCourse } from "@/components/filters/by-course";
 import { FilterByName } from "@/components/filters/by-name";
 import { FilterTag } from "@/components/filters/by-tag";
 import { Button } from "@/components/ui/button";
-import { useAllTagsEvent } from "@/hooks/api-hooks";
+import { useAllTagsEvent, useCourses } from "@/hooks/api-hooks";
 import { EventFormResponse } from "@/types/event.types";
 import Link from "next/link";
 
@@ -15,6 +16,8 @@ type EventsProps = {
 
 const ShowEvents = ({ events }: EventsProps) => {
   const { data: tags = [] } = useAllTagsEvent();
+  const { data: courses = [] } = useCourses();
+
   return (
     <main className="w-full h-full flex flex-col justify-start items-start px-5 gap-3">
       <div className={"justify-between w-full flex items-center"}>
@@ -25,7 +28,10 @@ const ShowEvents = ({ events }: EventsProps) => {
       </div>
 
       <FiltersContent>
-        <FilterByName />
+        <div className="flex justify-between w-full gap-2">
+          <FilterByName />
+          <FilterByCourse courses={courses} />
+        </div>
         <FilterTag tags={tags} />
       </FiltersContent>
 

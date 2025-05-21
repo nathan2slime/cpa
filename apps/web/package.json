@@ -56,6 +56,9 @@
     "yup": "^1.4.0",
     "zod": "^3.24.4"
   },
+  "overrides": {
+    "react-is": "^19.0.0-rc-69d4b800-20241021"
+  },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@types/node": "^20",
