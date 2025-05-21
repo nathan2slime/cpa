@@ -66,4 +66,8 @@ export class PaginateWithCourseDto extends PaginateWithNameTagDto {
   @ApiProperty({ required: false })
   @IsOptional()
   course: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  status: string;
 }

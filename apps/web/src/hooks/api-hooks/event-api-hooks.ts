@@ -8,6 +8,7 @@ import type {
 } from "@/types/event.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 export function useEvent(id: string) {
   return useQuery({
@@ -24,15 +25,17 @@ export function useEvents(page: number) {
   const tag = searchParams.get("tag");
   const name = searchParams.get("name");
   const course = searchParams.get("c");
+  const status = searchParams.get("s");
 
   return useQuery({
-    queryKey: ["events", page, name, tag, course],
+    queryKey: ["events", page, name, tag, course, status],
     queryFn: async () => {
       const params = new URLSearchParams();
       params.set("page", String(page));
       if (tag) params.set("tag", tag);
       if (name) params.set("query", name);
       if (course) params.set("course", course);
+      if (status) params.set("status", status);
 
       const { data } = await api.get<EventFormPaginationResponse>(
         `/api/event/show?${params.toString()}`
@@ -66,6 +69,22 @@ export function useUpdateEvent() {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["event", variables.id] });
+      queryClient.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
+}
+
+export function useToggleActiveEvent() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await api.put(`api/event/toggle-active/${id}`);
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      toast.success("Evento alterado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ["event", variables] });
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
   });

@@ -9,6 +9,7 @@ import { useAllTagsEvent, useCourses } from "@/hooks/api-hooks";
 import { Flag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FilterByCourse } from "@/components/filters/by-course";
+import { FilterByStatus } from "@/components/filters/by-status";
 
 type Props = {
   events: EventFormResponse[];
@@ -31,6 +32,7 @@ const Reports = ({ events }: Props) => {
             <FilterByName />
             <FilterByCourse courses={courses} />
           </div>
+          <FilterByStatus />
           <FilterTag tags={tags} />
         </FiltersContent>
 
@@ -39,7 +41,7 @@ const Reports = ({ events }: Props) => {
 
           <div className={"border w-full rounded-xl"}>
             {events?.map((event: EventFormResponse) => (
-              <EventCard event={event} key={event.id} operations={false}>
+              <EventCard event={event} key={event.id}>
                 <Button
                   onClick={() => router.push(`/report/${event.id}`)}
                   variant={"outline"}
