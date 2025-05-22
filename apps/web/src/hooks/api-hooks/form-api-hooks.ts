@@ -16,7 +16,7 @@ export function useForms(page: number) {
   const name = searchParams.get("name");
 
   return useQuery({
-    queryKey: ["forms", page, name],
+    queryKey: ["forms", page, name, tag], 
     queryFn: async () => {
       const params = new URLSearchParams();
       params.set("page", String(page));

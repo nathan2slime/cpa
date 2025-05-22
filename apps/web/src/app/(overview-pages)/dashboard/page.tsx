@@ -1,6 +1,5 @@
 "use client";
 
-import { Activity, Calendar, Clock, Info } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useDashboard } from "@/hooks/api-hooks/dashboard-api-hooks";
+import { Activity, Calendar, Clock } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -19,7 +19,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export type DashboardData = {
   openEvents: number;
@@ -47,10 +46,6 @@ export default function Dashboard() {
     );
   }
 
-  const allZeroValues = dashboardData.answersLastMonthAgrouped.every(
-    (item) => item.total === 0
-  );
-
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
     const parts = dateStr.split("-");
@@ -66,7 +61,7 @@ export default function Dashboard() {
     if (active && payload && payload.length) {
       const dataItem = payload[0].payload;
       return (
-        <div className="bg-background border border-border rounded-md shadow-md p-3">
+        <div className="bg-background border border-border rounded-md shadow-md p-2 sm:p-3 text-sm">
           <p className="font-medium">{dataItem.date}</p>
           <p className="text-primary font-semibold">{`${payload[0].value} respostas`}</p>
         </div>
@@ -76,126 +71,114 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="w-full px-5">
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="overflow-hidden border-l-4 border-l-blue-500">
-          <CardHeader className="pb-2">
+    <main className="w-full px-3 sm:px-4 md:px-5 py-4 md:py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+        <Card className="overflow-hidden border-l-4 border-l-primary">
+          <CardHeader className="pb-1 sm:pb-2 pt-3 sm:pt-4">
             <CardTitle className="flex items-center text-lg">
-              <Clock className="mr-2 h-5 w-5 text-blue-500" />
+              <Clock className="mr-2 h-5 w-5 text-primary" />
               Eventos Abertos
             </CardTitle>
             <CardDescription>Total de eventos em andamento</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <div className="flex flex-col">
-              <span className="text-4xl font-bold text-blue-500">
+              <span className="text-3xl sm:text-4xl font-bold text-primary">
                 {dashboardData.openEvents}
               </span>
-              <span className="text-xs text-muted-foreground mt-1">
+              <span className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Eventos aguardando conclusão
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-l-4 border-l-green-500">
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden border-l-4 border-l-primary">
+          <CardHeader className="pb-1 sm:pb-2 pt-3 sm:pt-4">
             <CardTitle className="flex items-center text-lg">
-              <Calendar className="mr-2 h-5 w-5 text-green-500" />
+              <Calendar className="mr-2 h-5 w-5 text-primary" />
               Eventos do Mês
             </CardTitle>
             <CardDescription>Eventos criados no mês atual</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <div className="flex flex-col">
-              <span className="text-4xl font-bold text-green-500">
+              <span className="text-3xl sm:text-4xl font-bold text-primary">
                 {dashboardData.actualMonthEvents}
               </span>
-              <span className="text-xs text-muted-foreground mt-1">
+              <span className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Eventos registrados este mês
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-l-4 border-l-purple-500">
-          <CardHeader className="pb-2">
+        <Card className="overflow-hidden border-l-4 border-l-primary">
+          <CardHeader className="pb-1 sm:pb-2 pt-3 sm:pt-4">
             <CardTitle className="flex items-center text-lg">
-              <Activity className="mr-2 h-5 w-5 text-purple-500" />
+              <Activity className="mr-2 h-5 w-5 text-primary" />
               Respostas do Mês
             </CardTitle>
             <CardDescription>Respostas registradas no mês</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-4">
             <div className="flex flex-col">
-              <span className="text-4xl font-bold text-purple-500">
+              <span className="text-3xl sm:text-4xl font-bold text-primary">
                 {dashboardData.actualMonthAnswers}
               </span>
-              <span className="text-xs text-muted-foreground mt-1">
+              <span className="text-xs sm:text-sm text-muted-foreground mt-1">
                 Interações realizadas este mês
               </span>
             </div>
           </CardContent>
         </Card>
       </div>
-      <div className="mt-5">
-        <h2 className="text-lg font-semibold mb-2">Respostas do Último Mês</h2>
-        <Card>
-          <CardContent className="pt-6">
-            {allZeroValues ? (
-              <Alert className="mb-4">
-                <Info className="h-4 w-4" />
-                <AlertTitle>Sem dados</AlertTitle>
-                <AlertDescription>
-                  Não há respostas registradas para o último mês.
-                </AlertDescription>
-              </Alert>
-            ) : null}
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={chartData}
-                  margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                  <XAxis
-                    dataKey="formattedDate"
-                    tick={{ fontSize: 12 }}
-                    tickMargin={10}
-                    interval="preserveStartEnd"
-                    minTickGap={15}
+      <div className="mt-4 sm:mt-5 md:mt-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-2">
+          Respostas do Último Mês
+        </h2>
+        <div className="h-[250px] sm:h-[280px] md:h-[300px] max-w-[600px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+              <XAxis
+                dataKey="formattedDate"
+                tick={{ fontSize: 10, fontWeight: "normal" }}
+                tickMargin={8}
+                interval="preserveStartEnd"
+                minTickGap={10}
+              />
+              <YAxis
+                tick={{ fontSize: 10 }}
+                tickMargin={8}
+                allowDecimals={false}
+                domain={[0, "dataMax + 1"]}
+                minTickGap={1}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar
+                dataKey="total"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={50}
+                animationDuration={1500}
+              >
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      entry.total > 0
+                        ? "hsl(var(--primary))"
+                        : "hsl(var(--muted-foreground)/0.3)"
+                    }
                   />
-                  <YAxis
-                    tick={{ fontSize: 12 }}
-                    tickMargin={10}
-                    allowDecimals={false}
-                    domain={[0, "dataMax + 1"]}
-                    minTickGap={1}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar
-                    dataKey="total"
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={50}
-                    animationDuration={1500}
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={
-                          entry.total > 0
-                            ? "hsl(var(--primary))"
-                            : "hsl(var(--muted-foreground)/0.3)"
-                        }
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </main>
   );
