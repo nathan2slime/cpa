@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+"use client"
+
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -8,20 +10,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useToggleActiveEvent } from "@/hooks/api-hooks/event-api-hooks";
+} from "@/components/ui/dialog"
+import { useToggleActiveEvent } from "@/hooks/api-hooks/event-api-hooks"
 
 type Props = {
-  active: boolean;
-  eventId: string;
-};
+  active: boolean
+  eventId: string
+}
 
 export const ToggleAtiveEventDialog = ({ active, eventId }: Props) => {
-  const { mutate: toggleActiveEvent } = useToggleActiveEvent();
+  const { mutate: toggleActiveEvent } = useToggleActiveEvent()
 
   const onToggleActiveEvent = () => {
-    toggleActiveEvent(eventId);
-  };
+    toggleActiveEvent(eventId)
+  }
 
   return (
     <Dialog>
@@ -34,31 +36,32 @@ export const ToggleAtiveEventDialog = ({ active, eventId }: Props) => {
           {active ? "Desativar" : "Ativar"}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[95%] max-w-md mx-auto">
         <DialogHeader>
-          <DialogTitle>
-            Tem certeza que deseja {active ? "desativar" : "ativar"} esse
-            evento?
+          <DialogTitle className="text-base sm:text-lg">
+            Tem certeza que deseja {active ? "desativar" : "ativar"} esse evento?
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-sm">
             {active
               ? "Enquanto estiver desativado, o evento não aceitará novas respostas."
               : "O evento será ativado e poderá receber novas respostas."}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <div className={"flex justify-end gap-3"}>
+        <DialogFooter className="sm:justify-end">
+          <div className={"flex flex-col sm:flex-row justify-end gap-3 w-full"}>
             <DialogClose asChild>
-              <Button onClick={onToggleActiveEvent} variant="destructive">
+              <Button onClick={onToggleActiveEvent} variant="destructive" className="w-full sm:w-auto">
                 Sim
               </Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button variant="outline">Cancelar</Button>
+              <Button variant="outline" className="w-full sm:w-auto">
+                Cancelar
+              </Button>
             </DialogClose>
           </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

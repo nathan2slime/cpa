@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+"use client"
+
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
@@ -8,16 +10,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useDeleteEvent } from "@/hooks/api-hooks";
-import toast from "react-hot-toast";
+} from "@/components/ui/dialog"
+import { useDeleteEvent } from "@/hooks/api-hooks"
+import toast from "react-hot-toast"
 
 type Props = {
-  eventId: string;
-};
+  eventId: string
+}
 
 export const DeleteEventDialog = ({ eventId }: Props) => {
-  const { mutate: deleteEvent } = useDeleteEvent();
+  const { mutate: deleteEvent } = useDeleteEvent()
 
   return (
     <Dialog>
@@ -30,35 +32,36 @@ export const DeleteEventDialog = ({ eventId }: Props) => {
           Excluir
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[95%] max-w-md mx-auto">
         <DialogHeader>
-          <DialogTitle>Tem certeza que deseja excluir esse evento?</DialogTitle>
-          <DialogDescription>
-            Você não poderá reverter essa ação.
-          </DialogDescription>
+          <DialogTitle className="text-base sm:text-lg">Tem certeza que deseja excluir esse evento?</DialogTitle>
+          <DialogDescription className="text-sm">Você não poderá reverter essa ação.</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <div className={"flex justify-end gap-3"}>
+        <DialogFooter className="sm:justify-end">
+          <div className={"flex flex-col sm:flex-row justify-end gap-3 w-full"}>
             <DialogClose asChild>
               <Button
                 onClick={() =>
                   deleteEvent(eventId, {
                     onSuccess: () => {
-                      toast.success("Evento deletado com sucesso!");
+                      toast.success("Evento deletado com sucesso!")
                     },
                   })
                 }
                 variant="destructive"
+                className="w-full sm:w-auto"
               >
                 Sim, apagar
               </Button>
             </DialogClose>
             <DialogClose asChild>
-              <Button variant="outline">Cancelar</Button>
+              <Button variant="outline" className="w-full sm:w-auto">
+                Cancelar
+              </Button>
             </DialogClose>
           </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}

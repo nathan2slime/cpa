@@ -18,9 +18,10 @@ import { ptBR } from "date-fns/locale";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  form: FormReq;
+  form: FormReq,
+  children?: React.ReactNode;
 };
-export const FormCard = ({ form }: Props) => {
+export const FormCard = ({ form, children }: Props) => {
   const { mutate: deleteForm } = useDeleteForm();
   const { data: tags = [] } = useFormTags(form.id!);
   const router = useRouter();
@@ -28,24 +29,26 @@ export const FormCard = ({ form }: Props) => {
   return (
     <div
       key={form.id}
-      className="flex justify-between items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl"
+      className={
+        "flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b last:border-none last:rounded-b-xl first:rounded-t-xl hover:bg-gray-50 border-xl"
+      }
     >
-      <div className="flex flex-col gap-3 justify-center">
-        <div className="flex items-center gap-3">
-          <p className="font-semibold">{form.title}</p>
-          <p className="text-gray-500 text-sm">
+      <div className={"flex flex-col gap-3 justify-center w-full"}>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
+          <p className={"font-semibold break-words"}>{form.title}</p>
+          <p className={"text-gray-500 text-xs sm:text-sm"}>
             {form.updatedAt &&
-              formatDistanceToNow(new Date(form.updatedAt), {
+              formatDistanceToNow(form.updatedAt, {
                 addSuffix: true,
                 locale: ptBR,
               })}
           </p>
         </div>
 
-        {tags?.length > 0 && (
-          <div className="flex gap-2 w-full">
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 w-full">
             {tags?.map((tag) => (
-              <Badge className="w-fit" variant="secondary" key={tag.id}>
+              <Badge className="w-fit text-xs" variant="secondary" key={tag.id}>
                 {tag.name}
               </Badge>
             ))}
@@ -53,47 +56,7 @@ export const FormCard = ({ form }: Props) => {
         )}
       </div>
 
-      <div className="flex gap-2 items-center">
-        <TagPopover tags={tags} formId={form.id} />
-
-        <Button
-          variant="outline"
-          onClick={() => router.push(`/form/${form.id}`)}
-        >
-          Editar
-        </Button>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="destructive">Excluir</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Tem certeza que deseja excluir esse formulário?
-              </DialogTitle>
-              <DialogDescription>
-                Você não poderá reverter essa ação.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <div className="flex justify-end gap-3">
-                <DialogClose asChild>
-                  <Button
-                    onClick={() => deleteForm(form.id!)}
-                    variant="destructive"
-                  >
-                    Sim, apagar
-                  </Button>
-                </DialogClose>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancelar</Button>
-                </DialogClose>
-              </div>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+      {children && <div className={"flex gap-2 items-center mt-3 sm:mt-0"}>{children}</div>}
     </div>
-  );
+  )
 };

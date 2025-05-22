@@ -1,34 +1,34 @@
-'use client'
+"use client"
 
-import { yupResolver } from '@hookform/resolvers/yup'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useForm } from "react-hook-form"
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { AuthSchema, authSchema } from '@/schemas/auth'
-import { sigInService } from '@/services/auth.services'
-import { authState } from '@/store/auth.state'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { type AuthSchema, authSchema } from "@/schemas/auth"
+import { sigInService } from "@/services/auth.services"
+import { authState } from "@/store/auth.state"
 
 const redirectByRole: Record<string, string> = {
-  USER: '/',
-  ADMIN: '/dashboard',
-  MANAGER: '/dashboard'
+  USER: "/",
+  ADMIN: "/dashboard",
+  MANAGER: "/dashboard",
 }
 
 export default () => {
   const router = useRouter()
   const params = useSearchParams()
-  const callback = params.get('callback')
-  const event = params.get('event')
+  const callback = params.get("callback")
+  const event = params.get("event")
 
   const form = useForm<AuthSchema>({
-    mode: 'all',
-    resolver: yupResolver(authSchema)
+    mode: "all",
+    resolver: yupResolver(authSchema),
   })
 
   const onSubmit = async (values: AuthSchema) => {
@@ -43,7 +43,7 @@ export default () => {
 
       if (event) {
         const url = new URL(redirectUrl, window.location.origin)
-        url.searchParams.set('event', event)
+        url.searchParams.set("event", event)
         redirectUrl = url.toString()
       }
 
@@ -52,26 +52,26 @@ export default () => {
   }
 
   return (
-    <div className="w-full h-full tracking-wide flex justify-center p-2 md:p-4">
+    <div className="flex min-h-screen w-full items-center justify-center px-4 py-6 sm:px-6 md:px-8">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full h-full flex flex-col justify-center items-center">
-          <Card className="w-full max-w-[380px]">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl font-bold">Login</CardTitle>
-              <CardDescription className="pb-2">Preencha com seus dados</CardDescription>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm">
+          <Card className="w-full shadow-md">
+            <CardHeader className="space-y-1 sm:space-y-2">
+              <CardTitle className="text-xl font-bold sm:text-2xl">Login</CardTitle>
+              <CardDescription className="pb-1 text-sm sm:pb-2">Preencha com seus dados</CardDescription>
               <Separator />
             </CardHeader>
-            <CardContent className="grid my-5 gap-2">
+            <CardContent className="grid gap-3 pt-2 sm:gap-4 sm:pt-4">
               <FormField
                 control={form.control}
                 name="login"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Matricula</FormLabel>
+                    <FormLabel className="text-sm font-medium">Matricula</FormLabel>
                     <FormControl>
-                      <Input placeholder="1-4329043" {...field} />
+                      <Input placeholder="1-4329043" className="h-9 sm:h-10" {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs sm:text-sm" />
                   </FormItem>
                 )}
               />
@@ -80,17 +80,17 @@ export default () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Senha</FormLabel>
+                    <FormLabel className="text-sm font-medium">Senha</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" className="h-9 sm:h-10" {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="text-xs sm:text-sm" />
                   </FormItem>
                 )}
               />
             </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full max-w-[200px] tracking-wide ml-auto font-bold">
+            <CardFooter className="flex justify-end pb-4 pt-2 sm:pb-6 sm:pt-4">
+              <Button type="submit" className="w-full max-w-[200px] font-bold tracking-wide sm:text-base">
                 Continuar
               </Button>
             </CardFooter>

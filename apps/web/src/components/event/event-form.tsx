@@ -33,7 +33,7 @@ export default function EventForm({ eventId }: EventFormProps) {
 
   const { data: event, isLoading: isLoadingEvent } = useEvent(eventId || "");
   const { data: courses = [], isLoading: isLoadingCourses } = useCourses();
-  const { data: formData } = useForm(event?.formId);
+  const { data: formData } = useForm(event?.formId!);
 
   const updateEventMutation = useUpdateEvent();
   const createEventMutation = useCreateEvent();

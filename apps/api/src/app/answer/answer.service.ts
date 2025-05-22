@@ -28,6 +28,10 @@ export class AnswerService {
     if (!event)
       throw new HttpException("Evento não encontrado", HttpStatus.NOT_FOUND);
 
+
+    if (event!.active)
+      throw new HttpException("Evento não está ativo", HttpStatus.FORBIDDEN);
+
     const user = await this.prisma.user.findUnique({
       where: {
         id: userId,
