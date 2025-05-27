@@ -11,6 +11,7 @@ import { AUTH_COOKIE } from '~/constants'
 import { logger } from '~/logger'
 
 import 'reflect-metadata'
+
 ;(async () => {
   const app = await NestFactory.create(AppModule, { logger: false })
 
