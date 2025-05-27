@@ -4,9 +4,19 @@ import ShowEvents from "@/components/events/events";
 import { PaginationComponent } from "@/components/pagination";
 import { useEvents } from "@/hooks/api-hooks";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function EventsPage() {
-  const page = useSearchParams().get("page");
+  return (
+    <Suspense>
+      <ManagerEvents />
+    </Suspense>
+  );
+}
+
+const ManagerEvents = () => {
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page");
   const { data: events } = useEvents(page ? +page : 1);
 
   return (
@@ -19,4 +29,4 @@ export default function EventsPage() {
       />
     </div>
   );
-}
+};

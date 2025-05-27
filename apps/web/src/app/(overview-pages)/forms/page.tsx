@@ -4,9 +4,20 @@ import ShowForms from "@/components/forms/forms";
 import { PaginationComponent } from "@/components/pagination";
 import { useForms } from "@/hooks/api-hooks";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function Forms() {
-  const page = useSearchParams().get("page");
+  return (
+    <Suspense>
+      <Form />
+    </Suspense>
+  );
+}
+
+const Form = () => {
+  const searchParams = useSearchParams();
+
+  const page = searchParams.get("page");
   const { data: forms } = useForms(page ? +page : 1);
 
   return (
@@ -19,4 +30,4 @@ export default function Forms() {
       />
     </div>
   );
-}
+};

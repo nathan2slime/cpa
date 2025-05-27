@@ -4,8 +4,17 @@ import { PaginationComponent } from "@/components/pagination";
 import Reports from "@/components/reports-list";
 import { useEvents } from "@/hooks/api-hooks";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 export default function ReportsPage() {
+  return (
+    <Suspense>
+      <Report />
+    </Suspense>
+  );
+}
+
+const Report = () => {
   const page = useSearchParams().get("page");
   const { data: events } = useEvents(page ? +page : 1);
 
@@ -19,4 +28,4 @@ export default function ReportsPage() {
       />
     </div>
   );
-}
+};

@@ -1,27 +1,23 @@
 import { faker } from '@faker-js/faker/locale/en'
 import bcryptjs from 'bcryptjs'
-import { Role } from '@cpa/database'
 
 import { prisma } from './database.mjs'
 import { logger } from './logger.mjs'
 
 const isDev = process.env.NODE_ENV === 'development'
 
-export const manager = async () => {
+export const student = async () => {
   const password = faker.internet.password({ length: 6, memorable: true })
   const data = {
-    login: 'root',
+    login: 'student',
     name: faker.person.firstName(),
     surname: faker.person.lastName(),
     password
   }
-  console.log(data);
-  
 
   const exist = await prisma.user.findFirst({ where: { login: data.login } })
-
   data.password = await bcryptjs.hash(password, 10)
-  
+
   if (exist) {
     isDev &&
       (await prisma.user.update({
@@ -34,10 +30,7 @@ export const manager = async () => {
       }))
   } else {
     await prisma.user.create({
-      data: {
-        ...data,
-        roles: [Role.ADMIN]
-      }
+      data
     })
   }
 

@@ -27,6 +27,7 @@ import {
 import { type AuthSchema, authSchema } from "@/schemas/auth";
 import { sigInService } from "@/services/auth.services";
 import { authState } from "@/store/auth.state";
+import { Suspense } from "react";
 
 const redirectByRole: Record<string, string> = {
   USER: "/",
@@ -35,6 +36,14 @@ const redirectByRole: Record<string, string> = {
 };
 
 export default () => {
+  return (
+    <Suspense>
+      <Login />
+    </Suspense>
+  );
+};
+
+const Login = () => {
   const router = useRouter();
   const params = useSearchParams();
   const callback = params.get("callback");
