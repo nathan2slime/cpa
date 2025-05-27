@@ -2,4 +2,6 @@ packages:
   - apps/*
   - packages/**
 onlyBuiltDependencies:
+  - '@prisma/client'
+  - prisma
   - sharp

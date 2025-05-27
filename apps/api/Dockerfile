@@ -35,6 +35,7 @@ COPY --from=builder /app/out/full/ .
 ENV NODE_ENV production
 
 RUN pnpm turbo db:generate --filter=@cpa/database
+RUN pnpm turbo build --filter=@cpa/env
 RUN pnpm turbo build --filter=@cpa/api
 
 FROM base AS runner
