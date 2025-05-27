@@ -1,12 +1,12 @@
-export type DashboardData = {
+export interface DashboardData {
   openEvents: number;
   actualMonthEvents: number;
   actualMonthAnswers: number;
   answersLastMonthAgrouped: AnswersAgrouped[];
-};
+}
 
-export type AnswersAgrouped = {
-  indexDay: number;
+export interface AnswersAgrouped {
   date: string;
+  indexDay: number;
   total: number;
-};
+}
