@@ -53,7 +53,9 @@ export default function ShowForms({ forms }: FormsProps) {
       </FiltersContent>
 
       <div className="w-full h-full">
-        <p className="font-semibold mb-3">Recentes</p>
+        <p className="font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
+          Recentes
+        </p>
 
         <div className="border w-full rounded-xl">
           {forms.length === 0 && (
