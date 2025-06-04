@@ -29,10 +29,12 @@ export default function ShowForms({ forms }: FormsProps) {
   const { mutate: createForm } = useCreateForm();
   const { data: tags = [] } = useAllTagsForm();
 
-   return (
+  return (
     <main className="flex flex-col justify-start items-start px-2 sm:px-5 gap-3 w-full">
       <div className="justify-between w-full flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-0">
-        <p className="font-semibold text-lg sm:text-xl">Gerenciar Formulários</p>
+        <p className="font-semibold text-lg sm:text-xl">
+          Gerenciar Formulários
+        </p>
         <Button
           onClick={() =>
             createForm(undefined, {
@@ -54,6 +56,11 @@ export default function ShowForms({ forms }: FormsProps) {
         <p className="font-semibold mb-3">Recentes</p>
 
         <div className="border w-full rounded-xl">
+          {forms.length === 0 && (
+            <p className={"p-3 sm:p-5 text-sm sm:text-base"}>
+              Sem eventos criados. Crie um evento no botão acima "Criar novo".
+            </p>
+          )}
           {forms.map((form) => (
             <FormCard key={form.id} form={form}>
               <>
@@ -67,7 +74,11 @@ export default function ShowForms({ forms }: FormsProps) {
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuLabel>Operações</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => router.push(`/form/${form.id}`)}>Editar</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => router.push(`/form/${form.id}`)}
+                    >
+                      Editar
+                    </DropdownMenuItem>
                     <DeleteFormDialog formId={form.id!} />
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -77,5 +88,5 @@ export default function ShowForms({ forms }: FormsProps) {
         </div>
       </div>
     </main>
-  )
+  );
 }
