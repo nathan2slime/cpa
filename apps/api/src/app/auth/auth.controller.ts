@@ -62,6 +62,9 @@ export class AuthController {
       { accessToken, refreshToken },
       {
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
         expires: new Date(
           Date.now() + require("ms")(env.REFRESH_TOKEN_EXPIRES_IN)
         ),
@@ -81,6 +84,9 @@ export class AuthController {
       { accessToken, refreshToken },
       {
         httpOnly: true,
+        sameSite: "none",
+        secure: true,
+        path: "/",
         expires: new Date(
           Date.now() + require("ms")(env.REFRESH_TOKEN_EXPIRES_IN)
         ),
