@@ -38,8 +38,6 @@ const Answer = () => {
 
   if (status && status !== 200) return <FormErrorMessage status={status} />;
 
-  console.log(status);
-
   const form = event?.form;
   if (!form) return null;
 
@@ -191,7 +189,7 @@ const Answer = () => {
       <div className="py-10 xl:min-w-[800px]">
         <Card>
           <CardHeader>
-            <CardTitle>{form.title}</CardTitle>
+            <CardTitle className="text-2xl">{form.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {form.questions?.map((question: QuestionType) => (

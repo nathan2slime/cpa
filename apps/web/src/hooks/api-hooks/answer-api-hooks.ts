@@ -26,7 +26,6 @@ export const useCanAnswer = (eventId?: string) => {
     queryFn: async () => {
       if (!eventId) return null
       const res = await api.get(`/api/answer/canAnswer/${eventId}`)
-      console.log(res)
       return res.status
     },
     retry: false,
