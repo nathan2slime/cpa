@@ -38,14 +38,14 @@ export class AnswerController {
 
   @Get("/canAnswer/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Roles([Role.USER, Role.ADMIN])
+  @Roles([Role.USER])
   async getAnswered(
-    @Res() _: Response,
+    @Res() res: Response,
     @Req() req: Request,
     @Param("id") id: string
   ) {
     await this.answerService.getCanAnswer(id, req.user.userId);
-    return { status: 200 };
+    return res.status(HttpStatus.OK).send();
   }
 
   @Get("event/show/:id")

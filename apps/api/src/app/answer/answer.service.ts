@@ -28,7 +28,6 @@ export class AnswerService {
     if (!event)
       throw new HttpException("Evento não encontrado", HttpStatus.NOT_FOUND);
 
-
     if (!event.active)
       throw new HttpException("Evento não está ativo", HttpStatus.FORBIDDEN);
 
@@ -63,12 +62,16 @@ export class AnswerService {
       );
     }
 
-    if (!event.courses.some((e) => e.courseId === user.courseId)) {
+    if (
+      !(await event.courses.some(async (e) => e.courseId === user.courseId))
+    ) {
       throw new HttpException(
         "Você não tem permissão para responder a este formulário",
         HttpStatus.FORBIDDEN
       );
     }
+
+    return true;
   }
 
   async getByEvent(id: string, filter: FilterByCourseDto) {

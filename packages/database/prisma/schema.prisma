@@ -50,7 +50,7 @@ model User {
   sessions Session[]
   roles    Role[]    @default([USER])
   answers  Answer[]
-  courseId String?   @unique
+  courseId String?
   course   Course?   @relation(fields: [courseId], references: [id])
 
   createdAt DateTime  @default(now())
@@ -67,7 +67,7 @@ model Course {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime? @updatedAt
-  User      User?
+  User      User[]
 }
 
 model Tag {
