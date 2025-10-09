@@ -62,7 +62,7 @@ export function OrderTab() {
   const submit = () => {
     reorderMutation.mutate(orderedQuestions, {
       onSuccess: () => {
-        toast.success("Nova ordem salva com sucesso!");
+        toast.success("Ordem das questões salva com sucesso!");
       },
     });
   };
@@ -74,20 +74,20 @@ export function OrderTab() {
   return (
     <div>
       <div className="mb-6 flex justify-between items-center">
-        <h3 className="text-lg font-medium">Ordenar Questões</h3>
+        <h3 className="text-lg font-medium">Ordem das Questões</h3>
         <Button onClick={submit} disabled={reorderMutation.isPending}>
           {reorderMutation.isPending ? "Salvando..." : "Salvar Ordem"}
         </Button>
       </div>
 
       <p className="text-sm text-muted-foreground mb-4">
-        Arraste as questões para reordenar. A nova ordem será salva quando você
-        clicar em "Salvar Ordem".
+        Arraste e solte as questões para definir a ordem de exibição. A nova
+        sequência será salva ao clicar em "Salvar Ordem".
       </p>
 
       {orderedQuestions.length === 0 ? (
         <div className="text-center py-12 border border-dashed rounded-lg">
-          <p className="text-gray-500">Nenhuma questão para ordenar.</p>
+          <p className="text-gray-500">Não há questões para ordenar.</p>
         </div>
       ) : (
         <DndContext

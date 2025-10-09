@@ -40,8 +40,8 @@ export function FormHeader() {
         placeholder="Título do formulário"
       />
       <p className="text-sm text-muted-foreground mt-1">
-        Crie e gerencie questões para seu formulário. Você pode adicionar
-        questões de texto ou de múltipla escolha.
+        Elabore e organize as questões do formulário. É possível adicionar
+        questões discursivas ou de múltipla escolha.
       </p>
     </div>
   );

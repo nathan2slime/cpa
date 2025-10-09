@@ -11,7 +11,7 @@ export function FormTabs() {
       <Tabs defaultValue="questions" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-6">
           <TabsTrigger value="questions">Questões</TabsTrigger>
-          <TabsTrigger value="order">Ordenar</TabsTrigger>
+          <TabsTrigger value="order">Ordem</TabsTrigger>
           <TabsTrigger value="preview">Pré-visualização</TabsTrigger>
         </TabsList>
 

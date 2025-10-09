@@ -37,7 +37,7 @@ export function QuestionsTab() {
           <AlertDescription>
             {error instanceof Error
               ? error.message
-              : "Erro ao carregar questões"}
+              : "Ocorreu um erro ao carregar as questões."}
           </AlertDescription>
         </Alert>
       )}
@@ -76,7 +76,7 @@ function QuestionHeader({
           ) : (
             <FileText className="mr-2 h-4 w-4" />
           )}
-          Adicionar Texto
+          Adicionar Questão Discursiva
         </Button>
         <Button
           onClick={() => handleCreateQuestion("CHOOSE" as QuestionTypeEnum)}
@@ -87,7 +87,7 @@ function QuestionHeader({
           ) : (
             <ListChecks className="mr-2 h-4 w-4" />
           )}
-          Adicionar Escolha
+          Adicionar Questão de Múltipla Escolha
         </Button>
         <Button
           variant={"outline"}
@@ -101,7 +101,7 @@ function QuestionHeader({
           ) : (
             <ListChecks className="mr-2 h-4 w-4" />
           )}
-          Adicionar Escolha e Texto
+          Adicionar Discursiva com Múltipla Escolha
         </Button>
       </div>
     </div>
@@ -129,10 +129,10 @@ function QuestionsList({ loading, questions }: QuestionsListProps) {
           <Plus className="h-12 w-12 text-gray-300" />
         </div>
         <h3 className="mt-4 text-lg font-medium text-gray-900">
-          Nenhuma questão
+          Nenhuma Questão Cadastrada
         </h3>
         <p className="mt-1 text-sm text-gray-500">
-          Comece adicionando uma questão de texto ou escolha.
+          Inicie cadastrando uma questão discursiva ou de múltipla escolha.
         </p>
       </div>
     );
