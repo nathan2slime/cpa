@@ -26,7 +26,7 @@ export const Navbar = () => {
   return (
     <header className="flex justify-between z-10 fixed items-center gap-4 h-[60px] w-[calc(100%-0px)] bg-card border-b border-border rounded-none p-4">
       <Link href="/dashboard">
-        <h4 className="font-bold tracking-wide">SAI - Sistema Avaliação Institucional</h4>
+        <h4 className="font-bold tracking-wide">SAI - Sistema de Avaliação Institucional</h4>
       </Link>
       <span className="flex gap-4">
         <DropdownMenu dir="ltr">
