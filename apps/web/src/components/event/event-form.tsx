@@ -156,7 +156,7 @@ export default function EventForm({ eventId }: EventFormProps) {
   }
 
   return (
-    <div className="lg:min-w-[800px] md:min-w-[600px]">
+    <div className="lg:max-w-[800px] md:min-w-[600px]">
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-sm border overflow-hidden">

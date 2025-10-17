@@ -12,7 +12,7 @@ import "@/global/styles.scss";
 import { QueryClientProviderRoot } from "@/components/providers/query-client";
 
 export const metadata: Metadata = {
-  title: "UniFacema SUAI",
+  title: "UniFacema SAI",
 };
 
 const RootLayout = ({ children }: Readonly<AppChildren>) => {
