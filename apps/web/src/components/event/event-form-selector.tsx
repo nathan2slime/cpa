@@ -23,7 +23,6 @@ export function EventFormSelector({ control, selectedFormId, onFormSelect }: Eve
   const { data: forms = [] } = useSearchForms(searchQuery)
   const [selectedFormTitle, setSelectedFormTitle] = useState<string>("")
 
-  // Update the selected form title when selectedFormId changes
   useEffect(() => {
     if (selectedFormId) {
       const selectedForm = forms.find((form) => form.id === selectedFormId)

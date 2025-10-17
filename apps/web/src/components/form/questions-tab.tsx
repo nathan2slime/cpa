@@ -76,7 +76,7 @@ function QuestionHeader({
           ) : (
             <FileText className="mr-2 h-4 w-4" />
           )}
-          Adicionar Questão Discursiva
+          Adicionar Questão Aberta
         </Button>
         <Button
           onClick={() => handleCreateQuestion("CHOOSE" as QuestionTypeEnum)}
@@ -87,7 +87,7 @@ function QuestionHeader({
           ) : (
             <ListChecks className="mr-2 h-4 w-4" />
           )}
-          Adicionar Questão de Múltipla Escolha
+          Adicionar Questão Fechada
         </Button>
         <Button
           variant={"outline"}
@@ -101,7 +101,7 @@ function QuestionHeader({
           ) : (
             <ListChecks className="mr-2 h-4 w-4" />
           )}
-          Adicionar Discursiva com Múltipla Escolha
+          Adicionar Questão Multivalorada
         </Button>
       </div>
     </div>
