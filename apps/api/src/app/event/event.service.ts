@@ -13,6 +13,15 @@ export class EventService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create({ courses, form, ...data }: CreateEventDto) {
+    let courseIds = courses;
+
+    if (courses === "ALL") {
+      const allCourses = await this.prisma.course.findMany({
+        select: { id: true },
+      });
+      courseIds = allCourses.map((course) => course.id);
+    }
+
     const event = await this.prisma.event.create({
       data: {
         ...data,
@@ -20,24 +29,26 @@ export class EventService {
       },
     });
 
-    await Promise.all(
-      courses.map(async (e) =>
-        this.prisma.courseEvent.create({
-          data: {
-            event: {
-              connect: {
-                id: event.id,
+    if (Array.isArray(courseIds)) {
+      await Promise.all(
+        courseIds.map(async (e) =>
+          this.prisma.courseEvent.create({
+            data: {
+              event: {
+                connect: {
+                  id: event.id,
+                },
+              },
+              course: {
+                connect: {
+                  id: e,
+                },
               },
             },
-            course: {
-              connect: {
-                id: e,
-              },
-            },
-          },
-        })
-      )
-    );
+          }),
+        ),
+      );
+    }
 
     return event;
   }
@@ -224,7 +235,16 @@ export class EventService {
     });
   }
 
-  async update(id: string, { courses = [], form, ...data }: UpdateEventDto) {
+  async update(id: string, { courses, form, ...data }: UpdateEventDto) {
+    let courseIdsToUpdate = courses;
+
+    if (courses === "ALL") {
+      const allCourses = await this.prisma.course.findMany({
+        select: { id: true },
+      });
+      courseIdsToUpdate = allCourses.map((course) => course.id);
+    }
+
     await this.prisma.event.update({
       data: {
         ...data,
@@ -239,17 +259,22 @@ export class EventService {
       },
     });
 
-    await this.prisma.courseEvent.deleteMany({
-      where: {
-        event: {
-          id,
+    if (courseIdsToUpdate) {
+      await this.prisma.courseEvent.deleteMany({
+        where: {
+          eventId: id,
         },
-      },
-    });
+      });
 
-    await this.prisma.courseEvent.createMany({
-      data: courses.map((course) => ({ courseId: course, eventId: id })),
-    });
+      if (Array.isArray(courseIdsToUpdate)) {
+        await this.prisma.courseEvent.createMany({
+          data: courseIdsToUpdate.map((courseId) => ({
+            courseId,
+            eventId: id,
+          })),
+        });
+      }
+    }
 
     return this.prisma.event.findUnique({ where: { id } });
   }

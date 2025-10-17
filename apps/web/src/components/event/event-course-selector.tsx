@@ -1,22 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { X, Check, ChevronsUpDown } from "lucide-react"
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import type { Control } from "react-hook-form"
-import type { EventForm } from "@/types/event.types"
-import type { CoursesReq } from "@/types/courseType"
+import { useState } from "react";
+import { X, Check, ChevronsUpDown } from "lucide-react";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import type { Control } from "react-hook-form";
+import type { EventForm } from "@/types/event.types";
+import type { CoursesReq } from "@/types/courseType";
 
 interface EventCourseSelectorProps {
-  control: Control<EventForm>
-  courses: CoursesReq[]
-  selectedCourseIds: string[]
-  onAddCourse: (courseId: string) => void
-  onRemoveCourse: (courseId: string) => void
+  control: Control<EventForm>;
+  courses: CoursesReq[];
+  selectedCourseIds: string[];
+  onAddCourse: (courseId: string) => void;
+  onRemoveCourse: (courseId: string) => void;
+  onAddAllCourses: () => void;
+  onRemoveAllCourses: () => void;
 }
 
 export function EventCourseSelector({
@@ -25,56 +44,79 @@ export function EventCourseSelector({
   selectedCourseIds,
   onAddCourse,
   onRemoveCourse,
+  onAddAllCourses,
+  onRemoveAllCourses,
 }: EventCourseSelectorProps) {
-  const [open, setOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCourses = searchQuery
-    ? courses.filter((course) => course.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    : courses
+    ? courses.filter((course) =>
+        course.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : courses;
 
   const selectedCourses = selectedCourseIds
     .map((id) => courses.find((course) => course.id === id))
-    .filter(Boolean) as CoursesReq[]
+    .filter(Boolean) as CoursesReq[];
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium">Cursos</h2>
+      <h2 className="text-lg font-medium">Destinatários</h2>
 
       <FormField
         control={control}
         name="courses"
         render={() => (
           <FormItem className="space-y-4">
-            <FormLabel>Adicionar Cursos</FormLabel>
+            <FormLabel>Adicionar destinatário(s)</FormLabel>
             <FormControl>
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-full justify-between"
+                  >
                     Selecione um curso
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-full p-0">
                   <Command>
-                    <CommandInput placeholder="Buscar curso..." onValueChange={setSearchQuery} />
+                    <CommandInput
+                      placeholder="Buscar curso..."
+                      onValueChange={setSearchQuery}
+                    />
                     <CommandList>
                       <CommandEmpty>Nenhum curso encontrado.</CommandEmpty>
                       <CommandGroup>
+                        <CommandItem
+                          onSelect={() => {
+                            onAddAllCourses();
+                            setOpen(false);
+                          }}
+                        >
+                          <Check className={cn("mr-2 h-4 w-4 opacity-0")} />
+                          Selecionar Todos
+                        </CommandItem>
                         {filteredCourses.map((course) => (
                           <CommandItem
                             key={course.id}
                             value={course.id}
                             onSelect={() => {
-                              onAddCourse(course.id)
-                              setOpen(false)
+                              onAddCourse(course.id);
+                              setOpen(false);
                             }}
                             disabled={selectedCourseIds.includes(course.id)}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                selectedCourseIds.includes(course.id) ? "opacity-100" : "opacity-0",
+                                selectedCourseIds.includes(course.id)
+                                  ? "opacity-100"
+                                  : "opacity-0"
                               )}
                             />
                             {course.name}
@@ -90,7 +132,16 @@ export function EventCourseSelector({
 
             {selectedCourses.length > 0 && (
               <div className="mt-2">
-                <FormLabel>Cursos Selecionados</FormLabel>
+                <div className="flex items-center justify-between">
+                  <FormLabel>Cursos Selecionados</FormLabel>
+                  <Button
+                    type="button"
+                    variant="link"
+                    onClick={onRemoveAllCourses}
+                  >
+                    Limpar Todos
+                  </Button>
+                </div>
                 <ul className="mt-2 flex flex-wrap gap-2">
                   {selectedCourses.map((course) => (
                     <li
@@ -114,5 +165,5 @@ export function EventCourseSelector({
         )}
       />
     </div>
-  )
+  );
 }

@@ -105,6 +105,17 @@ export default function EventForm({ eventId }: EventFormProps) {
     setValue("courses", newCourses);
   };
 
+  const handleAddAllCourses = () => {
+    const allCourseIds = courses.map((course) => course.id);
+    setValue("courses", allCourseIds, {
+      shouldValidate: true,
+    });
+  };
+
+  const handleRemoveAllCourses = () => {
+    setValue("courses", []);
+  };
+
   const onSubmit = (values: EventFormType) => {
     if (isEditMode) {
       updateEventMutation.mutate(
@@ -175,6 +186,8 @@ export default function EventForm({ eventId }: EventFormProps) {
               selectedCourseIds={watch("courses") || []}
               onAddCourse={handleAddCourse}
               onRemoveCourse={handleRemoveCourse}
+              onAddAllCourses={handleAddAllCourses}
+              onRemoveAllCourses={handleRemoveAllCourses}
             />
           </div>
 

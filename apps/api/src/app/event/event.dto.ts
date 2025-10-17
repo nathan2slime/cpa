@@ -29,7 +29,7 @@ export class CreateEventDto {
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
-  courses: string[];
+  courses: string[] | string;
 }
 
 export class UpdateEventDto {
@@ -59,7 +59,7 @@ export class UpdateEventDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  courses: string[];
+  courses: string[] | string;
 }
 
 export class PaginateWithCourseDto extends PaginateWithNameTagDto {
