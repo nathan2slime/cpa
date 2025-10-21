@@ -186,7 +186,7 @@ const Answer = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="py-10 xl:min-w-[800px]">
+      <div className="py-10 min-w-full xl:min-w-[800px]">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">{form.title}</CardTitle>
