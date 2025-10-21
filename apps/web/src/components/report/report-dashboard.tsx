@@ -36,7 +36,7 @@ export default function ReportDashboard({ data }: ReportDashboardProps) {
   };
 
   return (
-    <main className="max-w-7xl">
+    <main className="max-w-7xl w-full">
       <div className="grid gap-6">
         <ReportHeader title={data.form.title} totalResponses={totalResponses} />
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
@@ -47,9 +47,6 @@ const FormErrorMessage = ({ status }: Props) => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-start">
-            <AlertTitle className="text-base font-semibold">
-              Ocorreu um problema
-            </AlertTitle>
             <AlertDescription>{error.description}</AlertDescription>
           </div>
         </CardContent>

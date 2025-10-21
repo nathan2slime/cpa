@@ -16,7 +16,7 @@ type DataTabProps = {
 
 export function DataTab({ questions, refs }: DataTabProps) {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Dados Brutos</CardTitle>
         <CardDescription>
