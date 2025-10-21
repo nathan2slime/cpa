@@ -9,8 +9,8 @@ export default ({ children }: Readonly<AppChildren>) => {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 p-4">
-      <div>
+    <div className="flex items-center justify-center w-full">
+      <div className="flex flex-col items-start gap-4 p-4 w-full max-w-[750px]">
         <Button
           variant="outline"
           onClick={() => router.back()}

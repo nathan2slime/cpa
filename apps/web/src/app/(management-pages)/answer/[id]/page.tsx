@@ -1,4 +1,5 @@
 "use client"
+
 import { useParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 
@@ -159,29 +160,25 @@ const Answer = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="py-10 px-4 w-full max-w-3xl mx-auto">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">{form.title}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {form.questions?.map((question: QuestionType) => (
-              <div key={question.id} className="space-y-2">
-                <h4 className="font-medium">{question.title}</h4>
-                {renderQuestion(question)}
-              </div>
-            ))}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-2xl">{form.title}</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6 w-full">
+          {form.questions?.map((question: QuestionType) => (
+            <div key={question.id} className="space-y-2">
+              <h4 className="font-medium">{question.title}</h4>
+              {renderQuestion(question)}
+            </div>
+          ))}
 
-            {Object.entries(errors).length > 0 && (
-              <p className="text-red-500">Preencha corretamente todas as questões</p>
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button type="submit">Enviar respostas</Button>
-          </CardFooter>
-        </Card>
-      </div>
+          {Object.entries(errors).length > 0 && <p className="text-red-500">Preencha corretamente todas as questões</p>}
+        </CardContent>
+        <CardFooter className="flex justify-end">
+          <Button type="submit">Enviar respostas</Button>
+        </CardFooter>
+      </Card>
     </form>
   )
 }
