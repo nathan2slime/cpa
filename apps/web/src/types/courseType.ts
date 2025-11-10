@@ -1,3 +1,9 @@
+export enum CourseType {
+  TECH = 'TECH',
+  HUMAN = 'HUMAN',
+  HEALTH = 'HEALTH',
+}
+
 export type TCourses =
   | 'Todos'
   | 'Bacharelado em Administração'
@@ -24,6 +30,6 @@ export type TCourses =
 
 export type CoursesReq = {
   id: string
-  type: 'TECH' | 'HUMAN' | 'HEALTH'
+  type: CourseType
   name: TCourses
 }

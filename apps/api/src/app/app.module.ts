@@ -9,8 +9,9 @@ import { EventModule } from "~/app/event/event.module";
 import { FormModule } from "~/app/form/form.module";
 import { HealthModule } from "~/app/health/health.module";
 import { QuestionModule } from "~/app/question/question.module";
-import { QuestionOptionModule } from "~/app/question_option/question_option.module";
-import { TagsModule } from "~/app/tags/tags.module";
+import { QuestionOptionModule } from '~/app/question_option/question_option.module'
+import { TagsModule } from '~/app/tags/tags.module'
+import { UserImportModule } from '~/app/user-import/user-import.module'
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TagsModule } from "~/app/tags/tags.module";
     EventModule,
     TagsModule,
     DashboardModule,
+    UserImportModule,
   ],
   controllers: [],
   providers: [],

@@ -1,5 +1,5 @@
 'use client'
-import { BookKey, FileType, LayoutDashboard, Star } from 'lucide-react'
+import { BookKey, FileType, LayoutDashboard, Star, Settings } from 'lucide-react'
 
 import { Nav } from '@/components/core/nav'
 
@@ -28,6 +28,11 @@ export const Sidebar = () => {
             title: 'Relatórios',
             icon: BookKey,
             path: '/reports'
+          },
+          {
+            title: 'Configurações',
+            icon: Settings,
+            path: '/configs'
           }
         ]}
       />
