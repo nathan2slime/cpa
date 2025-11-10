@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException } from '@nestjs/common'
 import { PrismaService } from '~/database/prisma.service'
 import { hash } from 'bcryptjs'
 import * as csv from 'csv-parser'
@@ -28,24 +28,27 @@ export class UserImportService {
       })
 
       for (const user of users) {
+        if (!user.destinatario) {
+          throw new BadRequestException(
+            `O usuário com login "${user.login}" não possui um curso (destinatario).`,
+          )
+        }
+
         const hashedPassword = await hash(user.password || '', 10)
 
-        let courseId: string | undefined = undefined
-        if (user.destinatario) {
-          let course = await tx.course.findFirst({
-            where: { name: user.destinatario },
-          })
+        let course = await tx.course.findFirst({
+          where: { name: user.destinatario },
+        })
 
-          if (!course) {
-            course = await tx.course.create({
-              data: {
-                name: user.destinatario,
-                type: CourseType.TECH,
-              },
-            })
-          }
-          courseId = course.id
+        if (!course) {
+          course = await tx.course.create({
+            data: {
+              name: user.destinatario,
+              type: CourseType.TECH,
+            },
+          })
         }
+        const courseId = course.id
 
         await tx.user.create({
           data: {

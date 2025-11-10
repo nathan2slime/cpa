@@ -1,7 +1,12 @@
 "use client"
 
+import { useEffect } from "react"
 import { useParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
+import { useSnapshot } from "valtio"
+
+import { authState } from "@/store/auth.state"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,6 +35,14 @@ const Answer = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormAnswers>()
+
+  const { logged, loading } = useSnapshot(authState)
+
+  useEffect(() => {
+    if (!loading && !logged) {
+      toast.error("Você precisa estar logado para responder a este formulário.")
+    }
+  }, [logged, loading])
 
   if (status && status !== 200) return <FormErrorMessage status={status} />
 

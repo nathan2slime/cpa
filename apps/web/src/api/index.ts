@@ -22,6 +22,9 @@ api.interceptors.response.use(
 
       if (data) {
         if (!exclude.includes(data.path) && !isServer) {
+          if (error.status === 401) {
+            return toast.error("Não autorizado.");
+          }
           toast.error(data.message);
         }
       }

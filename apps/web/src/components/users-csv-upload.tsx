@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "react-hot-toast";
-import { UserImportService } from "@/services/user-import.service";
+import { importUsersService } from "@/services/user-import.service";
 
 const UsersCsvUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -28,7 +28,7 @@ const UsersCsvUpload = () => {
 
     setIsUploading(true);
     try {
-      await UserImportService.importUsers(selectedFile);
+      await importUsersService(selectedFile);
       toast.success("Usuários importados com sucesso!");
       setSelectedFile(null);
     } catch (error: any) {
@@ -48,6 +48,26 @@ const UsersCsvUpload = () => {
         <CardTitle>Adicionar Usuários via CSV</CardTitle>
       </CardHeader>
       <CardContent>
+        <div className="mb-4 text-sm text-gray-600">
+          <p>O arquivo CSV deve conter as seguintes colunas:</p>
+          <ul className="list-disc pl-5 mt-2">
+            <li>
+              <b>login</b>: O login do usuário (obrigatório)
+            </li>
+            <li>
+              <b>password</b>: A senha do usuário (obrigatório)
+            </li>
+            <li>
+              <b>name</b>: O primeiro nome do usuário (obrigatório)
+            </li>
+            <li>
+              <b>surname</b>: O sobrenome do usuário (obrigatório)
+            </li>
+            <li>
+              <b>destinatario</b>: O curso do usuário (obrigatório)
+            </li>
+          </ul>
+        </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="csv-file">Upload de Arquivo CSV</Label>
           <Input
