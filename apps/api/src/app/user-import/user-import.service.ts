@@ -10,48 +10,60 @@ interface CsvUser {
   password?: string
   name: string
   surname: string
-  destinatario?: string
+  targetAudience: string
 }
 
 @Injectable()
 export class UserImportService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async importUsers(fileBuffer: Buffer): Promise<void> {
+  async importUsers(
+    fileBuffer: Buffer,
+    deleteExistingUsers: boolean,
+  ): Promise<void> {
     const users = await this.parseCsv(fileBuffer)
 
     await this.prisma.$transaction(async (tx) => {
-      await tx.user.deleteMany({
-        where: {
-          roles: { has: Role.USER },
-        },
-      })
+      if (deleteExistingUsers) {
+        await tx.user.deleteMany({
+          where: {
+            roles: { has: Role.USER },
+          },
+        })
+      }
 
       for (const user of users) {
-        if (!user.destinatario) {
+        if (!user.targetAudience) {
           throw new BadRequestException(
-            `O usuário com login "${user.login}" não possui um curso (destinatario).`,
+            `User with login "${user.login}" does not have a target audience.`,
           )
         }
 
         const hashedPassword = await hash(user.password || '', 10)
 
         let course = await tx.course.findFirst({
-          where: { name: user.destinatario },
+          where: { name: user.targetAudience },
         })
 
         if (!course) {
           course = await tx.course.create({
             data: {
-              name: user.destinatario,
+              name: user.targetAudience,
               type: CourseType.TECH,
             },
           })
         }
         const courseId = course.id
 
-        await tx.user.create({
-          data: {
+        await tx.user.upsert({
+          where: { login: user.login },
+          update: {
+            courseId: courseId,
+            name: user.name,
+            surname: user.surname,
+            ...(user.password && { password: hashedPassword }),
+          },
+          create: {
             login: user.login,
             password: hashedPassword,
             name: user.name,

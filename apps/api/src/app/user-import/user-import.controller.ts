@@ -4,6 +4,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Query,
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { UserImportService } from './user-import.service'
@@ -20,7 +21,11 @@ export class UserImportController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])
   @UseInterceptors(FileInterceptor('file'))
-  async importUsers(@UploadedFile() file: Express.Multer.File) {
-    return this.userImportService.importUsers(file.buffer)
+  async importUsers(
+    @UploadedFile() file: Express.Multer.File,
+    @Query('deleteExistingUsers') deleteExistingUsers: string,
+  ) {
+    const shouldDelete = deleteExistingUsers === 'true'
+    return this.userImportService.importUsers(file.buffer, shouldDelete)
   }
 }
