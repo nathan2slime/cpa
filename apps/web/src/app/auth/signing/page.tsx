@@ -102,7 +102,7 @@ const Login = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium">
-                      Matricula
+                      Login
                     </FormLabel>
                     <FormControl>
                       <Input

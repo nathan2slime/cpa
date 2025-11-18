@@ -48,6 +48,7 @@ COPY --from=installer --chown=nodejs:nodejs /app .
 
 USER root
 COPY apps/api/entrypoint.sh /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
 USER nodejs

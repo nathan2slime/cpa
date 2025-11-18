@@ -8,11 +8,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "react-hot-toast";
 import { importUsersService } from "@/services/user-import.service";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const UsersCsvUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [deleteExistingUsers, setDeleteExistingUsers] = useState(true);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,15 +25,25 @@ const UsersCsvUpload = () => {
     }
   };
 
-  const handleUpload = async () => {
+  const handleImportConfirmation = () => {
     if (!selectedFile) {
       toast.error("Por favor, selecione um arquivo CSV para upload.");
       return;
     }
 
+    if (deleteExistingUsers) {
+      setIsAlertOpen(true);
+    } else {
+      handleUpload();
+    }
+  };
+
+  const handleUpload = async () => {
+    setIsAlertOpen(false); // Fechar alerta se estiver aberto
+
     setIsUploading(true);
     try {
-      await importUsersService(selectedFile, deleteExistingUsers);
+      await importUsersService(selectedFile!, deleteExistingUsers);
       toast.success("Usuários importados com sucesso!");
       setSelectedFile(null);
       if (fileInputRef.current) {
@@ -47,6 +59,14 @@ const UsersCsvUpload = () => {
       setIsUploading(false);
     }
   };
+
+  const confirmationMessage = `
+    Você selecionou a opção de 'Excluir usuários existentes'.
+    Atenção: Todos os usuários existentes que pertencem aos
+    públicos-alvos listados no arquivo CSV serão PERMANENTEMENTE excluídos,
+    juntamente com todos os seus dados e respostas no banco de dados.
+    Esta ação não pode ser desfeita. Deseja prosseguir?
+  `;
 
   return (
     <Card>
@@ -69,8 +89,8 @@ const UsersCsvUpload = () => {
             <li>
               <b>surname</b>: O sobrenome do usuário (obrigatório)
             </li>
-            <li>  
-              <b>targetAudience</b>: O público alvo do usuário (obrigatório)
+            <li>
+              <b>targetAudience</b>: O público-alvo do usuário (obrigatório)
             </li>
           </ul>
         </div>
@@ -81,7 +101,8 @@ const UsersCsvUpload = () => {
             onCheckedChange={(checked) => setDeleteExistingUsers(!!checked)}
           />
           <Label htmlFor="delete-users">
-            Excluir usuários existentes antes da importação
+            Excluir usuários existentes (apenas dos publicos-alvos importados) antes da
+            importação
           </Label>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -100,13 +121,36 @@ const UsersCsvUpload = () => {
           )}
         </div>
         <Button
-          onClick={handleUpload}
+          onClick={handleImportConfirmation}
           disabled={!selectedFile || isUploading}
           className="mt-4"
         >
           {isUploading ? "Importando..." : "Adicionar Usuários"}
         </Button>
       </CardContent>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-600">
+              ALERTA: Ação Irreversível no Banco de Dados
+            </AlertDialogTitle>
+            <AlertDialogDescription className="whitespace-pre-wrap">
+              {confirmationMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isUploading}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleUpload}
+              disabled={isUploading}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Confirmar Importação e Exclusão
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 };

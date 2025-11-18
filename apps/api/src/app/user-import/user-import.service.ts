@@ -24,36 +24,58 @@ export class UserImportService {
     const users = await this.parseCsv(fileBuffer)
 
     await this.prisma.$transaction(async (tx) => {
-      if (deleteExistingUsers) {
-        await tx.user.deleteMany({
-          where: {
-            roles: { has: Role.USER },
-          },
-        })
+      // 1. Validar e coletar nomes de cursos únicos
+      const courseNames = [
+        ...new Set(users.map((u) => u.targetAudience)),
+      ].filter(Boolean)
+
+      const usersWithoutAudience = users.filter((user) => !user.targetAudience)
+      if (usersWithoutAudience.length > 0) {
+        throw new BadRequestException(
+          `User with login "${usersWithoutAudience[0].login}" does not have a target audience.`,
+        )
       }
 
-      for (const user of users) {
-        if (!user.targetAudience) {
-          throw new BadRequestException(
-            `User with login "${user.login}" does not have a target audience.`,
-          )
-        }
+      // 2. Encontrar ou criar todos os cursos e mapear seus IDs
+      const courseMap = new Map<string, string>()
+      const courseIdsToDelete: string[] = []
 
-        const hashedPassword = await hash(user.password || '', 10)
-
+      for (const name of courseNames) {
         let course = await tx.course.findFirst({
-          where: { name: user.targetAudience },
+          where: { name: name },
         })
 
         if (!course) {
           course = await tx.course.create({
             data: {
-              name: user.targetAudience,
+              name: name,
               type: CourseType.TECH,
             },
           })
         }
-        const courseId = course.id
+        courseMap.set(name, course.id)
+        courseIdsToDelete.push(course.id)
+      }
+
+      // 3. Excluir usuários existentes que pertencem aos cursos importados
+      if (deleteExistingUsers && courseIdsToDelete.length > 0) {
+        await tx.user.deleteMany({
+          where: {
+            roles: { has: Role.USER },
+            courseId: { in: courseIdsToDelete },
+          },
+        })
+      }
+
+      // 4. Upsert dos usuários
+      for (const user of users) {
+        const courseId = courseMap.get(user.targetAudience)
+        // A validação no passo 1 garante que courseId existe, mas para segurança:
+        if (!courseId) {
+          throw new Error('Course ID not found after processing')
+        }
+
+        const hashedPassword = await hash(user.password || '', 10)
 
         await tx.user.upsert({
           where: { login: user.login },

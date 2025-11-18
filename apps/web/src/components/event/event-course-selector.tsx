@@ -62,7 +62,7 @@ export function EventCourseSelector({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium">Destinatários</h2>
+      <h2 className="text-lg font-medium">Público alvo</h2>
 
       <FormField
         control={control}
@@ -133,7 +133,7 @@ export function EventCourseSelector({
             {selectedCourses.length > 0 && (
               <div className="mt-2">
                 <div className="flex items-center justify-between">
-                  <FormLabel>Cursos Selecionados</FormLabel>
+                  <FormLabel>Publicos-alvos Selecionados</FormLabel>
                   <Button
                     type="button"
                     variant="link"
