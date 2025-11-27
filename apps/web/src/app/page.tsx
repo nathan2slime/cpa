@@ -1,15 +1,19 @@
 "use client";
 
 import { authState } from "@/store/auth.state";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useSnapshot } from "valtio";
 
 const Index = () => {
   const { logged, loading, data } = useSnapshot(authState);
+  const router = useRouter();
 
-  if (!loading && logged && data?.user.roles.includes("admin")) {
-    redirect("/dashboard");
-  }
+  useEffect(() => {
+    if (!loading && logged && data?.user.roles.includes("admin")) {
+      router.replace("/dashboard");
+    }
+  }, [loading, logged, data, router]);
 
   return <div />;
 };
