@@ -40,7 +40,7 @@ const FormErrorMessage = ({ status }: Props) => {
   const error = statusText[status as 403 | 404 | 409 | 423] || defaultError;
 
   return (
-    <div className="py-10 flex justify-center">
+    <div className="py-5 flex justify-center">
       <Card className="max-w-xl w-full text-center border border-t-8 border-t-primary">
         <CardHeader className="py-3">
           <CardTitle className="text-2xl text-start">{error.title}</CardTitle>
