@@ -67,9 +67,9 @@ export function EventCourseSelector({
       <FormField
         control={control}
         name="courses"
-        render={() => (
+        render={() => (                                                                       
           <FormItem className="space-y-4">
-            <FormLabel>Adicionar destinatário(s)</FormLabel>
+            <FormLabel>Adicionar Público-alvo</FormLabel>
             <FormControl>
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
@@ -79,7 +79,7 @@ export function EventCourseSelector({
                     aria-expanded={open}
                     className="w-full justify-between"
                   >
-                    Selecione um destinatário
+                    Selecione um Público-alvo
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>

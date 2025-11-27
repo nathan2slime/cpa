@@ -5,14 +5,11 @@ import { useParams } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { useSnapshot } from "valtio"
-
 import { authState } from "@/store/auth.state"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-
 import { useCanAnswer, useCreateAnswer, useEvent } from "@/hooks/api-hooks"
 import type { OptionType } from "@/types/options.types"
 import { type QuestionType, QuestionTypeEnum } from "@/types/question"
@@ -40,7 +37,7 @@ const Answer = () => {
 
   useEffect(() => {
     if (!loading && !logged) {
-      toast.error("Você precisa estar logado para responder a este formulário.")
+      toast("Você precisa estar logado para responder a este formulário.")
     }
   }, [logged, loading])
 
@@ -67,7 +64,7 @@ const Answer = () => {
 
       switch (question.type) {
         case QuestionTypeEnum.CHOOSE:
-          if (!formValues[qId]) return alert("Por favor, responda todas as perguntas.")
+          if (!formValues[qId]) return toast("Por favor, responda todas as perguntas.")
           answers.data.push({
             questionId: qId,
             optionId: formValues[qId],
@@ -76,7 +73,7 @@ const Answer = () => {
           break
 
         case QuestionTypeEnum.TEXT:
-          if (!formValues[qId]?.trim()) return alert("Por favor, responda todas as perguntas.")
+          if (!formValues[qId]?.trim()) return toast("Por favor, responda todas as perguntas.")
           answers.data.push({
             questionId: qId,
             optionId: "",
@@ -89,7 +86,7 @@ const Answer = () => {
           const text = formValues[`${qId}_text`] || ""
 
           if (!selectedOption && !text.trim()) {
-            return alert("Por favor, responda todas as perguntas.")
+            return toast("Por favor, responda todas as perguntas.")
           }
 
           answers.data.push({
