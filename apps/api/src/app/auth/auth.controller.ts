@@ -32,7 +32,8 @@ export class AuthController {
     description: "Retorna sessão atual",
   })
   async auth(@Req() req: Request, @Res() res: Response) {
-    return res.status(HttpStatus.OK).json(req.user);
+    const { accessToken, refreshToken, ...rest } = req.user as Session;
+    return res.status(HttpStatus.OK).json(rest);
   }
 
   @Post("signout")
@@ -70,7 +71,8 @@ export class AuthController {
         ),
       }
     );
-    return res.status(HttpStatus.OK).json(session);
+    const { accessToken: _, refreshToken: __, ...rest } = session;
+    return res.status(HttpStatus.OK).json(rest);
   }
 
   @Post("signin")
@@ -92,7 +94,8 @@ export class AuthController {
         ),
       }
     );
-    return res.status(HttpStatus.OK).json(data);
+    const { accessToken: _, refreshToken: __, ...rest } = data;
+    return res.status(HttpStatus.OK).json(rest);
   }
 
   @UseGuards(JwtAuthGuard)

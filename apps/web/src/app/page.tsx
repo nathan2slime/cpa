@@ -10,7 +10,7 @@ const Index = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && logged && data?.user.roles.includes("admin")) {
+    if (!loading && logged && data?.user.roles.includes("ADMIN")) {
       router.replace("/dashboard");
     }
   }, [loading, logged, data, router]);
