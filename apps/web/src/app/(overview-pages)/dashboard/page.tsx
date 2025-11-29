@@ -34,7 +34,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export default function Dashboard() {
-  const { data: dashboardData, refetch } = useDashboard();
+  const { data: dashboardData } = useDashboard();
 
   if (!dashboardData) {
     return (
@@ -64,7 +64,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
+    <div className="bg-gradient-to-br from-background via-background to-muted/30">
       <div className="container mx-auto p-6 space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-4 space-y-6">
