@@ -22,7 +22,7 @@ import {
 const UsersCsvUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [deleteExistingUsers, setDeleteExistingUsers] = useState(true);
+  const [deleteExistingUsers, setDeleteExistingUsers] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,7 +44,7 @@ const UsersCsvUpload = () => {
   };
 
   const handleUpload = async () => {
-    setIsAlertOpen(false); // Fechar alerta se estiver aberto
+    setIsAlertOpen(false);
 
     setIsUploading(true);
     try {
