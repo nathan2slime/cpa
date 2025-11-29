@@ -15,8 +15,6 @@ export const manager = async () => {
     password: "root"
   }
 
-  console.log(data);
-
   const exist = await prisma.user.findFirst({ where: { login: data.login } })
 
   data.password = await bcryptjs.hash(password, 10)

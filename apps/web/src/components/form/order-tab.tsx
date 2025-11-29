@@ -55,12 +55,10 @@ export function OrderTab() {
         const newIndex = items.findIndex((item) => item.id === over.id);
         return arrayMove(items, oldIndex, newIndex);
       });
-      console.log("New ordered questions:", orderedQuestions);
     }
   };
 
   const submit = () => {
-    console.log("Submitting ordered questions:", orderedQuestions);
     reorderMutation.mutate(orderedQuestions, {
       onSuccess: () => {
         toast.success("Ordem das questões salva com sucesso!");

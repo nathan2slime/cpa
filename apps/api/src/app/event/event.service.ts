@@ -66,10 +66,16 @@ export class EventService {
               where: {
                 deletedAt: null,
               },
+              orderBy: {
+                order: "asc",
+              },
               include: {
                 options: {
                   where: {
                     deletedAt: null,
+                  },
+                  orderBy: {
+                    order: "asc",
                   },
                 },
               },
