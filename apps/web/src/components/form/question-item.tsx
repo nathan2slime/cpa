@@ -118,40 +118,45 @@ export function QuestionItem({
             {getTypeLabel(type)}
           </Badge>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id={`mandatory-${id}`}
-              checked={mandatory}
-              onCheckedChange={(checked: boolean) =>
-                updateQuestionMutation.mutate({
-                  questionId: id,
-                  data: { mandatory: checked },
-                })
-              }
-            />
-            <Label htmlFor={`mandatory-${id}`}>Obrigatória</Label>
+        <div className="flex gap-2">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id={`mandatory-${id}`}
+                checked={mandatory}
+                onCheckedChange={(checked: boolean) =>
+                  updateQuestionMutation.mutate({
+                    questionId: id,
+                    data: { mandatory: checked },
+                  })
+                }
+              />
+              <Label htmlFor={`mandatory-${id}`}>Obrigatória</Label>
+            </div>
           </div>
+          {!disabled && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleDuplicate}>
+                  <Copy className="mr-2 h-4 w-4" />
+                  Duplicar
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleDelete}
+                  className="text-red-600"
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  Excluir
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
-        {!disabled && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm">
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={handleDuplicate}>
-                <Copy className="mr-2 h-4 w-4" />
-                Duplicar
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleDelete} className="text-red-600">
-                <Trash className="mr-2 h-4 w-4" />
-                Excluir
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
       </CardHeader>
       <CardContent className="p-4 pt-0 space-y-4">
         {(type === "TEXT" || type === "CHOOSE_AND_TEXT") && (

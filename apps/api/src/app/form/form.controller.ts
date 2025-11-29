@@ -38,6 +38,15 @@ export class FormController {
     return res.status(HttpStatus.CREATED).json(data);
   }
 
+  @Post("duplicate/:id")
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.ADMIN])
+  async duplicate(@Res() res: Response, @Param("id") id: string) {
+    const data = await this.formService.duplicate(id);
+
+    return res.status(HttpStatus.CREATED).json(data);
+  }
+
   @Delete("remove/:id")
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Roles([Role.ADMIN])

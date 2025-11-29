@@ -146,4 +146,80 @@ export class FormService {
       page,
     };
   }
+  async duplicate(id: string) {
+    const originalForm = await this.prisma.form.findUnique({
+      where: { id, deletedAt: null },
+      include: {
+        questions: {
+          where: { deletedAt: null },
+          include: {
+            options: {
+              where: { deletedAt: null },
+            },
+          },
+        },
+      },
+    });
+
+    if (!originalForm) {
+      throw new HttpException(
+        "Formulário não encontrado",
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    const baseTitleMatch = originalForm.title.match(/^(.*?) - copia \(\d+\)$/);
+    const baseTitle = baseTitleMatch ? baseTitleMatch[1] : originalForm.title;
+
+    const similarForms = await this.prisma.form.findMany({
+      where: {
+        title: {
+          startsWith: baseTitle,
+        },
+        deletedAt: null,
+      },
+      select: { title: true },
+    });
+
+    let maxSequence = 0;
+    const regex = new RegExp(
+      `^${escapeRegExp(baseTitle)} - copia \\((\\d+)\\)$`
+    );
+
+    for (const form of similarForms) {
+      const match = form.title.match(regex);
+      if (match) {
+        const sequence = parseInt(match[1], 10);
+        if (sequence > maxSequence) {
+          maxSequence = sequence;
+        }
+      }
+    }
+
+    const newTitle = `${baseTitle} - copia (${maxSequence + 1})`;
+
+    return this.prisma.form.create({
+      data: {
+        title: newTitle,
+        questions: {
+          create: originalForm.questions.map((question) => ({
+            title: question.title,
+            type: question.type,
+            order: question.order,
+            mandatory: question.mandatory,
+            options: {
+              create: question.options.map((option) => ({
+                title: option.title,
+                order: option.order,
+              })),
+            },
+          })),
+        },
+      },
+    });
+  }
+}
+
+function escapeRegExp(string: string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

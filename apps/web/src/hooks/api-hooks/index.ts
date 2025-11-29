@@ -6,6 +6,7 @@ export {
   useCreateForm,
   useUpdateForm,
   useDeleteForm,
+  useDuplicateForm,
 } from "./form-api-hooks";
 
 // Event hooks

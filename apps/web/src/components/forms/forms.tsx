@@ -13,7 +13,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useAllTagsForm, useCreateForm } from "@/hooks/api-hooks";
+import {
+  useAllTagsForm,
+  useCreateForm,
+  useDuplicateForm,
+} from "@/hooks/api-hooks";
 import { FormReq } from "@/types/form";
 import { DeleteFormDialog } from "@/components/forms/delete-form";
 import { TagPopover } from "@/components/tag-popover";
@@ -28,6 +32,7 @@ export default function ShowForms({ forms }: FormsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { mutate: createForm } = useCreateForm();
+  const { mutate: duplicateForm } = useDuplicateForm();
   const { data: tags = [] } = useAllTagsForm();
 
   return (
@@ -83,6 +88,9 @@ export default function ShowForms({ forms }: FormsProps) {
                       onClick={() => router.push(`/form/${form.id}`)}
                     >
                       Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => duplicateForm(form.id!)}>
+                      Duplicar
                     </DropdownMenuItem>
                     <DeleteFormDialog formId={form.id!} />
                   </DropdownMenuContent>

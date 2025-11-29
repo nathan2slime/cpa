@@ -99,3 +99,17 @@ export function useDeleteForm() {
     },
   });
 }
+
+export function useDuplicateForm() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const res = await api.post(`/api/form/duplicate/${id}`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forms"] });
+    },
+  });
+}

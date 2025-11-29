@@ -42,7 +42,7 @@ export const PaginationComponent = ({
           }
 
           return (
-            <PaginationItem key={index}>
+            <PaginationItem key={index} className="cursor-pointer">
               <PaginationLink
                 onClick={(e) => {
                   e.preventDefault();
