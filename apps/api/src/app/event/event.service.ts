@@ -45,8 +45,8 @@ export class EventService {
                 },
               },
             },
-          }),
-        ),
+          })
+        )
       );
     }
 
@@ -90,9 +90,13 @@ export class EventService {
 
     const courseIds = event?.courses.map((course) => course.course.id) || [];
 
+    const hasResponses =
+      (await this.prisma.answer.count({ where: { eventId: id } })) > 0;
+
     return {
       ...event,
       courses: courseIds,
+      hasResponses,
     };
   }
 
@@ -172,6 +176,13 @@ export class EventService {
         : {
             updatedAt: "asc",
           },
+      include: {
+        _count: {
+          select: {
+            answers: true,
+          },
+        },
+      },
     });
 
     const pages = Math.ceil(total / perPage);
@@ -186,6 +197,7 @@ export class EventService {
             : event.startDate > now
             ? "agendado"
             : "encerrado",
+        hasResponses: event._count.answers > 0,
       })),
       pages,
       perPage,
@@ -219,7 +231,8 @@ export class EventService {
   }
 
   async remove(id: string) {
-    await this.prisma.courseEvent.updateMany({ where: { eventId: id },
+    await this.prisma.courseEvent.updateMany({
+      where: { eventId: id },
       data: {
         deletedAt: new Date(),
       },

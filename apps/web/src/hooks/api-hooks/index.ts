@@ -23,7 +23,7 @@ export {
   useDeleteQuestion,
   useQuestions,
   useDuplicateQuestion,
-  useUpdateQuestionTitle,
+  useUpdateQuestion,
   useReorderQuestions,
 } from "./question-api-hooks";
 

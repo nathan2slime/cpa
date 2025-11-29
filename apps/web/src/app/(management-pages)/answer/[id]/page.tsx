@@ -79,8 +79,10 @@ const Answer = () => {
 
       switch (question.type) {
         case QuestionTypeEnum.CHOOSE:
-          if (!formValues[qId])
-            return toast("Por favor, responda todas as perguntas.");
+          if (question.mandatory && !formValues[qId])
+            return toast(
+              `Por favor, responda a questão obrigatória: ${question.title}`
+            );
           answers.data.push({
             questionId: qId,
             optionId: formValues[qId],
@@ -89,8 +91,10 @@ const Answer = () => {
           break;
 
         case QuestionTypeEnum.TEXT:
-          if (!formValues[qId]?.trim())
-            return toast("Por favor, responda todas as perguntas.");
+          if (question.mandatory && !formValues[qId]?.trim())
+            return toast(
+              `Por favor, responda a questão obrigatória: ${question.title}`
+            );
           answers.data.push({
             questionId: qId,
             optionId: "",
@@ -102,8 +106,10 @@ const Answer = () => {
           const selectedOption = formValues[`${qId}_options`] || "";
           const text = formValues[`${qId}_text`] || "";
 
-          if (!selectedOption && !text.trim()) {
-            return toast("Por favor, responda todas as perguntas.");
+          if (question.mandatory && !selectedOption && !text.trim()) {
+            return toast(
+              `Por favor, responda a questão obrigatória: ${question.title}`
+            );
           }
 
           answers.data.push({
@@ -127,7 +133,7 @@ const Answer = () => {
           <Controller
             name={question.id}
             control={control}
-            rules={{ required: true }}
+            rules={{ required: question.mandatory }}
             render={({ field }) => (
               <RadioGroup
                 className="space-y-2"
@@ -152,7 +158,7 @@ const Answer = () => {
           <Controller
             name={question.id}
             control={control}
-            rules={{ required: true }}
+            rules={{ required: question.mandatory }}
             render={({ field }) => (
               <Textarea placeholder="Digite sua resposta..." {...field} />
             )}
@@ -213,7 +219,12 @@ const Answer = () => {
         <CardContent className="space-y-6 w-full">
           {form.questions?.map((question: QuestionType) => (
             <div key={question.id} className="space-y-2">
-              <h4 className="font-medium">{question.title}</h4>
+              <h4 className="font-medium">
+                {question.title}
+                {question.mandatory && (
+                  <span className="text-red-500 ml-1">*</span>
+                )}
+              </h4>
               {renderQuestion(question)}
             </div>
           ))}

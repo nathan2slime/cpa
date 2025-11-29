@@ -10,6 +10,7 @@ export type QuestionType = {
   id: string;
   title: string;
   type: QuestionTypeEnum;
+  mandatory: boolean;
   formId: string;
   createdAt: string;
   deletedAt: string | null;

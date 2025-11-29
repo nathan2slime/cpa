@@ -36,6 +36,7 @@ interface EventCourseSelectorProps {
   onRemoveCourse: (courseId: string) => void;
   onAddAllCourses: () => void;
   onRemoveAllCourses: () => void;
+  disableRemove?: boolean;
 }
 
 export function EventCourseSelector({
@@ -46,6 +47,7 @@ export function EventCourseSelector({
   onRemoveCourse,
   onAddAllCourses,
   onRemoveAllCourses,
+  disableRemove,
 }: EventCourseSelectorProps) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,7 +69,7 @@ export function EventCourseSelector({
       <FormField
         control={control}
         name="courses"
-        render={() => (                                                                       
+        render={() => (
           <FormItem className="space-y-4">
             <FormLabel>Adicionar Público-alvo</FormLabel>
             <FormControl>
@@ -134,13 +136,15 @@ export function EventCourseSelector({
               <div className="mt-2">
                 <div className="flex items-center justify-between">
                   <FormLabel>Publicos-alvos Selecionados</FormLabel>
-                  <Button
-                    type="button"
-                    variant="link"
-                    onClick={onRemoveAllCourses}
-                  >
-                    Limpar Todos
-                  </Button>
+                  {!disableRemove && (
+                    <Button
+                      type="button"
+                      variant="link"
+                      onClick={onRemoveAllCourses}
+                    >
+                      Limpar Todos
+                    </Button>
+                  )}
                 </div>
                 <ul className="mt-2 flex flex-wrap gap-2">
                   {selectedCourses.map((course) => (
@@ -149,13 +153,15 @@ export function EventCourseSelector({
                       className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full text-sm"
                     >
                       {course.name}
-                      <button
-                        type="button"
-                        onClick={() => onRemoveCourse(course.id)}
-                        className="text-red-500 hover:text-red-700 ml-1"
-                      >
-                        <X size={16} />
-                      </button>
+                      {!disableRemove && (
+                        <button
+                          type="button"
+                          onClick={() => onRemoveCourse(course.id)}
+                          className="text-red-500 hover:text-red-700 ml-1"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
                     </li>
                   ))}
                 </ul>

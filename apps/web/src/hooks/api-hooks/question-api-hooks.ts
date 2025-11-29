@@ -43,21 +43,21 @@ export function useCreateQuestion() {
   });
 }
 
-export function useUpdateQuestionTitle() {
+export function useUpdateQuestion() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({
       questionId,
-      title,
+      data: updateData,
     }: {
       questionId: string;
-      title: string;
+      data: Partial<Question>;
     }) => {
-      const finalTitle = title.trim() === "" ? "Questão" : title;
-      const { data } = await api.patch(`/api/question/update/${questionId}`, {
-        title: finalTitle,
-      });
+      const { data } = await api.patch(
+        `/api/question/update/${questionId}`,
+        updateData
+      );
       return data;
     },
     onSuccess: () => {

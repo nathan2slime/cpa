@@ -1,65 +1,81 @@
-"use client"
+"use client";
 
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import type { Control } from "react-hook-form"
-import type { EventForm } from "@/types/event.types"
-import type { DateRange } from "react-day-picker"
-import { ptBR } from "date-fns/locale"
-import { useState, useEffect } from "react"
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import type { Control } from "react-hook-form";
+import type { EventForm } from "@/types/event.types";
+import type { DateRange } from "react-day-picker";
+import { ptBR } from "date-fns/locale";
+import { useState, useEffect } from "react";
 
 interface EventDateRangeProps {
-  control: Control<EventForm>
-  selectedRange: DateRange | undefined
-  onDateChange: (range: DateRange | undefined) => void
+  control: Control<EventForm>;
+  selectedRange: DateRange | undefined;
+  onDateChange: (range: DateRange | undefined) => void;
+  disableStartDate?: boolean;
 }
 
-export function EventDateRange({ control, selectedRange, onDateChange }: EventDateRangeProps) {
-  const [startDateOpen, setStartDateOpen] = useState(false)
-  const [endDateOpen, setEndDateOpen] = useState(false)
+export function EventDateRange({
+  control,
+  selectedRange,
+  onDateChange,
+  disableStartDate,
+}: EventDateRangeProps) {
+  const [startDateOpen, setStartDateOpen] = useState(false);
+  const [endDateOpen, setEndDateOpen] = useState(false);
 
   useEffect(() => {
     if (!selectedRange) {
-      const today = new Date()
-      const tomorrow = new Date()
-      tomorrow.setDate(today.getDate() + 1)
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
 
       onDateChange({
         from: today,
         to: tomorrow,
-      })
+      });
     }
-  }, [selectedRange, onDateChange])
+  }, [selectedRange, onDateChange]);
 
   const handleStartDateSelect = (date: Date | undefined) => {
-    if (!date) return
+    if (!date) return;
 
     if (selectedRange?.to && date > selectedRange.to) {
-      const newEndDate = new Date(date)
-      newEndDate.setDate(date.getDate() + 1)
-      onDateChange({ from: date, to: newEndDate })
+      const newEndDate = new Date(date);
+      newEndDate.setDate(date.getDate() + 1);
+      onDateChange({ from: date, to: newEndDate });
     } else {
-      onDateChange({ from: date, to: selectedRange?.to })
+      onDateChange({ from: date, to: selectedRange?.to });
     }
 
-    setStartDateOpen(false)
-  }
+    setStartDateOpen(false);
+  };
 
   const handleEndDateSelect = (date: Date | undefined) => {
-    if (!date) return
+    if (!date) return;
 
     if (selectedRange?.from && date < selectedRange.from) {
-      return
+      return;
     }
 
-    onDateChange({ from: selectedRange?.from, to: date })
-    setEndDateOpen(false)
-  }
+    onDateChange({ from: selectedRange?.from, to: date });
+    setEndDateOpen(false);
+  };
 
   return (
     <div className="space-y-4">
@@ -77,12 +93,17 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
                   <FormControl>
                     <Button
                       variant="outline"
-                      className={cn("w-full justify-start text-left font-normal")}
+                      className={cn(
+                        "w-full justify-start text-left font-normal"
+                      )}
                       onClick={() => setStartDateOpen(true)}
+                      disabled={disableStartDate}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {selectedRange?.from ? (
-                        format(selectedRange.from, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                        format(selectedRange.from, "dd 'de' MMMM 'de' yyyy", {
+                          locale: ptBR,
+                        })
                       ) : (
                         <span>Selecione a data de início</span>
                       )}
@@ -116,12 +137,16 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
                   <FormControl>
                     <Button
                       variant="outline"
-                      className={cn("w-full justify-start text-left font-normal")}
+                      className={cn(
+                        "w-full justify-start text-left font-normal"
+                      )}
                       onClick={() => setEndDateOpen(true)}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {selectedRange?.to ? (
-                        format(selectedRange.to, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })
+                        format(selectedRange.to, "dd 'de' MMMM 'de' yyyy", {
+                          locale: ptBR,
+                        })
                       ) : (
                         <span>Selecione a data de término</span>
                       )}
@@ -134,8 +159,14 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
                     mode="single"
                     selected={selectedRange?.to}
                     onSelect={handleEndDateSelect}
-                    defaultMonth={selectedRange?.to || selectedRange?.from || new Date()}
-                    disabled={(date) => (selectedRange?.from ? date < selectedRange.from : date < new Date())}
+                    defaultMonth={
+                      selectedRange?.to || selectedRange?.from || new Date()
+                    }
+                    disabled={(date) =>
+                      selectedRange?.from
+                        ? date < selectedRange.from
+                        : date < new Date()
+                    }
                     locale={ptBR}
                   />
                 </PopoverContent>
@@ -152,8 +183,8 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
           value={selectedRange?.from ? selectedRange.from.toISOString() : ""}
           onChange={(e) => {
             if (e.target.value) {
-              const date = new Date(e.target.value)
-              onDateChange({ from: date, to: selectedRange?.to })
+              const date = new Date(e.target.value);
+              onDateChange({ from: date, to: selectedRange?.to });
             }
           }}
         />
@@ -162,12 +193,12 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
           value={selectedRange?.to ? selectedRange.to.toISOString() : ""}
           onChange={(e) => {
             if (e.target.value) {
-              const date = new Date(e.target.value)
-              onDateChange({ from: selectedRange?.from, to: date })
+              const date = new Date(e.target.value);
+              onDateChange({ from: selectedRange?.from, to: date });
             }
           }}
         />
       </div>
     </div>
-  )
+  );
 }

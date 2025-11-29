@@ -8,12 +8,11 @@ import { logger } from './logger.mjs'
 const isDev = process.env.NODE_ENV === 'development'
 
 export const manager = async () => {
-  const password = faker.internet.password({ length: 6, memorable: true })
   const data = {
     login: 'root',
     name: faker.person.firstName(),
     surname: faker.person.lastName(),
-    password
+    password: "root"
   }
 
   console.log(data);

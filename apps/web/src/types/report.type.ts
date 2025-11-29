@@ -34,6 +34,7 @@ export type Question = {
   id: string;
   title: string;
   type: QuestionType;
+  mandatory: boolean;
   formId: string;
   createdAt: string;
   updatedAt: string;

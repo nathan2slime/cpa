@@ -14,9 +14,13 @@ import { useState } from "react";
 
 interface QuestionOptionsProps {
   questionId: string;
+  disabled?: boolean;
 }
 
-export default function QuestionOptions({ questionId }: QuestionOptionsProps) {
+export default function QuestionOptions({
+  questionId,
+  disabled,
+}: QuestionOptionsProps) {
   const { data: options = [], isLoading } = useOptions(questionId);
   const createOptionMutation = useCreateOptions(questionId);
   const updateOptionMutation = useUpdateOptions(questionId);
@@ -92,17 +96,19 @@ export default function QuestionOptions({ questionId }: QuestionOptionsProps) {
               <label
                 htmlFor={`option-${index}`}
                 className="text-sm border border-gray-300 rounded-md px-3 py-1.5 w-full cursor-pointer hover:bg-gray-50"
-                onClick={() => handleStartEditOption(option)}
+                onClick={() => !disabled && handleStartEditOption(option)}
               >
                 {option.title || "Opção sem título"}
               </label>
             )}
-            <Button
-              variant="ghost"
-              onClick={() => handleDeleteOption(option.id)}
-            >
-              <Trash size={14} className="text-red-500" />
-            </Button>
+            {!disabled && (
+              <Button
+                variant="ghost"
+                onClick={() => handleDeleteOption(option.id)}
+              >
+                <Trash size={14} className="text-red-500" />
+              </Button>
+            )}
           </div>
         ))}
         <Button
@@ -110,7 +116,7 @@ export default function QuestionOptions({ questionId }: QuestionOptionsProps) {
           size="sm"
           className="w-full mt-2"
           onClick={handleCreateOption}
-          disabled={createOptionMutation.isPending}
+          disabled={createOptionMutation.isPending || disabled}
         >
           {createOptionMutation.isPending ? (
             <Loader2 className="mr-2 h-3 w-3 animate-spin" />

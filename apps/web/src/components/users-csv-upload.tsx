@@ -8,7 +8,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "react-hot-toast";
 import { importUsersService } from "@/services/user-import.service";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const UsersCsvUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -31,11 +40,7 @@ const UsersCsvUpload = () => {
       return;
     }
 
-    if (deleteExistingUsers) {
-      setIsAlertOpen(true);
-    } else {
-      handleUpload();
-    }
+    setIsAlertOpen(true);
   };
 
   const handleUpload = async () => {
@@ -60,12 +65,18 @@ const UsersCsvUpload = () => {
     }
   };
 
-  const confirmationMessage = `
+  const confirmationMessage = deleteExistingUsers
+    ? `
     Você selecionou a opção de 'Excluir usuários existentes'.
     Atenção: Todos os usuários existentes que pertencem aos
     públicos-alvos listados no arquivo CSV serão PERMANENTEMENTE excluídos,
     juntamente com todos os seus dados e respostas no banco de dados.
     Esta ação não pode ser desfeita. Deseja prosseguir?
+  `
+    : `
+    Você está prestes a importar novos usuários.
+    Os usuários listados no arquivo CSV serão adicionados ao sistema.
+    Deseja prosseguir?
   `;
 
   return (
@@ -101,8 +112,8 @@ const UsersCsvUpload = () => {
             onCheckedChange={(checked) => setDeleteExistingUsers(!!checked)}
           />
           <Label htmlFor="delete-users">
-            Excluir usuários existentes (apenas dos publicos-alvos importados) antes da
-            importação
+            Excluir usuários existentes (apenas dos publicos-alvos importados)
+            antes da importação
           </Label>
         </div>
         <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -132,21 +143,33 @@ const UsersCsvUpload = () => {
       <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-red-600">
-              ALERTA: Ação Irreversível no Banco de Dados
+            <AlertDialogTitle
+              className={deleteExistingUsers ? "text-red-600" : ""}
+            >
+              {deleteExistingUsers
+                ? "ALERTA: Ação Irreversível no Banco de Dados"
+                : "Confirmar Importação"}
             </AlertDialogTitle>
             <AlertDialogDescription className="whitespace-pre-wrap">
               {confirmationMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isUploading}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel disabled={isUploading}>
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleUpload}
               disabled={isUploading}
-              className="bg-red-600 hover:bg-red-700"
+              className={
+                deleteExistingUsers
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-primary hover:bg-primary/90"
+              }
             >
-              Confirmar Importação e Exclusão
+              {deleteExistingUsers
+                ? "Confirmar Importação e Exclusão"
+                : "Confirmar Importação"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

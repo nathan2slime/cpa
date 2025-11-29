@@ -31,6 +31,10 @@ export class UpdateQuestionDto {
 
   @ApiProperty()
   @IsOptional()
+  mandatory: boolean;
+
+  @ApiProperty()
+  @IsOptional()
   order: number;
 }
 

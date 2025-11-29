@@ -155,30 +155,61 @@ export class AnswerService {
       },
     });
 
-    await Promise.all(
-      data.map(async (qa) => {
-        const question = await this.prisma.question.findUnique({
-          where: { id: qa.questionId },
-          include: { options: true },
-        });
+    // Fetch all questions for the form
+    const questions = await this.prisma.question.findMany({
+      where: { formId: event.form.id, deletedAt: null },
+      include: { options: true },
+    });
 
-        if (!question) {
+    await Promise.all(
+      questions.map(async (question) => {
+        const submittedAnswer = data.find((a) => a.questionId === question.id);
+
+        if (question.mandatory && !submittedAnswer) {
           throw new HttpException(
-            "Questão não encontrada",
-            HttpStatus.NOT_FOUND
+            `A questão "${question.title}" é obrigatória.`,
+            HttpStatus.BAD_REQUEST
           );
         }
 
+        if (!submittedAnswer) return; // Skip non-mandatory unanswered questions
+
+        const qa = submittedAnswer;
         const hasOption =
           qa.optionId && question.options.some((opt) => opt.id === qa.optionId);
         const hasText = qa.value && qa.value.trim().length > 0;
 
-        if (question.type === "CHOOSE_AND_TEXT") {
-          if (!hasOption && !hasText) {
+        if (question.mandatory) {
+          if (question.type === "CHOOSE_AND_TEXT" && !hasOption && !hasText) {
             throw new HttpException(
-              "É necessário escolher uma opção e/ou justificar",
+              `A questão "${question.title}" é obrigatória.`,
               HttpStatus.BAD_REQUEST
             );
+          }
+          if (question.type === "CHOOSE" && !hasOption) {
+            throw new HttpException(
+              `A questão "${question.title}" é obrigatória.`,
+              HttpStatus.BAD_REQUEST
+            );
+          }
+          if (question.type === "TEXT" && !hasText) {
+            throw new HttpException(
+              `A questão "${question.title}" é obrigatória.`,
+              HttpStatus.BAD_REQUEST
+            );
+          }
+        }
+
+        // Existing validation logic (adapted)
+        if (question.type === "CHOOSE_AND_TEXT") {
+          if (!hasOption && !hasText && !question.mandatory) return; // Allow empty if not mandatory?
+          // Actually, if it's in 'data', it implies the user tried to answer.
+          // But if they sent empty data for a non-mandatory question, maybe we should just ignore or save nulls?
+          // Let's stick to the original logic but wrapped in the loop.
+
+          if (!hasOption && !hasText) {
+            // If it was mandatory, we already threw. If not mandatory, and empty, maybe just skip creating?
+            return;
           }
 
           return this.prisma.questionAnswer.create({
@@ -193,7 +224,9 @@ export class AnswerService {
 
         if (question.type === "CHOOSE") {
           if (!hasOption) {
-            throw new HttpException("Opção inválida", HttpStatus.BAD_REQUEST);
+            if (question.mandatory)
+              throw new HttpException("Opção inválida", HttpStatus.BAD_REQUEST);
+            return;
           }
 
           return this.prisma.questionAnswer.create({
@@ -205,20 +238,24 @@ export class AnswerService {
           });
         }
 
-        if (!hasText) {
-          throw new HttpException(
-            "Texto da resposta é obrigatório",
-            HttpStatus.BAD_REQUEST
-          );
-        }
+        if (question.type === "TEXT") {
+          if (!hasText) {
+            if (question.mandatory)
+              throw new HttpException(
+                "Texto obrigatório",
+                HttpStatus.BAD_REQUEST
+              );
+            return;
+          }
 
-        return this.prisma.questionAnswer.create({
-          data: {
-            value: qa.value,
-            question: { connect: { id: qa.questionId } },
-            answer: { connect: { id: answer.id } },
-          },
-        });
+          return this.prisma.questionAnswer.create({
+            data: {
+              value: qa.value,
+              question: { connect: { id: qa.questionId } },
+              answer: { connect: { id: answer.id } },
+            },
+          });
+        }
       })
     );
 

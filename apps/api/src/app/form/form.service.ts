@@ -67,9 +67,17 @@ export class FormService {
       },
     });
 
+    const hasResponses = await this.prisma.answer.count({
+      where: {
+        formId: id,
+        deletedAt: null,
+      },
+    });
+
     return {
       ...items,
       questions: items.questions.filter((e) => e.deletedAt == null),
+      hasResponses: hasResponses > 0,
     };
   }
 

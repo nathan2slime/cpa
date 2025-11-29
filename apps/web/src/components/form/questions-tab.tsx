@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, FileText, ListChecks, Loader2, Plus } from "lucide-react";
 import { QuestionItem } from "@/components/form/question-item";
 import type { QuestionTypeEnum } from "@/types/question";
-import { useQuestions, useCreateQuestion } from "@/hooks/api-hooks";
+import { useQuestions, useCreateQuestion, useForm } from "@/hooks/api-hooks";
 import { useParams } from "next/navigation";
 
 export function QuestionsTab() {
@@ -14,6 +14,7 @@ export function QuestionsTab() {
   const formId = params.id as string;
 
   const { data: questions = [], isLoading, error } = useQuestions(formId);
+  const { data: form } = useForm(formId);
   const createQuestionMutation = useCreateQuestion();
 
   const handleCreateQuestion = async (type: QuestionTypeEnum) => {
@@ -27,6 +28,7 @@ export function QuestionsTab() {
         isCreating={createQuestionMutation.isPending}
         loading={isLoading}
         handleCreateQuestion={handleCreateQuestion}
+        disabled={form?.hasResponses}
       />
       <Separator className="my-4" />
 
@@ -42,7 +44,11 @@ export function QuestionsTab() {
         </Alert>
       )}
 
-      <QuestionsList loading={isLoading} questions={questions} />
+      <QuestionsList
+        loading={isLoading}
+        questions={questions}
+        disabled={form?.hasResponses}
+      />
     </>
   );
 }
@@ -52,6 +58,7 @@ interface QuestionHeaderProps {
   isCreating: boolean;
   loading: boolean;
   handleCreateQuestion: (type: QuestionTypeEnum) => Promise<void>;
+  disabled?: boolean;
 }
 
 function QuestionHeader({
@@ -59,6 +66,7 @@ function QuestionHeader({
   isCreating,
   loading,
   handleCreateQuestion,
+  disabled,
 }: QuestionHeaderProps) {
   return (
     <div className="mb-3">
@@ -69,7 +77,7 @@ function QuestionHeader({
         <Button
           variant="secondary"
           onClick={() => handleCreateQuestion("TEXT" as QuestionTypeEnum)}
-          disabled={isCreating || loading}
+          disabled={isCreating || loading || disabled}
         >
           {isCreating ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -80,7 +88,7 @@ function QuestionHeader({
         </Button>
         <Button
           onClick={() => handleCreateQuestion("CHOOSE" as QuestionTypeEnum)}
-          disabled={isCreating || loading}
+          disabled={isCreating || loading || disabled}
         >
           {isCreating ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -94,7 +102,7 @@ function QuestionHeader({
           onClick={() =>
             handleCreateQuestion("CHOOSE_AND_TEXT" as QuestionTypeEnum)
           }
-          disabled={isCreating || loading}
+          disabled={isCreating || loading || disabled}
         >
           {isCreating ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -111,9 +119,10 @@ function QuestionHeader({
 interface QuestionsListProps {
   loading: boolean;
   questions: any[];
+  disabled?: boolean;
 }
 
-function QuestionsList({ loading, questions }: QuestionsListProps) {
+function QuestionsList({ loading, questions, disabled }: QuestionsListProps) {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -146,7 +155,9 @@ function QuestionsList({ loading, questions }: QuestionsListProps) {
           id={question.id}
           title={question.title}
           type={question.type as QuestionTypeEnum}
+          mandatory={question.mandatory}
           index={index + 1}
+          disabled={disabled}
         />
       ))}
     </div>

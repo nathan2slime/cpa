@@ -28,6 +28,7 @@ export type EventFormResponse = {
   active: boolean;
   formId: string;
   status: "em andamento" | "encerrado" | "agendado";
+  hasResponses: boolean;
 };
 
 export type EventFormPaginationResponse = {
@@ -51,4 +52,5 @@ export type EventReq = {
   startDate: Date;
   endDate: Date;
   formId: string;
+  hasResponses: boolean;
 };

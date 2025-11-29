@@ -168,6 +168,7 @@ export default function EventForm({ eventId }: EventFormProps) {
               control={form.control}
               selectedRange={selectedRange}
               onDateChange={handleDateRangeChange}
+              disableStartDate={event?.hasResponses}
             />
           </div>
 
@@ -176,6 +177,7 @@ export default function EventForm({ eventId }: EventFormProps) {
               control={form.control}
               selectedFormId={selectedFormId}
               onFormSelect={handleFormSelection}
+              disabled={event?.hasResponses}
             />
           </div>
 
@@ -188,6 +190,7 @@ export default function EventForm({ eventId }: EventFormProps) {
               onRemoveCourse={handleRemoveCourse}
               onAddAllCourses={handleAddAllCourses}
               onRemoveAllCourses={handleRemoveAllCourses}
+              disableRemove={event?.hasResponses}
             />
           </div>
 

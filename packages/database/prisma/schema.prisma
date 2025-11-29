@@ -180,6 +180,7 @@ model Question {
 
   options QuestionOption[]
   order   Int              @default(0)
+  mandatory Boolean @default(true)
 
   form           Form?            @relation(fields: [formId], references: [id])
   formId         String?
