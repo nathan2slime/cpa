@@ -13,8 +13,6 @@ export function FormHeader() {
   const [title, setTitle] = useState("");
   const updateFormMutation = useUpdateForm();
 
-  console.log(form);
-
   useEffect(() => {
     if (form?.title) {
       setTitle(form.title);

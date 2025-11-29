@@ -6,6 +6,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseArrayPipe,
   Patch,
   Post,
   Query,
@@ -59,7 +60,12 @@ export class QuestionController {
   }
 
   @Patch("reorder")
-  async reorder(@Body() body: ReorderQuestionDto[]) {
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Roles([Role.ADMIN])
+  async reorder(
+    @Body(new ParseArrayPipe({ items: ReorderQuestionDto }))
+    body: ReorderQuestionDto[]
+  ) {
     return this.questionService.reorderQuestions(body);
   }
 

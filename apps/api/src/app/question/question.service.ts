@@ -28,6 +28,7 @@ export class QuestionService {
   }
 
   async reorderQuestions(data: ReorderQuestionDto[]) {
+    console.log("Reordering questions payload:", JSON.stringify(data, null, 2));
     const updates = data.map((item, i) =>
       this.prisma.question.update({
         where: { id: item.id },

@@ -17,7 +17,7 @@ import { useAllTagsForm, useCreateForm } from "@/hooks/api-hooks";
 import { FormReq } from "@/types/form";
 import { DeleteFormDialog } from "@/components/forms/delete-form";
 import { TagPopover } from "@/components/tag-popover";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { EllipsisVertical } from "lucide-react";
 
 type FormsProps = {
@@ -26,6 +26,7 @@ type FormsProps = {
 
 export default function ShowForms({ forms }: FormsProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { mutate: createForm } = useCreateForm();
   const { data: tags = [] } = useAllTagsForm();
 
@@ -60,7 +61,9 @@ export default function ShowForms({ forms }: FormsProps) {
         <div className="border w-full rounded-xl">
           {forms.length === 0 && (
             <p className={"p-3 sm:p-5 text-sm sm:text-base"}>
-              Sem eventos criados. Crie um evento no botão acima "Criar novo".
+              {searchParams.size > 0
+                ? "Nenhum resultado encontrado para sua busca."
+                : 'Sem formulários criados. Crie um formulário no botão acima "Criar novo".'}
             </p>
           )}
           {forms.map((form) => (

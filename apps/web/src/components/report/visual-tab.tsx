@@ -22,7 +22,6 @@ export function VisualTab({
   expandedQuestions,
   toggleQuestion,
 }: VisualTabProps) {
-  console.log(questions);
 
   return (
     <>

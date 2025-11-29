@@ -86,11 +86,18 @@ export function useReorderQuestions() {
   return useMutation({
     mutationKey: ["reorder-questions"],
     mutationFn: async (questions: Question[]) => {
-      const { data } = await api.patch("/api/question/reorder/", questions);
+      const payload = questions.map((q, index) => ({
+        id: q.id,
+        order: index,
+      }));
+      const { data } = await api.patch("/api/question/reorder", payload);
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["questions"] });
+    },
+    onError: (error) => {
+      console.error("Failed to reorder questions:", error);
     },
   });
 }

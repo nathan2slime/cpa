@@ -56,16 +56,14 @@ export class DashboardService {
     });
 
     const allDays = eachDayOfInterval({ start, end });
-    const answersLastMonthAgrouped: AnswersAgrouped[] = allDays.map(
-      (day, i) => {
-        const dateStr = format(day, "yyyy-MM-dd");
-        return {
-          date: format(new Date(dateStr), "dd 'de' MMMM", { locale: ptBR }),
-          indexDay: i,
-          total: grouped[dateStr] ?? 0,
-        };
-      }
-    );
+    const answersLastMonthAgrouped: AnswersAgrouped[] = allDays.map((day) => {
+      const dateStr = format(day, "yyyy-MM-dd");
+      return {
+        date: format(new Date(dateStr), "dd 'de' MMMM", { locale: ptBR }),
+        indexDay: day.getDate(),
+        total: grouped[dateStr] ?? 0,
+      };
+    });
 
     return {
       openEvents,

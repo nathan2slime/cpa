@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -12,19 +13,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Badge } from "@/components/ui/badge";
 import { useDashboard } from "@/hooks/api-hooks/dashboard-api-hooks";
-import {
-  Activity,
-  Calendar,
-  Clock,
-  TrendingUp,
-  BarChart3,
-  Users,
-  RefreshCw,
-} from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { Button } from "@/components/ui/button";
+import { Activity, Calendar, Clock, TrendingUp } from "lucide-react";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 export type DashboardData = {
   openEvents: number;
@@ -38,6 +29,9 @@ export type AnswersAgrouped = {
   indexDay: number;
   total: number;
 };
+
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function Dashboard() {
   const { data: dashboardData, refetch } = useDashboard();
@@ -69,88 +63,9 @@ export default function Dashboard() {
     },
   };
 
-  const totalResponses = chartData.reduce((sum, item) => sum + item.total, 0);
-  const avgDaily =
-    chartData.length > 0 ? Math.round(totalResponses / chartData.length) : 0;
-  const maxDay =
-    chartData.length > 0 ? Math.max(...chartData.map((item) => item.total)) : 0;
-
-  const responsesPerEvent =
-    dashboardData.actualMonthEvents > 0
-      ? Math.round(
-          (dashboardData.actualMonthAnswers / dashboardData.actualMonthEvents) *
-            100
-        ) / 100
-      : 0;
-
-  const openEventsRate =
-    dashboardData.actualMonthEvents > 0
-      ? Math.round(
-          (dashboardData.openEvents / dashboardData.actualMonthEvents) * 100
-        )
-      : 0;
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       <div className="container mx-auto p-6 space-y-6">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border border-primary/20">
-          <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" />
-          <div className="relative p-8">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <BarChart3 className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold tracking-tight">
-                      Dashboard Analytics
-                    </h1>
-                    <p className="text-muted-foreground">
-                      Acompanhe o desempenho em tempo real
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
-                    {totalResponses}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Total Respostas
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
-                    {avgDaily}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Média Diária
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">
-                    {maxDay}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Pico Diário
-                  </div>
-                </div>
-                <div className="flex justify-center items-center">
-                  <Button
-                    onClick={() => refetch()}
-                    variant="outline"
-                    className="p-4 w-full"
-                  >
-                    <RefreshCw size={20} />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-4 space-y-6">
             <div className="space-y-4">
@@ -244,35 +159,6 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-
-            <Card className="bg-gradient-to-br from-muted/50 to-muted/20 border-dashed">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Resumo Rápido
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 rounded-lg bg-background/50">
-                    <div className="text-lg font-semibold">
-                      {responsesPerEvent}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Respostas/Evento
-                    </div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg bg-background/50">
-                    <div className="text-lg font-semibold">
-                      {openEventsRate}%
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      Taxa Abertura
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </div>
 
           <div className="lg:col-span-8">
@@ -287,8 +173,8 @@ export default function Dashboard() {
                       Acompanhe o desempenho diário do último mês
                     </CardDescription>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    Últimos 30 dias
+                  <Badge variant="outline" className="text-xs capitalize">
+                    {format(new Date(), "MMMM", { locale: ptBR })}
                   </Badge>
                 </div>
               </CardHeader>

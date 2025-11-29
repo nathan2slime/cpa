@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { useAllTagsEvent, useCourses } from "@/hooks/api-hooks";
 import type { EventFormResponse } from "@/types/event.types";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FilterByStatus } from "@/components/filters/by-status";
 
 type EventsProps = {
@@ -33,6 +33,7 @@ const ShowEvents = ({ events }: EventsProps) => {
   const { data: tags = [] } = useAllTagsEvent();
   const { data: courses = [] } = useCourses();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   return (
     <main className="w-full h-full flex flex-col justify-start items-start px-2 sm:px-5 gap-3">
@@ -64,7 +65,9 @@ const ShowEvents = ({ events }: EventsProps) => {
         <div className={"border w-full rounded-xl"}>
           {events.length === 0 && (
             <p className={"p-3 sm:p-5 text-sm sm:text-base"}>
-              Sem eventos criados. Crie um evento no botão acima "Criar novo".
+              {searchParams.size > 0
+                ? "Nenhum resultado encontrado para sua busca."
+                : 'Sem eventos criados. Crie um evento no botão acima "Criar novo".'}
             </p>
           )}
           {events.map((event) => (

@@ -15,8 +15,8 @@ export const manager = async () => {
     surname: faker.person.lastName(),
     password
   }
+
   console.log(data);
-  
 
   const exist = await prisma.user.findFirst({ where: { login: data.login } })
 

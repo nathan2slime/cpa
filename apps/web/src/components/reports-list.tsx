@@ -1,32 +1,35 @@
-"use client"
+"use client";
 
-import type { EventFormResponse } from "@/types/event.types"
+import type { EventFormResponse } from "@/types/event.types";
 
-import { EventCard } from "@/components/events/event-card"
-import { FiltersContent } from "@/components/filters"
-import { FilterByName } from "@/components/filters/by-name"
-import { FilterTag } from "@/components/filters/by-tag"
-import { Button } from "@/components/ui/button"
-import { useAllTagsEvent, useCourses } from "@/hooks/api-hooks"
-import { Flag } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { FilterByCourse } from "@/components/filters/by-course"
-import { FilterByStatus } from "@/components/filters/by-status"
+import { EventCard } from "@/components/events/event-card";
+import { FiltersContent } from "@/components/filters";
+import { FilterByName } from "@/components/filters/by-name";
+import { FilterTag } from "@/components/filters/by-tag";
+import { Button } from "@/components/ui/button";
+import { useAllTagsEvent, useCourses } from "@/hooks/api-hooks";
+import { Flag } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FilterByCourse } from "@/components/filters/by-course";
+import { FilterByStatus } from "@/components/filters/by-status";
 
 type Props = {
-  events: EventFormResponse[]
-}
+  events: EventFormResponse[];
+};
 
 const Reports = ({ events }: Props) => {
-  const router = useRouter()
-  const { data: tags = [] } = useAllTagsEvent()
-  const { data: courses = [] } = useCourses()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: tags = [] } = useAllTagsEvent();
+  const { data: courses = [] } = useCourses();
 
   return (
     <>
       <main className="w-full h-full flex flex-col justify-start items-start px-3 sm:px-4 md:px-5 gap-2 sm:gap-3">
         <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center">
-          <p className="font-semibold text-lg sm:text-xl">Relatório de eventos</p>
+          <p className="font-semibold text-lg sm:text-xl">
+            Relatório de eventos
+          </p>
         </div>
 
         <FiltersContent>
@@ -39,7 +42,9 @@ const Reports = ({ events }: Props) => {
         </FiltersContent>
 
         <div className="w-full h-full">
-          <p className="font-semibold mb-2 sm:mb-3 text-base sm:text-lg">Recentes</p>
+          <p className="font-semibold mb-2 sm:mb-3 text-base sm:text-lg">
+            Recentes
+          </p>
 
           <div className="border w-full rounded-xl">
             {events?.map((event: EventFormResponse) => (
@@ -57,14 +62,16 @@ const Reports = ({ events }: Props) => {
             ))}
             {events.length === 0 && (
               <p className="p-3 sm:p-5 text-sm sm:text-base">
-                Sem eventos, reveja a paginação para ver os eventos mais recentes.
+                {searchParams.size > 0
+                  ? "Nenhum resultado encontrado para sua busca."
+                  : 'Sem eventos disponíveis, eventos podem ser criados na aba de "Eventos" no botão "Criar novo".'}
               </p>
             )}
           </div>
         </div>
       </main>
     </>
-  )
-}
+  );
+};
 
-export default Reports
+export default Reports;
