@@ -65,11 +65,11 @@ export function QuestionItem({ id, title, type, index }: QuestionItemProps) {
   const getTypeLabel = (type: QuestionTypeEnum) => {
     switch (type) {
       case "TEXT":
-        return "Texto";
+        return "Aberta";
       case "CHOOSE":
-        return "Escolha";
+        return "Fechada";
       case "CHOOSE_AND_TEXT":
-        return "Escolha e Texto";
+        return "Multivalorada";
       default:
         return "Desconhecido";
     }

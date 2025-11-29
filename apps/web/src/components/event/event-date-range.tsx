@@ -23,7 +23,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
   const [startDateOpen, setStartDateOpen] = useState(false)
   const [endDateOpen, setEndDateOpen] = useState(false)
 
-  // Ensure we have a valid date range to start with
   useEffect(() => {
     if (!selectedRange) {
       const today = new Date()
@@ -40,7 +39,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
   const handleStartDateSelect = (date: Date | undefined) => {
     if (!date) return
 
-    // If start date is after end date, adjust end date
     if (selectedRange?.to && date > selectedRange.to) {
       const newEndDate = new Date(date)
       newEndDate.setDate(date.getDate() + 1)
@@ -55,7 +53,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
   const handleEndDateSelect = (date: Date | undefined) => {
     if (!date) return
 
-    // If end date is before start date, don't update
     if (selectedRange?.from && date < selectedRange.from) {
       return
     }
@@ -69,7 +66,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
       <h2 className="text-lg font-medium">Data do evento</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Start Date Picker */}
         <FormField
           control={control}
           name="startDate"
@@ -109,7 +105,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
           )}
         />
 
-        {/* End Date Picker */}
         <FormField
           control={control}
           name="endDate"
@@ -151,7 +146,6 @@ export function EventDateRange({ control, selectedRange, onDateChange }: EventDa
         />
       </div>
 
-      {/* These fields connect with react-hook-form but are hidden */}
       <div className="hidden">
         <input
           type="hidden"
