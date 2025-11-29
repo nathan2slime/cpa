@@ -32,6 +32,7 @@ export function useEvents(page: number) {
     queryFn: async () => {
       const params = new URLSearchParams();
       params.set("page", String(page));
+      params.set("perPage", "5");
       if (tag) params.set("tag", tag);
       if (name) params.set("query", name);
       if (course) params.set("course", course);

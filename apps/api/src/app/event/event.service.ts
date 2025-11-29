@@ -173,9 +173,7 @@ export class EventService {
       where,
       orderBy: sortField
         ? [{ [sortField]: sortOrder }]
-        : {
-            updatedAt: "asc",
-          },
+        : [{ updatedAt: "desc" }, { createdAt: "desc" }],
       include: {
         _count: {
           select: {

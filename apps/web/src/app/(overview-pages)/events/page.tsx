@@ -25,7 +25,7 @@ const ManagerEvents = () => {
       <PaginationComponent
         total={events?.total || 0}
         current={events?.page || 0}
-        limit={events?.perPage || 0}
+        limit={events?.perPage || 5}
       />
     </div>
   );

@@ -36,7 +36,7 @@ const generatePages = (page: number, totalPages: number) => {
 };
 
 export const usePagination = ({ current, limit, total }: PaginationProps) => {
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = Math.ceil(total / Math.max(limit, 1));
   const pages = generatePages(current, totalPages);
   const isCurrentPage = (n: number) => current === n;
 

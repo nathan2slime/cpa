@@ -8,13 +8,7 @@ import { toast } from "react-hot-toast";
 import { useSnapshot } from "valtio";
 import { authState } from "@/store/auth.state";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useCanAnswer, useCreateAnswer, useEvent } from "@/hooks/api-hooks";
@@ -211,34 +205,42 @@ const Answer = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <Card className="w-full">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full space-y-4">
+      <Card className="w-full border-t-8 border-t-primary">
         <CardHeader>
           <CardTitle className="text-2xl">{form.title}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6 w-full">
-          {form.questions?.map((question: QuestionType) => (
-            <div key={question.id} className="space-y-2">
-              <h4 className="font-medium">
-                {question.title}
-                {question.mandatory && (
-                  <span className="text-red-500 ml-1">*</span>
-                )}
-              </h4>
-              {renderQuestion(question)}
-            </div>
-          ))}
-
-          {Object.entries(errors).length > 0 && (
-            <p className="text-red-500">
-              Preencha corretamente todas as questões
-            </p>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button type="submit">Enviar respostas</Button>
-        </CardFooter>
       </Card>
+
+      {form.questions?.map((question: QuestionType) => (
+        <Card key={question.id}>
+          <CardContent className="pt-6 space-y-4">
+            <h4 className="font-medium text-base">
+              {question.title}
+              {question.mandatory && (
+                <span className="text-red-500 ml-1">*</span>
+              )}
+            </h4>
+            {renderQuestion(question)}
+          </CardContent>
+        </Card>
+      ))}
+
+      {Object.entries(errors).length > 0 && (
+        <Card className="border-red-500 bg-red-50">
+          <CardContent className="pt-6">
+            <p className="text-red-600 font-medium">
+              Preencha corretamente todas as questões obrigatórias.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="flex justify-end pb-8">
+        <Button type="submit" size="lg">
+          Enviar respostas
+        </Button>
+      </div>
     </form>
   );
 };

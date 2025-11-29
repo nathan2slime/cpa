@@ -26,7 +26,7 @@ const Form = () => {
       <PaginationComponent
         total={forms?.total || 0}
         current={forms?.page || 0}
-        limit={forms?.perPage || 0}
+        limit={forms?.perPage || 5}
       />
     </div>
   );

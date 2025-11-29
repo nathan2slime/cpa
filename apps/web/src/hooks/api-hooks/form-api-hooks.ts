@@ -16,10 +16,11 @@ export function useForms(page: number) {
   const name = searchParams.get("name");
 
   return useQuery({
-    queryKey: ["forms", page, name, tag], 
+    queryKey: ["forms", page, name, tag],
     queryFn: async () => {
       const params = new URLSearchParams();
       params.set("page", String(page));
+      params.set("perPage", "5");
       if (tag) params.set("tag", tag);
       if (name) params.set("query", name);
 

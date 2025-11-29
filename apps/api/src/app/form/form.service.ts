@@ -133,9 +133,7 @@ export class FormService {
       where,
       orderBy: sortField
         ? [{ [sortField]: sortOrder }]
-        : {
-            createdAt: "asc",
-          },
+        : [{ updatedAt: "desc" }, { createdAt: "desc" }],
     });
 
     const pages = Math.ceil(total / perPage);
