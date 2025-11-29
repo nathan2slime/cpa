@@ -30,7 +30,6 @@ export function QuestionsTab() {
         handleCreateQuestion={handleCreateQuestion}
         disabled={form?.hasResponses}
       />
-      <Separator className="my-4" />
 
       {error && (
         <Alert variant="destructive" className="mb-4">
@@ -148,7 +147,7 @@ function QuestionsList({ loading, questions, disabled }: QuestionsListProps) {
   }
 
   return (
-    <div className="space-y-4 overflow-y-auto max-h-[calc(100vh-350px)]">
+    <div className="space-y-4 overflow-y-auto">
       {questions.map((question, index) => (
         <QuestionItem
           key={question.id}

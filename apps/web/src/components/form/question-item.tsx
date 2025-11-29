@@ -20,7 +20,7 @@ import {
   useUpdateQuestion,
 } from "@/hooks/api-hooks";
 import type { QuestionTypeEnum } from "@/types/question";
-import { Copy, MoreHorizontal, Trash } from "lucide-react";
+import { Copy, MoreHorizontal, MoreVertical, Trash } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 
@@ -92,8 +92,8 @@ export function QuestionItem({
   return (
     <Card>
       <CardHeader className="p-4 flex flex-row items-start justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="bg-gray-100 text-gray-700 rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium">
+        <div className="flex items-start gap-2">
+          <span className="bg-gray-100 text-gray-700 rounded-full min-w-6 min-h-6 max-w-6 max-h-6 flex items-center justify-center text-sm font-medium">
             {index}
           </span>
           {isEditing ? (
@@ -107,7 +107,7 @@ export function QuestionItem({
             />
           ) : (
             <h3
-              className="font-medium cursor-pointer"
+              className="font-medium cursor-pointer text-justify"
               onClick={() => !disabled && setIsEditing(true)}
             >
               {questionTitle}
@@ -118,8 +118,8 @@ export function QuestionItem({
             {getTypeLabel(type)}
           </Badge>
         </div>
-        <div className="flex gap-2">
-          <div className="flex items-center gap-2">
+        <div className="flex gap-2 !m-0">
+          <div className="flex items-start gap-2">
             <div className="flex items-center space-x-2">
               <Switch
                 id={`mandatory-${id}`}
@@ -138,7 +138,7 @@ export function QuestionItem({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
