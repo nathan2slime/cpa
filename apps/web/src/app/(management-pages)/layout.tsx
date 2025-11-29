@@ -10,7 +10,7 @@ export default ({ children }: Readonly<AppChildren>) => {
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="flex flex-col items-start gap-4 p-4 w-full max-w-[750px]">
+      <div className="flex flex-col items-start gap-4 p-4">
         <Button
           variant="outline"
           onClick={() => router.back()}
