@@ -21,7 +21,7 @@ export class UserImportService {
     fileBuffer: Buffer,
     deleteExistingUsers: boolean
   ): Promise<void> {
-    const users = await this.parseCsv(fileBuffer);
+    const users = (await this.parseCsv(fileBuffer)).filter((u) => u.login);
 
     await this.prisma.$transaction(async (tx) => {
       const courseNames = [
