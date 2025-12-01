@@ -50,6 +50,7 @@ export type ReportResponse = {
   courses: CoursesReq[];
   responders: {
     name: string | null;
+    surname: string | null;
     login: string;
   }[];
 };

@@ -131,6 +131,7 @@ export class AnswerService {
         user: {
           select: {
             name: true,
+            surname: true,
             login: true,
           },
         },

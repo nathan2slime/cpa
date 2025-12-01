@@ -18,6 +18,7 @@ type ReportHeaderProps = {
   totalResponses: number;
   responders: {
     name: string | null;
+    surname: string | null;
     login: string;
   }[];
 };
@@ -29,7 +30,7 @@ export function ReportHeader({
 }: ReportHeaderProps) {
   const handleExport = () => {
     const dataToExport = responders.map((r) => ({
-      Nome: r.name || "Sem nome",
+      Nome: `${r.name || ""} ${r.surname || ""}`.trim() || "Sem nome",
       Matrícula: r.login,
     }));
 
@@ -67,7 +68,7 @@ export function ReportHeader({
                     className="flex items-center justify-between border-b pb-2 last:border-0 last:pb-0"
                   >
                     <div className="font-medium">
-                      {responder.name || "Sem nome"}
+                      {responder.name} {responder.surname}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       {responder.login}
