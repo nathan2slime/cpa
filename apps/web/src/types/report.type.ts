@@ -48,4 +48,8 @@ export type ReportResponse = {
   form: Form;
   question: Question[];
   courses: CoursesReq[];
+  responders: {
+    name: string | null;
+    login: string;
+  }[];
 };

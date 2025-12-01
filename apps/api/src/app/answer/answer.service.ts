@@ -117,10 +117,32 @@ export class AnswerService {
       },
     });
 
+    const responders = await this.prisma.answer.findMany({
+      where: {
+        eventId: id,
+        deletedAt: null,
+        ...(filter.course && {
+          user: {
+            courseId: filter.course,
+          },
+        }),
+      },
+      select: {
+        user: {
+          select: {
+            name: true,
+            login: true,
+          },
+        },
+      },
+      distinct: ["userId"],
+    });
+
     return {
       form: event.form,
       question: questions,
       courses: courses.map((e) => e.course),
+      responders: responders.map((r) => r.user),
     };
   }
 
