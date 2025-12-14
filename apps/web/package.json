@@ -40,7 +40,7 @@
     "html-to-image": "^1.11.13",
     "lodash": "^4.17.21",
     "lucide-react": "^0.363.0",
-    "next": "^15.2.2",
+    "next": "15.5.9",
     "next-qrcode": "^2.5.1",
     "postcss": "^8",
     "qrcode": "^1.5.3",
