@@ -10,12 +10,12 @@ export const Sidebar = () => {
         isCollapsed={false}
         links={[
           {
-            title: 'Dashboard',
+            title: 'Visão geral',
             icon: LayoutDashboard,
             path: '/dashboard'
           },
           {
-            title: 'Forms',
+            title: 'Formulários',
             icon: FileType,
             path: '/forms'
           },
