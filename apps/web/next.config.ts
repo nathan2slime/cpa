@@ -2,6 +2,7 @@ import { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  outputFileTracingRoot: '../../',
   reactStrictMode: false,
   typescript: {
     ignoreBuildErrors: true
