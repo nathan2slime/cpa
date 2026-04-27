@@ -385,6 +385,8 @@ importers:
         specifier: ^6.5.0
         version: 6.19.0(prisma@6.19.0(typescript@5.9.3))(typescript@5.9.3)
 
+  packages/database/dist: {}
+
   packages/env:
     dependencies:
       '@t3-oss/env-core':

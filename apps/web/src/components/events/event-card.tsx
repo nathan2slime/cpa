@@ -4,6 +4,7 @@ import { useEventTags } from "@/hooks/api-hooks"
 import type { EventFormResponse } from "@/types/event.types"
 import { formatDistanceToNow } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { usePathname } from "next/navigation"
 
 type Props = {
   event: EventFormResponse
@@ -12,6 +13,8 @@ type Props = {
 
 export const EventCard = ({ event, children }: Props) => {
   const { data: tags = [] } = useEventTags(event.id!)
+  const pathname = usePathname()
+  const isReportsRoute = pathname.includes("/reports") || pathname.includes("/report");
 
   return (
     <>
@@ -39,6 +42,11 @@ export const EventCard = ({ event, children }: Props) => {
             >
               {event.status}
             </Badge>
+            {isReportsRoute && event.status === "encerrado" && (
+              <p className="text-sm font-medium">
+                {event.responsesCount ?? 0}/{event.expectedResponsesCount ?? 0} participantes
+              </p>
+            )}
           </div>
 
           {tags.length > 0 && (

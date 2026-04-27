@@ -186,23 +186,48 @@ export class EventService {
             answers: true,
           },
         },
+        courses: {
+          select: {
+            courseId: true,
+          },
+        },
       },
     });
 
     const pages = Math.ceil(total / perPage);
 
+    const formattedData = await Promise.all(
+      data.map(async (event) => {
+        let expectedResponsesCount = 0;
+        if (event.courses && event.courses.length > 0) {
+          expectedResponsesCount = await this.prisma.user.count({
+            where: {
+              deletedAt: null,
+              courseId: {
+                in: event.courses.map((c) => c.courseId),
+              },
+            },
+          });
+        }
+
+        return {
+          ...event,
+          status:
+            event.startDate && event.endDate && event.startDate < now && event.endDate > now
+              ? "em andamento"
+              : event.startDate && event.startDate > now
+              ? "agendado"
+              : "encerrado",
+          hasResponses: event._count.answers > 0,
+          responsesCount: event._count.answers,
+          expectedResponsesCount,
+        };
+      })
+    );
+
     return {
       total,
-      data: data.map((event) => ({
-        ...event,
-        status:
-          event.startDate < now && event.endDate > now
-            ? "em andamento"
-            : event.startDate > now
-            ? "agendado"
-            : "encerrado",
-        hasResponses: event._count.answers > 0,
-      })),
+      data: formattedData,
       pages,
       perPage,
       page,
